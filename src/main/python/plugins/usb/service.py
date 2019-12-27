@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
 import glob
-import hexdi
+import inject
 
 
 class Device(object):
@@ -20,7 +20,7 @@ class Device(object):
         self.path = path
 
     @property
-    @hexdi.inject('usbids')
+    @inject.params(usbids='usbids')
     def name(self, usbids=None):
         product = "{}/product".format(self.path)
         if not os.path.exists(product):

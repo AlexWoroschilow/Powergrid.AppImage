@@ -10,7 +10,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import hexdi
+import inject
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
@@ -36,7 +36,7 @@ class DashboardSchema(QtWidgets.QFrame):
         self.content = DashboardTitle('Current: ...')
         self.layout().addWidget(self.content)
 
-    @hexdi.inject('plugin.service.watchdog')
+    @inject.params(service='plugin.service.watchdog')
     def updateTextEvent(self, service=None):
         for device in service.devices():
             value = 'powersave' if device.power_control == '0' else 'performance'

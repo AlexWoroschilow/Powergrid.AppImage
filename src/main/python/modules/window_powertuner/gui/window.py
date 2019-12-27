@@ -10,8 +10,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import os
-import hexdi
+import inject
 
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
@@ -30,7 +29,7 @@ class MainWindow(QtWidgets.QMainWindow):
     resize_event = QtCore.pyqtSignal(object)
     exit = QtCore.pyqtSignal(object)
 
-    @hexdi.inject('themes')
+    @inject.params(themes='themes')
     def __init__(self, themes=None):
         super(MainWindow, self).__init__()
         self.setContentsMargins(0, 0, 0, 0)
@@ -49,7 +48,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def resizeEvent(self, event):
         self.resize_event.emit(event)
 
-    @hexdi.inject('container.dashboard')
+    @inject.params(container='container.dashboard')
     def show(self, container=None):
         self.content.layout().addWidget(container.widget)
 

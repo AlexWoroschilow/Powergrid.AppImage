@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
 import sys
-import hexdi
+import inject
 
 abspath = os.path.abspath(__file__)
 os.chdir(os.path.dirname(abspath))
@@ -38,8 +38,9 @@ class Application(QtWidgets.QApplication):
         self.setApplicationName('AOD-PowerTuner')
         self.kernel = Kernel(options, args)
 
-    @hexdi.inject('window')
-    def exec_(self, window):
+    @inject.params(window='window')
+    def exec_(self, window=None):
+        if window is None: return None
 
         window.exit.connect(self.exit)
         window.show()

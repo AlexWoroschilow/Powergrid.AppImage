@@ -10,7 +10,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import hexdi
+import inject
 import functools
 
 from .service import Finder
@@ -25,16 +25,25 @@ class Loader(object):
     def __exit__(self, type, value, traceback):
         pass
 
-    def _constructor_widget(self, options=None, args=None):
-        from .gui.dashboard.widget import DashboardWidget
-
-        return DashboardWidget()
-
     @property
     def enabled(self):
         return True
 
-    @hexdi.inject('container.dashboard', 'container.exporter')
+    def configure(self, binder, options, args):
+        """
+        Setup plugin services
+        :param binder:
+        :param options:
+        :param args:
+        :return:
+        """
+        from .service import Finder
+
+        binder.bind_to_constructor('plugin.service.watchdog', functools.partial(
+            Finder, path='/proc/sys/kernel/nmi_watchdog'
+        ))
+
+    @inject.params(container_dashboard='container.dashboard', container_exporter='container.exporter')
     def boot(self, options=None, args=None, container_dashboard=None, container_exporter=None):
         """
         Define the services and setup the service-container
@@ -44,16 +53,11 @@ class Loader(object):
         :param container_exporter:
         :return:
         """
-        container = hexdi.get_root_container()
-        container.bind_type(functools.partial(
-            Finder, path='/proc/sys/kernel/nmi_watchdog'
-        ), 'plugin.service.watchdog', hexdi.lifetime.PermanentLifeTimeManager)
 
-        container_dashboard.append(functools.partial(
-            self._constructor_widget,
-            options=options, args=args
-        ), 70)
+        from .gui.dashboard.widget import DashboardWidget
+        container_dashboard.append(DashboardWidget, 60)
 
+        from .exporter import Exporter
         container_exporter.append(Exporter(options, args), 0)
 
 

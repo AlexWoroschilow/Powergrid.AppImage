@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
 import glob
-import hexdi
+import inject
 
 from string import Template
 
@@ -24,7 +24,7 @@ class Exporter(object):
     def __init__(self, options=None, args=None):
         pass
 
-    @hexdi.inject('config')
+    @inject.params(config='config')
     def export(self, config=None):
         """
 

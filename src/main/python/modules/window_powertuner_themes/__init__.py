@@ -11,7 +11,7 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
-import hexdi
+import inject
 import functools
 
 from .actions import ModuleActions
@@ -27,7 +27,7 @@ class Loader(object):
     def __exit__(self, type, value, traceback):
         pass
 
-    @hexdi.inject('config')
+    @inject.params(config='config')
     def _constructor_themes(self, config=None):
         themes_default = config.get('themes.default', 'themes/')
         themes_custom = config.get('themes.custom', '~/.config/AOD-Dictionary/themes')
@@ -36,9 +36,8 @@ class Loader(object):
     def enabled(self, options=None, args=None):
         return options.console is None
 
-    def boot(self, options=None, args=None):
-        container = hexdi.get_root_container()
-        container.bind_type(self._constructor_themes, 'themes', hexdi.lifetime.PermanentLifeTimeManager)
+    def configure(self, binder, options, args):
+        binder.bind_to_constructor('themes', self._constructor_themes)
 
 
 module = Loader()

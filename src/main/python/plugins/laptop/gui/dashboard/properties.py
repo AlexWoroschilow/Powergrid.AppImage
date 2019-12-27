@@ -10,7 +10,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import hexdi
+import inject
 import itertools
 
 from PyQt5 import QtWidgets
@@ -21,7 +21,7 @@ from .label import Value
 
 
 class DashboardProperties(QtWidgets.QWidget):
-    @hexdi.inject('plugin.service.laptop')
+    @inject.params(service='plugin.service.laptop')
     def __init__(self, service=None):
         super(DashboardProperties, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)

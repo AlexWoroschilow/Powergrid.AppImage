@@ -10,13 +10,13 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import hexdi
+import inject
 from logging import getLogger
 
 
 class ModuleActions(object):
 
-    @hexdi.inject('config', 'window')
+    @inject.params(config='config', window='window')
     def on_action_theme(self, theme=None, config=None, window=None, widget=None):
         if theme is None: return None
         if config is None: return None

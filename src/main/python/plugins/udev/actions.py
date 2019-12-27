@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
 import stat
-import hexdi
+import inject
 
 from string import Template
 
@@ -23,7 +23,7 @@ from .gui.box import MessageBox
 class ModuleActions(object):
     udev_rule = '/etc/udev/rules.d/70-performance.rules'
 
-    @hexdi.inject('window', 'container.exporter')
+    @inject.params(window='window', container='container.exporter')
     def onActionSchemaApply(self, event=None, window=None, container=None):
 
         message = "<h2>Update udev rule?</h2> <p>{}</p><br/>".format(self.udev_rule)
@@ -66,7 +66,7 @@ class ModuleActions(object):
         message = "<h2>Can not write udev rule:</h2> <p>{}</p><br/>".format("<br/>".join(errors))
         MessageBox.question(window, 'Can not write udev rule', message, MessageBox.Ok)
 
-    @hexdi.inject('window', 'container.exporter')
+    @inject.params(window='window', container='container.exporter')
     def onActionSchemaCleanup(self, event=None, window=None, exporter=None):
 
         message = "<h2>Remove udev rule?</h2> <p>{}</p><br/>".format(self.udev_rule)

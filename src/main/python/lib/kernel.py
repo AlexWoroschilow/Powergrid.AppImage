@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
 import glob
-import hexdi
+import inject
 import logging
 import importlib
 import functools
@@ -22,10 +22,17 @@ class Kernel(object):
 
     def __init__(self, options=None, args=None, sources=["modules/**/__init__.py", "plugins/**/__init__.py"]):
 
-        container = hexdi.get_root_container()
-        container.bind_type(self, 'kernel', hexdi.lifetime.PermanentLifeTimeManager)
+        # container = hexdi.get_root_container()
+        # container.bind_type(self, 'kernel', hexdi.lifetime.PermanentLifeTimeManager)
 
         self.modules = self.get_modules(sources)
+
+        inject.configure_once(functools.partial(
+            self.configure,
+            modules=self.modules,
+            options=options,
+            args=args
+        ))
 
         logger = logging.getLogger('kernel')
         for module in self.modules:
@@ -43,7 +50,7 @@ class Kernel(object):
     @staticmethod
     def get_module_candidates(sources=None):
         for mask in sources:
-            for source in glob.glob(mask):
+            for source in sorted(glob.glob(mask)):
                 if not os.path.exists(source):
                     continue
 

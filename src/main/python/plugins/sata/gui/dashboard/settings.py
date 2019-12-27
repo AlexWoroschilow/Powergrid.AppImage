@@ -10,15 +10,9 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import copy
-import hexdi
-import webbrowser
+import inject
 
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
-
-from PyQt5 import QtCore
-from PyQt5 import QtGui
 
 from .slider import DashboardSlider
 
@@ -30,7 +24,7 @@ class DashboardSettings(QtWidgets.QWidget):
         2: 'max_performance'
     }
 
-    @hexdi.inject('config')
+    @inject.params(config='config')
     def __init__(self, config):
         super(DashboardSettings, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
@@ -55,13 +49,13 @@ class DashboardSettings(QtWidgets.QWidget):
         self.layout().addWidget(slider1, 0, 0)
         self.layout().addWidget(slider2, 1, 0)
 
-    @hexdi.inject('config')
+    @inject.params(config='config')
     def actionSlidePerformance(self, value, config):
         if value not in self.hashmap.keys(): return None
 
         config.set('sata.performance', self.hashmap[value])
 
-    @hexdi.inject('config')
+    @inject.params(config='config')
     def actionSlidePowersave(self, value, config):
         if value not in self.hashmap.keys(): return None
 

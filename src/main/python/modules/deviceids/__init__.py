@@ -11,7 +11,7 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
-import hexdi
+import inject
 import functools
 
 from .services import DeviceLocator
@@ -29,15 +29,14 @@ class Loader(object):
     def enabled(self):
         return True
 
-    def boot(self, options=None, args=None):
-        container = hexdi.get_root_container()
-        container.bind_type(functools.partial(
+    def configure(self, binder, options, args):
+        binder.bind_to_constructor('usbids', functools.partial(
             DeviceLocator, file="{}/usb.ids.txt".format(os.path.dirname(os.path.realpath(__file__)))
-        ), 'usbids', hexdi.lifetime.PermanentLifeTimeManager)
+        ))
 
-        container.bind_type(functools.partial(
+        binder.bind_to_constructor('pciids', functools.partial(
             DeviceLocator, file="{}/pci.ids.txt".format(os.path.dirname(os.path.realpath(__file__)))
-        ), 'pciids', hexdi.lifetime.PermanentLifeTimeManager)
+        ))
 
 
 module = Loader()

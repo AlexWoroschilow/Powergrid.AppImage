@@ -10,7 +10,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import hexdi
+import inject
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
@@ -19,7 +19,7 @@ from .label import DashboardTitle
 
 
 class DashboardSchema(QtWidgets.QFrame):
-    @hexdi.inject('plugin.service.cpu')
+    @inject.params(service='plugin.service.cpu')
     def __init__(self, service=None):
         super(DashboardSchema, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)

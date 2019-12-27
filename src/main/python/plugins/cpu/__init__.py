@@ -10,11 +10,8 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import hexdi
+import inject
 import functools
-
-from .service import Finder
-from .exporter import Exporter
 
 
 class Loader(object):
@@ -25,17 +22,26 @@ class Loader(object):
     def __exit__(self, type, value, traceback):
         pass
 
-    def _constructor_widget(self, options=None, args=None):
-        from .gui.dashboard.widget import DashboardWidget
-
-        widget = DashboardWidget()
-        return widget
-
     @property
     def enabled(self):
         return True
 
-    @hexdi.inject('container.dashboard', 'container.exporter')
+    def configure(self, binder, options, args):
+        """
+        Setup plugin services
+
+        :param binder:
+        :param options:
+        :param args:
+        :return:
+        """
+        from .service import Finder
+
+        binder.bind_to_constructor('plugin.service.cpu', functools.partial(
+            Finder, path='/sys/devices/system/cpu'
+        ))
+
+    @inject.params(container_dashboard='container.dashboard', container_exporter='container.exporter')
     def boot(self, options=None, args=None, container_dashboard=None, container_exporter=None):
         """
         Define the services and setup the service-container
@@ -46,15 +52,10 @@ class Loader(object):
         :return:
         """
 
-        container = hexdi.get_root_container()
-        container.bind_type(functools.partial(
-            Finder, path='/sys/devices/system/cpu'
-        ), 'plugin.service.cpu', hexdi.lifetime.PermanentLifeTimeManager)
+        from .gui.dashboard.widget import DashboardWidget
+        container_dashboard.append(DashboardWidget, 0)
 
-        container_dashboard.append(functools.partial(
-            self._constructor_widget, options=options, args=args
-        ), 0)
-
+        from .exporter import Exporter
         container_exporter.append(Exporter(options, args), 0)
 
 

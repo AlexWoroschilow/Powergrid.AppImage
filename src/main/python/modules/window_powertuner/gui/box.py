@@ -11,7 +11,7 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
-import hexdi
+import inject
 
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
@@ -25,7 +25,7 @@ from .bar import Toolbar
 
 class MessageBox(QtWidgets.QMessageBox):
 
-    @hexdi.inject('themes')
+    @inject.params(themes='themes')
     def __init__(self, parent=None, themes=None):
         super(MessageBox, self).__init__(parent)
         self.setContentsMargins(0, 0, 0, 0)

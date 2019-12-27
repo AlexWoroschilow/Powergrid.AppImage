@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
 import stat
-import hexdi
+import inject
 
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
@@ -22,13 +22,13 @@ from .gui.box import MessageBox
 
 class ModuleActions(object):
 
-    @hexdi.inject('config')
+    @inject.params(config='config')
     def onActionWindowResize(self, event=None, config=None):
         config.set('window.width', '%s' % event.size().width())
         config.set('window.height', '%s' % event.size().height())
         return event.accept()
 
-    @hexdi.inject('window', 'container.exporter')
+    @inject.params(window='window', container='container.exporter')
     def onActionSchemaApply(self, event=None, window=None, container=None):
 
         files = []
@@ -87,7 +87,7 @@ class ModuleActions(object):
         message = "<h2>Can not write files:</h2> <p>{}</p><br/>".format("<br/>".join(errors))
         MessageBox.question(window, 'Can not write files', message, MessageBox.Ok)
 
-    @hexdi.inject('window', 'container.exporter')
+    @inject.params(window='window', container='container.exporter')
     def onActionSchemaCleanup(self, event=None, window=None, container=None):
 
         files = []

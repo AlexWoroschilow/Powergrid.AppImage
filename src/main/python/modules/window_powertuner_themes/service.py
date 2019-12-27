@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
 import glob
-import hexdi
+import inject
 import platform
 
 from logging import getLogger
@@ -57,7 +57,7 @@ class ServiceTheme(object):
     def get_stylesheets(self):
         return self.themes.values()
 
-    @hexdi.inject('config')
+    @inject.params(config='config')
     def get_stylesheet(self, config=None):
         if config is None: return None
 

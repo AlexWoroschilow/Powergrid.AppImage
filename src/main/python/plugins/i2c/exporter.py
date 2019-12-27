@@ -10,7 +10,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import hexdi
+import inject
 
 from string import Template
 
@@ -22,7 +22,7 @@ class Exporter(object):
     def __init__(self, options=None, args=None):
         pass
 
-    @hexdi.inject('config', 'plugin.service.i2c')
+    @inject.params(config='config', service='plugin.service.i2c')
     def export(self, config=None, service=None):
         """
 

@@ -10,9 +10,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import copy
-import hexdi
-import webbrowser
+import inject
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
@@ -25,7 +23,7 @@ from .slider import DashboardSlider
 
 class DashboardSettings(QtWidgets.QWidget):
 
-    @hexdi.inject('config')
+    @inject.params(config='config')
     def __init__(self, config):
         super(DashboardSettings, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
@@ -46,12 +44,12 @@ class DashboardSettings(QtWidgets.QWidget):
         slider1.slideAction.connect(self.actionSlidePerformance)
         slider2.slideAction.connect(self.actionSlidePowersave)
 
-    @hexdi.inject('config')
+    @inject.params(config='config')
     def actionSlidePerformance(self, value, config):
         if value is None: return None
         config.set('cpu.performance', value)
 
-    @hexdi.inject('config')
+    @inject.params(config='config')
     def actionSlidePowersave(self, value, config):
         if value is None: return None
         config.set('cpu.powersave', value)

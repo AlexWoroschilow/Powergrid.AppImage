@@ -16,16 +16,17 @@ import os
 import sys
 import logging
 import optparse
-import hexdi
+import inject
 import glob
 import configparser
 import importlib
-
+import mmap
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
 from importlib import util
+import cpuinfo
 
 try:
     from fbs_runtime.application_context.PyQt5 import ApplicationContext

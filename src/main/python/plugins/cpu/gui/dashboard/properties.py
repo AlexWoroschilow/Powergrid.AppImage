@@ -10,14 +10,11 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import hexdi
-import itertools
-import functools
+import inject
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
-from .label import Field
 from .label import Value
 from PyQt5 import QtCore
 
@@ -40,7 +37,7 @@ class DashboardPropertiesDeviceValue(Value):
 class DashboardPropertiesDevice(QtWidgets.QWidget):
     toggleDeviceAction = QtCore.pyqtSignal(object)
 
-    @hexdi.inject('config')
+    @inject.params(config='config')
     def __init__(self, device=None, config=None):
         super(DashboardPropertiesDevice, self).__init__()
         self.device = device
@@ -57,7 +54,7 @@ class DashboardPropertiesDevice(QtWidgets.QWidget):
 
         self.layout().addWidget(self.checkbox, 0, 1)
 
-    @hexdi.inject('config')
+    @inject.params(config='config')
     def toggleDeviceEvent(self, value, config):
         self.toggleDeviceAction.emit((value, self.device))
         config.set('cpu.managed.{}'.format(self.device.code), int(value != 0))
@@ -66,7 +63,7 @@ class DashboardPropertiesDevice(QtWidgets.QWidget):
 class DashboardProperties(QtWidgets.QFrame):
     toggleDeviceAction = QtCore.pyqtSignal(object)
 
-    @hexdi.inject('plugin.service.cpu')
+    @inject.params(service='plugin.service.cpu')
     def __init__(self, service=None):
         super(DashboardProperties, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)

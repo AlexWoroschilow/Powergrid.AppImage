@@ -10,7 +10,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import hexdi
+import inject
 import functools
 
 from .gui.window import MainWindow
@@ -28,7 +28,7 @@ class Loader(object):
     def __exit__(self, type, value, traceback):
         pass
 
-    @hexdi.inject('config')
+    @inject.params(config='config')
     def _constructor(self, config=None):
         widget = MainWindow()
         widget.resize_event.connect(self.actions.onActionWindowResize)
@@ -44,11 +44,10 @@ class Loader(object):
     def enabled(self, options=None, args=None):
         return True
 
-    def boot(self, options=None, args=None):
-        container = hexdi.get_root_container()
-        container.bind_type(self._constructor, 'window', hexdi.lifetime.PermanentLifeTimeManager)
-        container.bind_type(DashboardContainer, 'container.dashboard', hexdi.lifetime.PermanentLifeTimeManager)
-        container.bind_type(ExporterContainer, 'container.exporter', hexdi.lifetime.PermanentLifeTimeManager)
+    def configure(self, binder, options, args):
+        binder.bind_to_constructor('window', self._constructor)
+        binder.bind_to_constructor('container.dashboard', DashboardContainer)
+        binder.bind_to_constructor('container.exporter', ExporterContainer)
 
 
 module = Loader()

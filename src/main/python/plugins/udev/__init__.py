@@ -10,7 +10,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import hexdi
+import inject
 
 from .actions import ModuleActions
 
@@ -28,7 +28,7 @@ class Loader(object):
     def enabled(self):
         return True
 
-    @hexdi.inject('window')
+    @inject.params(window='window')
     def boot(self, options=None, args=None, window=None):
         window.schema_cleanup.connect(self.actions.onActionSchemaCleanup)
         window.schema_apply.connect(self.actions.onActionSchemaApply)
