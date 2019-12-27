@@ -1,0 +1,75 @@
+MainWindow { background: #ffffff; min-width: 698px; }
+MainWindow WindowContent { background: #ffffff; }
+MainWindow DashboardScrollArea { background: #ffffff; border-top:  1px solid #e4e4e4; border-bottom:  1px solid #e4e4e4; }
+
+Toolbar PictureButtonFlat { background: #ffffff; padding: 5px;  }
+
+DashboardScrollArea { background: #ffffff; padding: 5px 15px; }
+ContainerWidget { background: #ffffff; padding: 0px; margin: 0px; max-width: 1000px;  }
+ContainerWidget DashboardButtonFlat { padding: 5px; margin: 0px; text-align: left; }
+ContainerWidget DashboardTitle { font-size: 28px; padding: 5px 0px; }
+ContainerWidget DashboardSlider Title { font-size: 20px; padding: 5px 0px;}
+DashboardWidget DashboardSchema { margin: 10px 0px 10px 0px; }
+ContainerWidget DashboardDescription { font-size: 12px; background: #ffffff; color: #4e4e4e; margin: 10px 0px 10px 0px; }
+DashboardWidget DashboardProperties Field { font-size: 18px; color: #8a8a8a; }
+DashboardWidget DashboardProperties Value { font-size: 14px; }
+DashboardWidget DashboardProperties { margin: 20px 0px 20px 0px; }
+
+DashboardWidget { margin: 0px 20px 50px 20px; }
+
+
+
+QMessageBox { background: #ffffff; }
+
+
+QSlider::groove:horizontal {
+    background: white;
+    height: 10px;
+    border-radius: 4px;
+}
+
+QSlider::sub-page:horizontal {
+    background-color: qlineargradient(spread:pad, x1:0 y1:0, x2:1 y2:0, stop:0 #62C106, stop:0.5 #FFC843, stop:1 red);
+    background: qlineargradient(spread:pad, x1:0 y1:0, x2:1 y2:0, stop:0 #62C106, stop:0.5 #FFC843, stop:1 red);
+    border: 1px solid #4e4e4e;
+    height: 10px;
+    border-radius: 4px;
+}
+
+QSlider::add-page:horizontal {
+    background: #fff;
+    border: 1px solid #c4c4c4;
+    height: 10px;
+    border-radius: 4px;
+}
+
+QSlider::handle:horizontal {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #eee, stop:1 #ccc);
+    border: 1px solid #4e4e4e;
+    width: 13px;
+    margin-top: -2px;
+    margin-bottom: -2px;
+    border-radius: 4px;
+}
+
+QSlider::handle:horizontal:hover {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #fff, stop:1 #ddd);
+    border: 1px solid #4e4e4e;
+    border-radius: 4px;
+}
+
+QSlider::sub-page:horizontal:disabled {
+    background: #bbb;
+    border-color: #4e4e4e;
+}
+
+QSlider::add-page:horizontal:disabled {
+    background: #eee;
+    border-color: #4e4e4e;
+}
+
+QSlider::handle:horizontal:disabled {
+    background: #4e4e4e;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+}

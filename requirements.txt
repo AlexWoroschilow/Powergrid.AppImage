@@ -1,0 +1,12 @@
+altgraph==0.16.1
+fbs==0.8.4
+future==0.18.2
+hexdi==0.2.1
+macholib==1.13
+pefile==2019.4.18
+pkg-resources==0.0.0
+py-cpuinfo==5.0.0
+PyInstaller==3.3.1
+PyQt5==5.9.2
+sip==4.19.8
+typing==3.7.4.1
