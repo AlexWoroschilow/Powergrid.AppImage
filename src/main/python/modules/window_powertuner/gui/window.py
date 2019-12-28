@@ -33,7 +33,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, themes=None):
         super(MainWindow, self).__init__()
         self.setContentsMargins(0, 0, 0, 0)
-        self.setWindowTitle('AOD - Power Tuner')
+        self.setWindowTitle('AOD - Performance Tuner')
         self.setWindowIcon(QtGui.QIcon("icons/tuner"))
 
         self.setStyleSheet(themes.get_stylesheet())
