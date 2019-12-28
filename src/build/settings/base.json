@@ -1,5 +1,5 @@
 {
-    "app_name": "AOD-PowerTuner",
+    "app_name": "AOD-PerformanceTuner",
     "author": "Alex Woroschilow",
     "main_module": "src/main/python/main.py",
     "version": "0.0.0"

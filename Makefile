@@ -1,4 +1,4 @@
-project = AOD-PowerTuner
+project = AOD-PerformanceTuner
 project_version = 0.1
 GLIBC_VERSION_RAW=$(shell getconf GNU_LIBC_VERSION)
 GLIBC_VERSION=$(shell sed -e 's/ /./g' <<< '${GLIBC_VERSION_RAW}')
@@ -34,7 +34,7 @@ appimage:
 	echo			"Categories=Utility;" >> $(project).AppDir/$(project).desktop
 
 	echo			"#! /bin/bash" >> $(project).AppDir/AppRun
-	echo			"set -e" >> $(project).AppDir/AppRun
+	echo			"set -ex" >> $(project).AppDir/AppRun
 	echo			"cd \$${HOME}" >> $(project).AppDir/AppRun
 	echo			"exec \$${APPDIR}/opt/$(project)/$(project)" >> $(project).AppDir/AppRun
 	chmod 			+x $(project).AppDir/AppRun
