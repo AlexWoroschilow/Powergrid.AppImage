@@ -32,26 +32,26 @@ class DashboardSlider(QtWidgets.QWidget):
 
         self.setLayout(QtWidgets.QGridLayout())
 
-        self.layout().addWidget(Title(name), 0, 0, 1, 4)
+        self.layout().addWidget(Title(name), 0, 0, 1, len(values))
 
         self.slider = QtWidgets.QSlider(Qt.Horizontal)
         self.slider.setTickPosition(QtWidgets.QSlider.NoTicks)
         self.slider.valueChanged.connect(self.actionSlide)
-        if values is not None and value is not None:
+        if values is not None and value in values:
             self.slider.setValue(values.index(value))
 
         self.slider.setMaximum(len(self.values) - 1)
         self.slider.setSingleStep(1)
         self.slider.setMinimum(0)
 
-        self.layout().addWidget(self.slider, 1, 0, 1, 4)
+        self.layout().addWidget(self.slider, 1, 0, 1, len(values))
 
         for index, value in enumerate(self.values, start=0):
             align = Qt.AlignLeft if index < (len(self.values) / 2) else Qt.AlignRight
 
             value = Value(value)
             value.setAlignment(align)
-            
+
             self.layout().addWidget(value, 2, index)
 
     def actionSlide(self, index=None):

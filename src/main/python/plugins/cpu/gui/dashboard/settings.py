@@ -23,26 +23,29 @@ from .slider import DashboardSlider
 
 class DashboardSettings(QtWidgets.QWidget):
 
-    @inject.params(config='config')
-    def __init__(self, config):
+    @inject.params(config='config', service='plugin.service.cpu')
+    def __init__(self, config, service):
         super(DashboardSettings, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         self.setContentsMargins(0, 0, 0, 0)
 
         self.setLayout(QtWidgets.QGridLayout())
 
-        slider1 = DashboardSlider('AC- Adapter', [
-            'powersave', 'conservative', 'ondemand', 'performance'
-        ], config.get('cpu.performance', 'ondemand'))
+        slider1 = DashboardSlider('AC- Adapter', self.governors, config.get('cpu.performance', 'ondemand'))
         self.layout().addWidget(slider1, 0, 0)
 
-        slider2 = DashboardSlider('Battery', [
-            'powersave', 'conservative', 'ondemand', 'performance'
-        ], config.get('cpu.powersave', 'powersave'))
+        slider2 = DashboardSlider('Battery', self.governors, config.get('cpu.powersave', 'powersave'))
         self.layout().addWidget(slider2, 1, 0)
 
         slider1.slideAction.connect(self.actionSlidePerformance)
         slider2.slideAction.connect(self.actionSlidePowersave)
+
+    @property
+    @inject.params(service='plugin.service.cpu')
+    def governors(self, service=None):
+        for device in service.cores():
+            return sorted(device.governors, reverse=True)
+        return []
 
     @inject.params(config='config')
     def actionSlidePerformance(self, value, config):

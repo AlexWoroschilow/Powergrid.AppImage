@@ -33,6 +33,13 @@ class Device(object):
         return self.name.lower()
 
     @property
+    def governors(self):
+        with open("{}/cpufreq/scaling_available_governors".format(self.path), 'r') as stream:
+            governors = stream.read()
+            governors = governors.strip("\n")
+            return governors.split(' ')
+
+    @property
     def governor(self):
         with open("{}/cpufreq/scaling_governor".format(self.path), 'r') as stream:
             return stream.read().strip("\n")

@@ -22,6 +22,7 @@ from .button import DashboardButtonFlat
 from .settings import DashboardSettings
 from .text import DashboardDescription
 from .properties import DashboardProperties
+from .schema import DashboardSchema
 
 
 class DashboardWidget(QtWidgets.QFrame):
@@ -39,6 +40,7 @@ class DashboardWidget(QtWidgets.QFrame):
         self.layout().addWidget(DashboardTitle(cpu['brand']), 0, 0, 1, 9)
         self.layout().addWidget(DashboardImage('icons/cpu'), 1, 0)
         self.layout().addWidget(DashboardSettings(), 1, 1, 1, 9)
+        self.layout().addWidget(DashboardSchema(), 2, 0, 1, 10)
         self.layout().addWidget(DashboardDescription(), 3, 0, 1, 10)
         self.layout().addWidget(DashboardProperties(), 4, 0, 1, 10)
 
