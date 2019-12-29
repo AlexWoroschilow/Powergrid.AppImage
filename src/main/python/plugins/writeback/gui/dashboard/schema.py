@@ -20,9 +20,10 @@ from .label import DashboardTitle
 
 
 class DashboardSchema(QtWidgets.QFrame):
+
     def __init__(self):
         super(DashboardSchema, self).__init__()
-        self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.setContentsMargins(0, 0, 0, 0)
 
         self.setLayout(QtWidgets.QVBoxLayout())
@@ -30,15 +31,41 @@ class DashboardSchema(QtWidgets.QFrame):
         self.layout().setAlignment(Qt.AlignCenter)
 
         self.timerRefresh = QtCore.QTimer()
-        self.timerRefresh.timeout.connect(self.updateTextEvent)
+        self.timerRefresh.timeout.connect(self.update_text_event)
         self.timerRefresh.start(1000)
 
-        self.content = DashboardTitle('Current: ...')
+        self.content = DashboardTitle('Schema: ...')
+        self.content.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        self.content.setAlignment(Qt.AlignCenter)
         self.layout().addWidget(self.content)
 
+    @property
     @inject.params(service='plugin.service.writeback')
-    def updateTextEvent(self, service=None):
+    def writeback(self, service=None):
         for device in service.devices():
-            value = 'powersave' if device.power_control == '1500' else 'performance'
-            self.content.setText('Current: {}'.format(value))
-            break
+            return int(device.power_control)
+
+    @inject.params(config='config')
+    def update_text_event(self, config=None):
+        performance = config.get('writeback.performance', '500')
+        powersave = config.get('writeback.powersave', '1500')
+
+        hashmap = {
+            int(performance)
+            if len(performance) else
+            500: "performance",
+            int(powersave)
+            if len(performance) else
+            500: "powersave",
+        }
+
+        writeback = self.writeback
+
+        value = hashmap[writeback] \
+            if writeback in hashmap.keys() \
+            else "Unknown"
+
+        writeback = writeback / 100 \
+            if int(writeback) > 0 else 0
+
+        return self.content.setText('Schema: {} ({:.0f} sec)'.format(value, writeback))

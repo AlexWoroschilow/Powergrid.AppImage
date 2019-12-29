@@ -33,7 +33,7 @@ class DashboardWidget(QtWidgets.QFrame):
         self.setLayout(QtWidgets.QGridLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
 
-        self.layout().addWidget(DashboardTitle('Watchdog'), 0, 0, 1, 9)
+        self.layout().addWidget(DashboardTitle('Watchdog (CPU lockup detector)'), 0, 0, 1, 9)
         self.layout().addWidget(DashboardImage('icons/watchdog'), 1, 0)
         self.layout().addWidget(DashboardSettings(), 1, 1, 1, 9)
         self.layout().addWidget(DashboardSchema(), 2, 0, 1, 10)

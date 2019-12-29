@@ -25,14 +25,17 @@ class DashboardDescription(QtWidgets.QLabel):
     @property
     def description(self):
         return """
-<h2>nmi_watchdog</h2>
-<p>This parameter can be used to control the NMI watchdog(i.e. the hard lockup detector) on x86 systems.</p>
-<p><b>0</b> - disable the hard lockup detector</p>
-<p><b>1</b> - enable the hard lockup detector</p>
+<h2>watchdog</h2>
+<p>This parameter can be used to disable or enable the soft lockup detector and the NMI watchdog (i.e. the hard lockup detector) at the same time.</p>
+<p><b>0</b> - disable the lockup detector</p>
+<p><b>1</b> - enable the lockup detector</p>
 
-<p>The hard lockup detector monitors each CPU for its ability to respond totimer interrupts. The mechanism utilizes CPU performance counter registers
+<p>The <b>soft lockup detector</b> monitors CPUs for threads that are hogging the CPUs without rescheduling voluntarily, and thus prevent the 'watchdog/N' threads
+from running. The mechanism depends on the CPUs ability to respond to timer interrupts which are needed for the 'watchdog/N' threads to be woken up by
+the watchdog timer function, otherwise the NMI watchdog - if enabled - can detect a hard lockup condition.</p>
+
+<p>The <b>hard lockup detector</b> monitors each CPU for its ability to respond to timer interrupts. The mechanism utilizes CPU performance counter registers
 that are programmed to generate Non-Maskable Interrupts (NMIs) periodicallywhile a CPU is busy. Hence, the alternative name 'NMI watchdog'.</p>
 
-<p>The NMI watchdog is disabled by default if the kernel is running as a guest in a KVM virtual machine. This default can be overridden by adding</p>
-<p><b>nmi_watchdog=1</b></p>
+<p>The soft lockup detector and the NMI watchdog can also be disabled or enabled individually, using the soft_watchdog and nmi_watchdog parameters.</p>
 """

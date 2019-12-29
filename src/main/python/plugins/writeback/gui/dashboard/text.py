@@ -26,6 +26,6 @@ class DashboardDescription(QtWidgets.QLabel):
     def description(self):
         return """
 <h2>dirty_writeback_centisecs</h2>
-<p>The kernel flusher threads will periodically wake up and write `old' data out to disk.</p>
-<p>This tunable expresses the interval between those wakeups, in100'ths of a second.</p>
+<p>The kernel flusher threads will periodically wake up and write `old' data out to disk. This tunable expresses the interval between those wakeups, in 100'ths of a second.</p>
+<p>Setting this to zero disables periodic writeback altogether.</p>
 """

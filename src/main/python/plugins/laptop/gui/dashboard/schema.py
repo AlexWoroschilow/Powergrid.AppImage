@@ -30,15 +30,17 @@ class DashboardSchema(QtWidgets.QFrame):
         self.layout().setAlignment(Qt.AlignCenter)
 
         self.timerRefresh = QtCore.QTimer()
-        self.timerRefresh.timeout.connect(self.updateTextEvent)
+        self.timerRefresh.timeout.connect(self.update_text_event)
         self.timerRefresh.start(1000)
 
-        self.content = DashboardTitle('Current: ...')
+        self.content = DashboardTitle('Schema: ...')
         self.layout().addWidget(self.content)
 
     @inject.params(service='plugin.service.laptop')
-    def updateTextEvent(self, service=None):
+    def update_text_event(self, service=None):
         for device in service.devices():
-            value = 'performance' if device.power_control == '0' else 'powersave'
-            self.content.setText('Current: {}'.format(value))
+            value = 'performance' \
+                if device.power_control == '0' \
+                else 'powersave'
+            self.content.setText('Schema: {}'.format(value))
             break

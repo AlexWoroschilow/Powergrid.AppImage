@@ -40,7 +40,7 @@ class Loader(object):
         from .service import Finder
 
         binder.bind_to_constructor('plugin.service.watchdog', functools.partial(
-            Finder, path='/proc/sys/kernel/nmi_watchdog'
+            Finder, path='/proc/sys/kernel/watchdog'
         ))
 
     @inject.params(container_dashboard='container.dashboard', container_exporter='container.exporter')

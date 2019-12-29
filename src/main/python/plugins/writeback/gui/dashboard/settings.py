@@ -27,23 +27,23 @@ class DashboardSettings(QtWidgets.QWidget):
 
         self.setLayout(QtWidgets.QGridLayout())
 
-        value = config.get('writeback.performance', '')
-        slider1 = DashboardSlider('AC- Adapter', 1 if value == '' else 0)
+        value = config.get('writeback.performance', '500')
+        slider1 = DashboardSlider('AC- Adapter', 1 if value == '500' else 0)
         self.layout().addWidget(slider1, 0, 0)
 
         value = config.get('writeback.powersave', '1500')
-        slider2 = DashboardSlider('Battery', 1 if value == '' else 0)
+        slider2 = DashboardSlider('Battery', 1 if value == '500' else 0)
         self.layout().addWidget(slider2, 1, 0)
 
-        slider1.slideAction.connect(self.actionSlidePerformance)
-        slider2.slideAction.connect(self.actionSlidePowersave)
+        slider1.slideAction.connect(self.action_slide_performance)
+        slider2.slideAction.connect(self.action_slide_powersave)
 
     @inject.params(config='config')
-    def actionSlidePerformance(self, value, config):
+    def action_slide_performance(self, value, config):
         if value is None: return None
-        config.set('writeback.performance', '1500' if value == 0 else '')
+        config.set('writeback.performance', '1500' if value == 0 else '500')
 
     @inject.params(config='config')
-    def actionSlidePowersave(self, value, config):
+    def action_slide_powersave(self, value, config):
         if value is None: return None
-        config.set('writeback.powersave', '1500' if value == 0 else '')
+        config.set('writeback.powersave', '1500' if value == 0 else '500')
