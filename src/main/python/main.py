@@ -24,6 +24,7 @@ import mmap
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5 import QtGui
+from PyQt5 import QtQuick
 from PyQt5.QtCore import Qt
 from importlib import util
 import cpuinfo

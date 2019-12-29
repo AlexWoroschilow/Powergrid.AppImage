@@ -19,6 +19,7 @@ appimage:
 	cp              -r     src/main/python/templates target/$(project)
 	cp              -r     src/main/python/themes target/$(project)
 	cp              -r     src/main/python/icons target/$(project)
+	cp              -r     src/main/python/charts target/$(project)
 	cp              -r     src/main/python/lib target/$(project)
 	cp              -r     src/main/python/application.py target/$(project)
 
