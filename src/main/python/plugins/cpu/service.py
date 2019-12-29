@@ -44,6 +44,25 @@ class Device(object):
         with open("{}/cpufreq/scaling_governor".format(self.path), 'r') as stream:
             return stream.read().strip("\n")
 
+    @property
+    def load(self):
+        return self.frequence / self.frequence_max * 100
+
+    @property
+    def frequence(self):
+        with open("{}/cpufreq/scaling_cur_freq".format(self.path), 'r') as stream:
+            return int(stream.read().strip("\n"))
+
+    @property
+    def frequence_max(self):
+        with open("{}/cpufreq/scaling_max_freq".format(self.path), 'r') as stream:
+            return int(stream.read().strip("\n"))
+
+    @property
+    def frequence_min(self):
+        with open("{}/cpufreq/scaling_min_freq".format(self.path), 'r') as stream:
+            return int(stream.read().strip("\n"))
+
     def __gt__(self, other):
         a = re.sub('[^0-9]', '', self.name)
         b = re.sub('[^0-9]', '', other.name)

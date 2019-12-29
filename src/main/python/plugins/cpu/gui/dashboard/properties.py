@@ -72,7 +72,7 @@ class DashboardProperties(QtWidgets.QFrame):
         self.layout().setAlignment(Qt.AlignCenter | Qt.AlignTop)
         self.layout().setContentsMargins(0, 0, 0, 0)
 
-        for device in service.cores():
+        for device in sorted(service.cores()):
             device_widget = DashboardPropertiesDevice(device)
             device_widget.toggleDeviceAction.connect(self.toggleDeviceAction.emit)
             self.layout().addWidget(device_widget)

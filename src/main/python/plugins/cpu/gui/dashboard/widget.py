@@ -35,9 +35,7 @@ class DashboardWidget(QtWidgets.QFrame):
         self.setLayout(QtWidgets.QGridLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
 
-        cpu = cpuinfo.get_cpu_info()
-
-        self.layout().addWidget(DashboardTitle(cpu['brand']), 0, 0, 1, 9)
+        self.layout().addWidget(DashboardTitle(self.title), 0, 0, 1, 9)
         self.layout().addWidget(DashboardImage('icons/cpu'), 1, 0)
         self.layout().addWidget(DashboardSettings(), 1, 1, 1, 9)
         self.layout().addWidget(DashboardSchema(), 2, 0, 1, 10)
@@ -48,6 +46,13 @@ class DashboardWidget(QtWidgets.QFrame):
         self.link.clicked.connect(self.linkClickedEvent)
 
         self.layout().addWidget(self.link, 0, 9)
+
+    @property
+    def title(self):
+        cpu = cpuinfo.get_cpu_info()
+        if len(cpu) and 'brand' in cpu:
+            return cpu['brand']
+        return "Unknown CPU"
 
     def linkClickedEvent(self, event):
         return webbrowser.open('https://www.kernel.org/doc/html/v4.16/admin-guide/pm/cpufreq.html')
