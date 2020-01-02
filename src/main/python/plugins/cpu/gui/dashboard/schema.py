@@ -12,14 +12,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import inject
 
-from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
-
-from .label import DashboardTitle
+from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 
+from .label import DashboardTitle
 
-class DashboardSchema(QtWidgets.QFrame):
+
+class DashboardSchema(QtWidgets.QWidget):
     def __init__(self):
         super(DashboardSchema, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
@@ -34,6 +34,7 @@ class DashboardSchema(QtWidgets.QFrame):
         self.timerRefresh.start(1000)
 
         self.content = DashboardTitle('Governor: ...')
+        self.content.setAlignment(Qt.AlignCenter)
         self.layout().addWidget(self.content)
 
     @inject.params(service='plugin.service.cpu')

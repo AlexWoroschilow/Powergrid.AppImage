@@ -19,24 +19,71 @@ from PyQt5 import QtGui
 from PyQt5 import QtQuick
 
 
+class DashboardSchemaContainer(QtWidgets.QFrame):
+    @inject.params(service='plugin.service.cpu')
+    def __init__(self, service=None):
+        super(DashboardSchemaContainer, self).__init__()
+        self.setLayout(QtWidgets.QGridLayout())
+        self.setMinimumHeight(100)
+
+        self.charts = {}
+
+        i, j = 0, 0
+        for index, device in enumerate(sorted(service.cores()), start=0):
+            chart = QtQuick.QQuickView()
+            chart.setResizeMode(QtQuick.QQuickView.SizeRootObjectToView)
+            chart.setSource(QtCore.QUrl('charts/gauge-short.qml'))
+
+            content = QtWidgets.QWidget.createWindowContainer(chart, self)
+            content.setMinimumSize(QtCore.QSize(80, 80))
+            self.layout().addWidget(content, i, j)
+            i = i if j < 3 else i + 1
+            j = j + 1 if j < 3 else 0
+
+            self.charts[index] = chart
+
+        self.timerRefresh = QtCore.QTimer()
+        self.timerRefresh.timeout.connect(self.update_value)
+        self.timerRefresh.start(3000)
+
+    @inject.params(service='plugin.service.cpu')
+    def update_value(self, service=None):
+        for index, device in enumerate(sorted(service.cores()), start=0):
+            if index not in self.charts.keys():
+                continue
+            chart = self.charts[index]
+
+            gauge = chart.findChild(QtCore.QObject, 'title')
+            gauge.setProperty('title', device.name.replace('Cpu', 'CPU '))
+
+            gauge = chart.findChild(QtCore.QObject, 'performance')
+            gauge.setProperty('load', round(device.load, 1))
+
+
 class DashboardImage(QtWidgets.QWidget):
 
     @inject.params(service='plugin.service.cpu')
-    def __init__(self, image=None, service=None):
+    def __init__(self, service=None):
         super(DashboardImage, self).__init__()
-        self.setMinimumWidth(200)
 
-        self.setLayout(QtWidgets.QVBoxLayout())
+        self.setLayout(QtWidgets.QHBoxLayout())
+        self.layout().setAlignment(Qt.AlignCenter)
 
         self.chart = QtQuick.QQuickView()
         self.chart.setResizeMode(QtQuick.QQuickView.SizeRootObjectToView)
 
         self.chart.setSource(QtCore.QUrl("charts/gauge.qml"))
-        self.layout().addWidget(QtWidgets.QWidget.createWindowContainer(self.chart, self))
+
+        contianer = QtWidgets.QWidget.createWindowContainer(self.chart, self)
+        contianer.setMinimumSize(QtCore.QSize(200, 200))
+        self.layout().addWidget(contianer)
+
+        container = DashboardSchemaContainer()
+        self.layout().addWidget(container)
 
         self.timerRefresh = QtCore.QTimer()
         self.timerRefresh.timeout.connect(self.update_value)
-        self.timerRefresh.start(1000)
+        self.timerRefresh.start(2000)
 
     @inject.params(service='plugin.service.cpu')
     def update_value(self, service=None):

@@ -14,6 +14,11 @@
 import os
 import sys
 import inject
+import optparse
+import logging
+from importlib import util
+
+from PyQt5 import QtWidgets
 
 abspath = os.path.abspath(__file__)
 os.chdir(os.path.dirname(abspath))
@@ -22,13 +27,6 @@ sys.path.append(os.path.join(os.getcwd(), 'lib'))
 sys.path.append(os.path.join(os.getcwd(), 'modules'))
 sys.path.append(os.path.join(os.getcwd(), 'plugins'))
 
-import optparse
-import logging
-
-from PyQt5 import QtWidgets
-
-from lib.kernel import Kernel
-
 
 class Application(QtWidgets.QApplication):
     kernel = None
@@ -36,7 +34,12 @@ class Application(QtWidgets.QApplication):
     def __init__(self, options=None, args=None):
         super(Application, self).__init__(sys.argv)
         self.setApplicationName('AOD-PowerTuner')
-        self.kernel = Kernel(options, args)
+
+        spec = util.find_spec('lib.kernel')
+        module = spec.loader.load_module()
+        if module is None: return None
+
+        self.kernel = module.Kernel(options, args)
 
     @inject.params(window='window')
     def exec_(self, window=None):

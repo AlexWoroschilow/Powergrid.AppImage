@@ -49,7 +49,7 @@ class DashboardSlider(QtWidgets.QWidget):
         for index, value in enumerate(self.values, start=0):
             align = Qt.AlignLeft if index < (len(self.values) / 2) else Qt.AlignRight
 
-            value = Value(value)
+            value = Value(value.capitalize())
             value.setAlignment(align)
 
             self.layout().addWidget(value, 2, index)

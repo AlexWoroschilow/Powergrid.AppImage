@@ -10,7 +10,7 @@ ContainerWidget DashboardButtonFlat { padding: 5px; margin: 0px; text-align: lef
 ContainerWidget DashboardTitle { font-size: 28px; padding: 5px 0px; }
 ContainerWidget DashboardSlider Title { font-size: 20px; padding: 5px 0px;}
 DashboardWidget DashboardSchema { margin: 10px 0px 10px 0px; }
-ContainerWidget DashboardDescription { font-size: 12px; background: #ffffff; color: #4e4e4e; margin: 10px 0px 10px 0px; }
+ContainerWidget DashboardDescription { font-size: 12px; background: #ffffff; color: #8a8a8a; margin: 10px 0px 10px 0px; }
 DashboardWidget DashboardProperties Field { font-size: 18px; color: #8a8a8a; }
 DashboardWidget DashboardProperties Value { font-size: 14px; }
 DashboardWidget DashboardProperties { margin: 20px 0px 20px 0px; }
@@ -31,21 +31,21 @@ QSlider::groove:horizontal {
 QSlider::sub-page:horizontal {
     background-color: qlineargradient(spread:pad, x1:0 y1:0, x2:1 y2:0, stop:0 #62C106, stop:0.5 #FFC843, stop:1 red);
     background: qlineargradient(spread:pad, x1:0 y1:0, x2:1 y2:0, stop:0 #62C106, stop:0.5 #FFC843, stop:1 red);
-    border: 1px solid #4e4e4e;
+    border: 1px solid #aaa;
     height: 10px;
     border-radius: 4px;
 }
 
 QSlider::add-page:horizontal {
     background: #fff;
-    border: 1px solid #c4c4c4;
+    border: 1px solid #aaa;
     height: 10px;
     border-radius: 4px;
 }
 
 QSlider::handle:horizontal {
     background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #eee, stop:1 #ccc);
-    border: 1px solid #4e4e4e;
+    border: 1px solid #aaa;
     width: 13px;
     margin-top: -2px;
     margin-bottom: -2px;
@@ -54,18 +54,18 @@ QSlider::handle:horizontal {
 
 QSlider::handle:horizontal:hover {
     background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #fff, stop:1 #ddd);
-    border: 1px solid #4e4e4e;
+    border: 1px solid #aaa;
     border-radius: 4px;
 }
 
 QSlider::sub-page:horizontal:disabled {
     background: #bbb;
-    border-color: #4e4e4e;
+    border-color: #aaa;
 }
 
 QSlider::add-page:horizontal:disabled {
     background: #eee;
-    border-color: #4e4e4e;
+    border-color: #aaa;
 }
 
 QSlider::handle:horizontal:disabled {

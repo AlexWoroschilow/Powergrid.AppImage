@@ -14,6 +14,7 @@ import webbrowser
 import cpuinfo
 
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import Qt
 
 from .label import DashboardImage
 from .label import DashboardTitle
@@ -33,19 +34,14 @@ class DashboardWidget(QtWidgets.QFrame):
         self.setContentsMargins(0, 0, 0, 0)
 
         self.setLayout(QtWidgets.QGridLayout())
+        self.layout().setAlignment(Qt.AlignCenter | Qt.AlignTop)
         self.layout().setContentsMargins(0, 0, 0, 0)
 
-        self.layout().addWidget(DashboardTitle(self.title), 0, 0, 1, 9)
-        self.layout().addWidget(DashboardImage('icons/cpu'), 1, 0)
-        self.layout().addWidget(DashboardSettings(), 1, 1, 1, 9)
-        self.layout().addWidget(DashboardSchema(), 2, 0, 1, 10)
-        self.layout().addWidget(DashboardDescription(), 3, 0, 1, 10)
-        self.layout().addWidget(DashboardProperties(), 4, 0, 1, 10)
-
-        self.link = DashboardButtonFlat("icons/linux", ' kernel.org')
-        self.link.clicked.connect(self.linkClickedEvent)
-
-        self.layout().addWidget(self.link, 0, 9)
+        self.layout().addWidget(DashboardTitle(self.title), 0, 0, 1, 10)
+        self.layout().addWidget(DashboardImage(), 1, 0, 1, 10)
+        self.layout().addWidget(DashboardProperties(), 2, 0, 1, 10)
+        self.layout().addWidget(DashboardSettings(), 3, 0, 1, 10)
+        self.layout().addWidget(DashboardDescription(), 4, 0, 1, 10)
 
     @property
     def title(self):
