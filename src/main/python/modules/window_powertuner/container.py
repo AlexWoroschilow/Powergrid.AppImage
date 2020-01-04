@@ -28,6 +28,7 @@ class DashboardContainer(object):
 
     @property
     def widget(self):
+
         widget = DashboardScrollArea()
         for bundle in sorted(self.collection, key=lambda x: x[1]):
             constructor, priority = bundle

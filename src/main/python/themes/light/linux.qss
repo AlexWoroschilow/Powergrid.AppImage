@@ -5,70 +5,73 @@ MainWindow DashboardScrollArea { background: #ffffff; border-top:  1px solid #e4
 Toolbar PictureButtonFlat { background: #ffffff; padding: 5px;  }
 
 DashboardScrollArea { background: #ffffff; padding: 5px 15px; }
-ContainerWidget { background: #ffffff; padding: 0px; margin: 0px; max-width: 1000px;  }
+ContainerWidget { background: #ffffff; padding: 0px; margin: 0px; }
 ContainerWidget DashboardButtonFlat { padding: 5px; margin: 0px; text-align: left; }
-ContainerWidget DashboardTitle { font-size: 28px; padding: 5px 0px; }
-ContainerWidget DashboardSlider Title { font-size: 20px; padding: 5px 0px;}
+ContainerWidget DashboardSlider Title { font-size: 10px; color: #8a8a8a;  }
+ContainerWidget DashboardSlider { max-height: 100px; }
 DashboardWidget DashboardSchema { margin: 10px 0px 10px 0px; }
 ContainerWidget DashboardDescription { font-size: 12px; background: #ffffff; color: #8a8a8a; margin: 10px 0px 10px 0px; }
 DashboardWidget DashboardProperties Field { font-size: 18px; color: #8a8a8a; }
-DashboardWidget DashboardProperties Value { font-size: 14px; }
+DashboardWidget DashboardProperties Value { font-size: 12px; margin: 5px 10px 0px 0px; }
+DashboardWidget DashboardProperties Title { font-size: 26px;  }
 DashboardWidget DashboardProperties { margin: 20px 0px 20px 0px; }
+DashboardWidget DashboardTitle { font-size: 32px; }
+DashboardWidget { margin: 0px 0px 0px 0px; }
 
-DashboardWidget { margin: 0px 20px 50px 20px; }
 
+DashboardSettingsPerformance { min-width: 50px; }
+DashboardSettingsPowersave { min-width: 50px; }
 
 
 QMessageBox { background: #ffffff; }
 
 
-QSlider::groove:horizontal {
-    background: white;
-    height: 10px;
-    border-radius: 4px;
+QSlider::groove:vertical {
+    background: #ffffff;
+    border-radius: 2px;
+    width: 10px;
 }
 
-QSlider::sub-page:horizontal {
-    background-color: qlineargradient(spread:pad, x1:0 y1:0, x2:1 y2:0, stop:0 #62C106, stop:0.5 #FFC843, stop:1 red);
-    background: qlineargradient(spread:pad, x1:0 y1:0, x2:1 y2:0, stop:0 #62C106, stop:0.5 #FFC843, stop:1 red);
-    border: 1px solid #aaa;
-    height: 10px;
-    border-radius: 4px;
-}
-
-QSlider::add-page:horizontal {
+QSlider::sub-page:vertical {
     background: #fff;
     border: 1px solid #aaa;
-    height: 10px;
-    border-radius: 4px;
+    border-radius: 2px;
 }
 
-QSlider::handle:horizontal {
+QSlider::add-page:vertical {
+    background-color: qlineargradient(spread:pad, x1:0 y1:0, x2:0 y2:1, stop:1 #62C106, stop:0.5 #FFC843, stop:0 red);
+    background: qlineargradient(spread:pad, x1:0 y1:0, x2:0 y2:1, stop:1 #62C106, stop:0.5 #FFC843, stop:0 red);
+    border: 1px solid #aaa;
+    border-radius: 2px;
+}
+
+QSlider::handle:vertical {
     background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #eee, stop:1 #ccc);
     border: 1px solid #aaa;
-    width: 13px;
-    margin-top: -2px;
-    margin-bottom: -2px;
+    height: 13px;
+    margin-left: -2px;
+    margin-right: -2px;
     border-radius: 4px;
 }
 
-QSlider::handle:horizontal:hover {
+QSlider::handle:vertical:hover {
     background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #fff, stop:1 #ddd);
     border: 1px solid #aaa;
     border-radius: 4px;
+    width: 15px;
 }
 
-QSlider::sub-page:horizontal:disabled {
+QSlider::sub-page:vertical:disabled {
     background: #bbb;
     border-color: #aaa;
 }
 
-QSlider::add-page:horizontal:disabled {
+QSlider::add-page:vertical:disabled {
     background: #eee;
     border-color: #aaa;
 }
 
-QSlider::handle:horizontal:disabled {
+QSlider::handle:vertical:disabled {
     background: #4e4e4e;
     border: 1px solid #aaa;
     border-radius: 4px;

@@ -34,13 +34,14 @@ class DashboardSlider(QtWidgets.QWidget):
         self.layout().addWidget(Title(name), 0, 0, 1, 5)
 
         self.slider = QtWidgets.QSlider(Qt.Horizontal)
-        self.layout().addWidget(self.slider, 1, 0, 1, 5)
         self.slider.valueChanged.connect(self.actionSlide)
         self.slider.setTickPosition(QtWidgets.QSlider.NoTicks)
         self.slider.setValue(int(value))
         self.slider.setMaximum(2)
         self.slider.setSingleStep(1)
         self.slider.setMinimum(0)
+
+        self.layout().addWidget(self.slider, 1, 0, 1, 5)
 
         label = Value('powersave')
         label.setAlignment(Qt.AlignLeft)

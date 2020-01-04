@@ -10,16 +10,12 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import webbrowser
-
 from PyQt5 import QtWidgets
 
 from .label import DashboardImage
 from .label import DashboardTitle
 
-from .button import DashboardButtonFlat
 from .settings import DashboardSettings
-from .properties import DashboardProperties
 from .text import DashboardDescription
 
 
@@ -36,13 +32,5 @@ class DashboardWidget(QtWidgets.QFrame):
         self.layout().addWidget(DashboardTitle('Universal Serial Bus'), 0, 0, 1, 9)
         self.layout().addWidget(DashboardImage('icons/usb'), 1, 0)
         self.layout().addWidget(DashboardSettings(), 1, 1, 1, 9)
-        self.layout().addWidget(DashboardProperties(), 3, 0, 1, 10)
-        self.layout().addWidget(DashboardDescription(), 2, 0, 1, 10)
+        self.layout().addWidget(DashboardDescription(), 3, 0, 1, 10)
 
-        self.link = DashboardButtonFlat("icons/linux", ' kernel.org')
-        self.link.clicked.connect(self.linkClickedEvent)
-
-        self.layout().addWidget(self.link, 0, 9)
-
-    def linkClickedEvent(self, event):
-        return webbrowser.open('https://www.kernel.org/doc/html/v4.16/driver-api/usb/power-management.html')

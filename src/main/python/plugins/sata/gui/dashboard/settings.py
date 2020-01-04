@@ -30,7 +30,7 @@ class DashboardSettings(QtWidgets.QWidget):
         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         self.setContentsMargins(0, 0, 0, 0)
 
-        self.setLayout(QtWidgets.QGridLayout())
+        self.setLayout(QtWidgets.QVBoxLayout())
 
         inverted = {self.hashmap[k]: k for k in self.hashmap}
 
@@ -46,8 +46,8 @@ class DashboardSettings(QtWidgets.QWidget):
         slider2 = DashboardSlider('Battery', inverted[origin_powersave])
         slider2.slideAction.connect(self.actionSlidePowersave)
 
-        self.layout().addWidget(slider1, 0, 0)
-        self.layout().addWidget(slider2, 1, 0)
+        self.layout().addWidget(slider1)
+        self.layout().addWidget(slider2)
 
     @inject.params(config='config')
     def actionSlidePerformance(self, value, config):

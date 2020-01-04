@@ -28,11 +28,18 @@ class Exporter(object):
 
         :return:
         """
-        ignored = []
+        powersave_ignored = []
+        performance_ignored = []
         for device in service.cores():
-            if int(config.get('usb.managed.{}'.format(device.code), 1)):
+            value_ignored = config.get('usb.permanent.{}'.format(device.code), 0)
+            if not int(value_ignored):
                 continue
-            ignored.append(device.path)
+            if int(value_ignored) == 1:
+                performance_ignored.append(device.path)
+                continue
+            if int(value_ignored) == 2:
+                powersave_ignored.append(device.path)
+                continue
 
         performance = Template(open('templates/usb.tpl', 'r').read())
         powersave = Template(open('templates/usb.tpl', 'r').read())
@@ -43,14 +50,14 @@ class Exporter(object):
                 power_control=config.get('usb.performance.power_control', 'on'),
                 autosuspend_delay=config.get('usb.performance.autosuspend_delay', '-1'),
                 autosuspend=config.get('usb.performance.autosuspend', '-1'),
-                ignored="'{}'".format("','".join(ignored))
+                ignored="'{}'".format("','".join(performance_ignored))
             )),
             (self.name_powersave, powersave.substitute(
                 power_level=config.get('usb.powersave.power_level', 'auto'),
                 power_control=config.get('usb.powersave.power_control', 'auto'),
                 autosuspend_delay=config.get('usb.powersave.autosuspend_delay', '500'),
                 autosuspend=config.get('usb.powersave.autosuspend', '500'),
-                ignored="'{}'".format("','".join(ignored))
+                ignored="'{}'".format("','".join(powersave_ignored))
             ))
         )
 

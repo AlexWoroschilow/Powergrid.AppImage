@@ -30,11 +30,18 @@ class Exporter(object):
         """
         service
 
-        ignored = []
+        powersave_ignored = []
+        performance_ignored = []
         for device in service.cores():
-            if int(config.get('cpu.managed.{}'.format(device.code), 1)):
+            value_ignored = config.get('cpu.permanent.{}'.format(device.code), 0)
+            if not int(value_ignored):
                 continue
-            ignored.append(device.path)
+            if int(value_ignored) == 1:
+                performance_ignored.append(device.path)
+                continue
+            if int(value_ignored) == 2:
+                powersave_ignored.append(device.path)
+                continue
 
         performance = Template(open('templates/cpu.tpl', 'r').read())
         powersave = Template(open('templates/cpu.tpl', 'r').read())
@@ -42,11 +49,11 @@ class Exporter(object):
         return (
             (self.path_performance, performance.substitute(
                 schema=config.get('cpu.performance', 'ondemand'),
-                ignored="'{}'".format("','".join(ignored))
+                ignored="'{}'".format("','".join(performance_ignored))
             )),
             (self.path_powersave, powersave.substitute(
                 schema=config.get('cpu.powersave', 'powersave'),
-                ignored="'{}'".format("','".join(ignored))
+                ignored="'{}'".format("','".join(powersave_ignored))
             ))
         )
 

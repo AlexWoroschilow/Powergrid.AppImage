@@ -43,19 +43,26 @@ class Loader(object):
             Finder, path='/sys/bus/usb/devices'
         ))
 
-    @inject.params(container_dashboard='container.dashboard', container_exporter='container.exporter')
-    def boot(self, options=None, args=None, container_dashboard=None, container_exporter=None):
+    @inject.params(performance='container.dashboard.performance', powersave='container.dashboard.powersave',
+                   devices='container.dashboard.devices', container_exporter='container.exporter')
+    def boot(self, options=None, args=None, performance=None, powersave=None, devices=None,
+             container_exporter=None):
         """
         Define the services and setup the service-container
         :param options:
         :param args:
-        :param container_dashboard:
+        :param performance:
         :param container_exporter:
         :return:
         """
+        from .gui.settings.settings import DashboardSettingsPerformance
+        performance.append(DashboardSettingsPerformance, 0)
 
-        from .gui.dashboard.widget import DashboardWidget
-        container_dashboard.append(DashboardWidget, 60)
+        from .gui.settings.settings import DashboardSettingsPowersave
+        powersave.append(DashboardSettingsPowersave, 0)
+
+        from .gui.devices.properties import DashboardProperties
+        devices.append(DashboardProperties, 0)
 
         from .exporter import Exporter
         container_exporter.append(Exporter(options, args), 0)

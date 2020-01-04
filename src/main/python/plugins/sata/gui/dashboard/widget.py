@@ -37,13 +37,6 @@ class DashboardWidget(QtWidgets.QFrame):
         self.layout().addWidget(DashboardTitle('Serial ATA'), 0, 0, 1, 9)
         self.layout().addWidget(DashboardImage('icons/sata'), 1, 0)
         self.layout().addWidget(DashboardSettings(), 1, 1, 1, 9)
-        self.layout().addWidget(DashboardDescription(), 2, 0, 1, 10)
-        self.layout().addWidget(DashboardProperties(), 3, 0, 1, 10)
+        self.layout().addWidget(DashboardProperties(), 2, 0, 1, 10)
+        self.layout().addWidget(DashboardDescription(), 3, 0, 1, 10)
 
-        self.link = DashboardButtonFlat("icons/linux", ' kernel.org')
-        self.link.clicked.connect(self.linkClickedEvent)
-
-        self.layout().addWidget(self.link, 0, 9)
-
-    def linkClickedEvent(self, event):
-        return webbrowser.open('https://www.kernel.org/doc/Documentation/scsi/link_power_management_policy.txt')

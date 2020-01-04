@@ -28,11 +28,18 @@ class Exporter(object):
 
         :return:
         """
-        ignored = []
+        powersave_ignored = []
+        performance_ignored = []
         for device in service.cores():
-            if int(config.get('sata.managed.{}'.format(device.code), 1)):
+            value_ignored = config.get('sata.permanent.{}'.format(device.code), 0)
+            if not int(value_ignored):
                 continue
-            ignored.append(device.path)
+            if int(value_ignored) == 1:
+                performance_ignored.append(device.path)
+                continue
+            if int(value_ignored) == 2:
+                powersave_ignored.append(device.path)
+                continue
 
         performance = Template(open('templates/sata.tpl', 'r').read())
         powersave = Template(open('templates/sata.tpl', 'r').read())
@@ -40,11 +47,11 @@ class Exporter(object):
         return (
             (self.path_performance, performance.substitute(
                 schema=config.get('sata.performance', 'max_performance'),
-                ignored="'{}'".format("','".join(ignored))
+                ignored="'{}'".format("','".join(performance_ignored))
             )),
             (self.path_powersave, powersave.substitute(
                 schema=config.get('sata.powersave', 'min_power'),
-                ignored="'{}'".format("','".join(ignored))
+                ignored="'{}'".format("','".join(powersave_ignored))
             ))
         )
 

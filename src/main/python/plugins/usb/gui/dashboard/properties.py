@@ -49,7 +49,6 @@ class DashboardPropertiesDevice(QtWidgets.QWidget):
         self.layout().addWidget(DashboardPropertiesDeviceValue(device), 0, 0)
 
         self.checkbox = QtWidgets.QCheckBox(device.name)
-        self.checkbox.setChecked(int(config.get('usb.managed.{}'.format(self.device.code), 1)))
         self.checkbox.stateChanged.connect(self.toggleDeviceEvent)
 
         self.layout().addWidget(self.checkbox, 0, 1)
@@ -57,7 +56,6 @@ class DashboardPropertiesDevice(QtWidgets.QWidget):
     @inject.params(config='config')
     def toggleDeviceEvent(self, value, config):
         self.toggleDeviceAction.emit((value, self.device))
-        config.set('usb.managed.{}'.format(self.device.code), int(value != 0))
 
 
 class DashboardProperties(QtWidgets.QFrame):

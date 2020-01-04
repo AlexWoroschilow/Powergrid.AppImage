@@ -38,13 +38,9 @@ class DashboardWidget(QtWidgets.QFrame):
         self.layout().addWidget(DashboardTitle('Inter-Integrated Circuit'), 0, 0, 1, 9)
         self.layout().addWidget(DashboardImage('icons/i2c'), 1, 0)
         self.layout().addWidget(DashboardSettings(), 1, 1, 1, 9)
-        self.layout().addWidget(DashboardDescription(), 2, 0, 1, 10)
-        self.layout().addWidget(DashboardProperties(), 3, 0, 1, 10)
+        self.layout().addWidget(DashboardProperties(), 2, 0, 1, 10)
+        self.layout().addWidget(DashboardDescription(), 3, 0, 1, 10)
 
-        self.link = DashboardButtonFlat("icons/linux", ' kernel.org')
-        self.link.clicked.connect(self.linkClickedEvent)
-
-        self.layout().addWidget(self.link, 0, 9)
 
     def linkClickedEvent(self, event):
         return webbrowser.open('https://www.kernel.org/doc/html/v4.12/driver-api/pm/devices.html')

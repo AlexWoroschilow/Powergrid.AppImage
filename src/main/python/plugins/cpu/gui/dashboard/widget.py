@@ -16,9 +16,8 @@ import cpuinfo
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
-from .label import DashboardImage
 from .label import DashboardTitle
-
+from .statistic import DashboardImage
 from .button import DashboardButtonFlat
 from .settings import DashboardSettings
 from .text import DashboardDescription
@@ -37,18 +36,6 @@ class DashboardWidget(QtWidgets.QFrame):
         self.layout().setAlignment(Qt.AlignCenter | Qt.AlignTop)
         self.layout().setContentsMargins(0, 0, 0, 0)
 
-        self.layout().addWidget(DashboardTitle(self.title), 0, 0, 1, 10)
-        self.layout().addWidget(DashboardImage(), 1, 0, 1, 10)
         self.layout().addWidget(DashboardProperties(), 2, 0, 1, 10)
         self.layout().addWidget(DashboardSettings(), 3, 0, 1, 10)
         self.layout().addWidget(DashboardDescription(), 4, 0, 1, 10)
-
-    @property
-    def title(self):
-        cpu = cpuinfo.get_cpu_info()
-        if len(cpu) and 'brand' in cpu:
-            return cpu['brand']
-        return "Unknown CPU"
-
-    def linkClickedEvent(self, event):
-        return webbrowser.open('https://www.kernel.org/doc/html/v4.16/admin-guide/pm/cpufreq.html')

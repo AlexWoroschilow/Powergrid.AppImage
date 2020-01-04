@@ -36,13 +36,8 @@ class DashboardWidget(QtWidgets.QFrame):
         self.layout().addWidget(DashboardTitle('Peripheral Component Interconnect'), 0, 0, 1, 9)
         self.layout().addWidget(DashboardImage('icons/pci'), 1, 0)
         self.layout().addWidget(DashboardSettings(), 1, 1, 1, 9)
-        self.layout().addWidget(DashboardProperties(), 3, 0, 1, 10)
-        self.layout().addWidget(DashboardDescription(), 2, 0, 1, 10)
-
-        self.link = DashboardButtonFlat("icons/linux", ' kernel.org')
-        self.link.clicked.connect(self.linkClickedEvent)
-
-        self.layout().addWidget(self.link, 0, 9)
+        self.layout().addWidget(DashboardProperties(), 2, 0, 1, 10)
+        self.layout().addWidget(DashboardDescription(), 3, 0, 1, 10)
 
     def linkClickedEvent(self, event):
         return webbrowser.open('https://www.kernel.org/doc/html/latest/power/pci.html')
