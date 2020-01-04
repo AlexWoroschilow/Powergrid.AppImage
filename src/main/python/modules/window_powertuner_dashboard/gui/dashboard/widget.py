@@ -16,6 +16,9 @@ from PyQt5.QtCore import Qt
 from .label import DashboardTitle
 from .statistic import DashboardImage
 from .text import DashboardDescription
+from .text import DashboardDescriptionACAdapter
+from .text import DashboardDescriptionBattery
+
 from .settings import DashboardSettingsPerformance
 from .settings import DashboardSettingsPowersave
 from .settings import DashboardSettingsDevices
@@ -37,11 +40,11 @@ class DashboardWidget(QtWidgets.QWidget):
         self.layout().addWidget(DashboardImage())
 
         self.layout().addWidget(DashboardTitle("AC- Adapter"))
-        self.layout().addWidget(DashboardDescription())
+        self.layout().addWidget(DashboardDescriptionACAdapter())
         self.layout().addWidget(DashboardSettingsPerformance())
 
         self.layout().addWidget(DashboardTitle("Battery"))
-        self.layout().addWidget(DashboardDescription())
+        self.layout().addWidget(DashboardDescriptionBattery())
         self.layout().addWidget(DashboardSettingsPowersave())
 
         self.layout().addWidget(DashboardTitle("Device management"))

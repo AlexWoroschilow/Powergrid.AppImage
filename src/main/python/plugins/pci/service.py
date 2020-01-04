@@ -26,29 +26,29 @@ class Device(object):
 
     @property
     def power_control(self):
-        power_control = "{}/power/control".format(self.path)
-        if not os.path.exists(power_control):
+        path = "{}/power/control".format(self.path)
+        if not os.path.exists(path):
             return None
 
-        with open(power_control, 'r') as stream:
+        with open(path, 'r') as stream:
             return stream.read().strip("\n")
 
     @property
     def product(self):
-        power_control = "{}/device".format(self.path)
-        if not os.path.exists(power_control):
+        path = "{}/device".format(self.path)
+        if not os.path.exists(path):
             return None
 
-        with open(power_control, 'r') as stream:
+        with open(path, 'r') as stream:
             return stream.read().strip("\n0x")
 
     @property
     def vendor(self):
-        power_control = "{}/vendor".format(self.path)
-        if not os.path.exists(power_control):
+        path = "{}/vendor".format(self.path)
+        if not os.path.exists(path):
             return None
 
-        with open(power_control, 'r') as stream:
+        with open(path, 'r') as stream:
             return stream.read().strip("\n0x")
 
     @property

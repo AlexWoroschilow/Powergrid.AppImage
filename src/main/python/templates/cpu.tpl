@@ -15,15 +15,53 @@ import os
 import sys
 import glob
 
-ignored = [$ignored]
-source = '/sys/devices/system/cpu'
-if not os.path.exists(source): sys.exit()
 
-for device in glob.glob('{}/cpu[0-9]*'.format(source)):
-    if device in ignored:
-        continue
+class Device(object):
+    def __init__(self, path=None):
+        self.path = path
 
-    governor = '{}/cpufreq/scaling_governor'.format(device)
-    if not os.path.exists(governor): continue
-    with open(governor, 'w', errors='ignore') as stream:
-        stream.write('$schema')
+    @property
+    def code(self):
+        return os.path.basename(self.path)
+
+    @property
+    def governor(self):
+        with open("{}/cpufreq/scaling_governor".format(self.path), 'r') as stream:
+            return stream.read().strip("\n")
+
+    @governor.setter
+    def governor(self, value):
+        path = "{}/cpufreq/scaling_governor".format(self.path)
+        if not os.path.exists(path):
+            return None
+
+        with open(path, 'w') as stream:
+            stream.write('{}'.format(value))
+            stream.close()
+
+
+class Finder(object):
+
+    def __init__(self, path=None):
+        self.path = path
+        pass
+
+    def __call__(self, *args, **kwargs):
+        return self
+
+    def devices(self):
+        for path in glob.glob('{}/cpu[0-9]*'.format(self.path)):
+            yield Device(path)
+
+
+if __name__ == "__main__":
+
+    ignored = [$ignored]
+    source = '/sys/devices/system/cpu'
+    assert (os.path.exists(source))
+
+    finder = Finder(source)
+    for device in finder.devices():
+        if device.code in ignored:
+            continue
+        device.governor = '$schema'

@@ -10,6 +10,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+import time
 import inject
 
 from PyQt5.QtCore import Qt
@@ -18,6 +19,41 @@ from PyQt5 import QtCore
 from PyQt5 import QtGui
 from PyQt5 import QtQuick
 import psutil
+
+
+class ThreadScanner(QtCore.QThread):
+    core_temp = QtCore.pyqtSignal(object)
+    core_load = QtCore.pyqtSignal(object)
+    core_freq = QtCore.pyqtSignal(object)
+    core_percent = QtCore.pyqtSignal(object)
+    battery_percent = QtCore.pyqtSignal(object)
+
+    @inject.params(service='plugin.service.cpu')
+    def run(self, service=None):
+        """
+
+        :param service:
+        :return:
+        """
+
+        while True:
+            time.sleep(2)
+
+            collection = [device.load for device in service.cores()]
+            self.core_load.emit(sum(collection) / len(collection))
+
+            collection = [device.frequence for device in service.cores()]
+            self.core_freq.emit(sum(collection) / len(collection))
+
+            temperatures = psutil.sensors_temperatures()
+            collection = [x.current for x in temperatures['coretemp']]
+            self.core_temp.emit(sum(collection) / len(collection))
+
+            percent = psutil.cpu_percent()
+            self.core_percent.emit(percent)
+
+            battery = psutil.sensors_battery()
+            self.battery_percent.emit(battery.percent)
 
 
 class DashboardImage(QtWidgets.QWidget):
@@ -63,32 +99,43 @@ class DashboardImage(QtWidgets.QWidget):
         contianer.setMinimumSize(QtCore.QSize(200, 200))
         self.layout().addWidget(contianer, 0, 21, 20, 20)
 
-        self.timerRefresh = QtCore.QTimer()
-        self.timerRefresh.timeout.connect(self.update_value)
-        self.timerRefresh.start(2000)
+        self.thread = ThreadScanner()
+        self.thread.core_temp.connect(self.update_value_core_temp)
+        self.thread.core_load.connect(self.update_value_core_load)
+        self.thread.core_freq.connect(self.update_value_core_freq)
+        self.thread.core_percent.connect(self.update_value_core_percent)
+        self.thread.battery_percent.connect(self.update_value_battery_percent)
+        self.thread.start()
 
-    @inject.params(service='plugin.service.cpu')
-    def update_value(self, service=None):
-        collection = [device.load for device in service.cores()]
-        gauge = self.chart2.findChild(QtCore.QObject, 'performance')
-        gauge.setProperty('load', sum(collection) / len(collection))
+    def update_value_core_temp(self, value=None):
+        if value is None: return None
 
-        collection = [device.frequence for device in service.cores()]
+        gauge = self.chart1.findChild(QtCore.QObject, 'performance')
+        gauge.setProperty('load', int(value))
+
+    def update_value_core_freq(self, value=None):
+        if value is None: return None
+
         gauge = self.chart2.findChild(QtCore.QObject, 'title')
-        gauge.setProperty('title', "{:.1f} GHz".format(sum(collection) / len(collection) / 1000000))
+        gauge.setProperty('title', "{:.1f} GHz".format(int(value) / 1000000))
 
-        load = psutil.cpu_percent()
+    def update_value_core_load(self, value=None):
+        if value is None: return None
+
+        gauge = self.chart2.findChild(QtCore.QObject, 'performance')
+        gauge.setProperty('load', int(value))
+
+    def update_value_core_percent(self, value=None):
+        if value is None: return None
+
         gauge = self.chart4.findChild(QtCore.QObject, 'performance')
-        gauge.setProperty('load', round(load, 0))
+        gauge.setProperty('load', int(value))
 
         gauge = self.chart4.findChild(QtCore.QObject, 'title')
-        gauge.setProperty('title', "{:.1f} %".format(load))
+        gauge.setProperty('title', "{:.1f} %".format(value))
 
-        battery = psutil.sensors_battery()
+    def update_value_battery_percent(self, value=None):
+        if value is None: return None
+
         gauge = self.chart3.findChild(QtCore.QObject, 'performance')
-        gauge.setProperty('load', battery.percent)
-
-        temperatures = psutil.sensors_temperatures()
-        collection = [x.current for x in temperatures['coretemp']]
-        gauge = self.chart1.findChild(QtCore.QObject, 'performance')
-        gauge.setProperty('load', sum(collection) / len(collection))
+        gauge.setProperty('load', int(value))

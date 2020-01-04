@@ -31,7 +31,7 @@ class CheckboxButton(QtWidgets.QPushButton):
         return self
 
 
-class CheckboxTriState(QtWidgets.QWidget):
+class CheckboxTriState(QtWidgets.QFrame):
     stateChanged = QtCore.pyqtSignal(object)
 
     def __init__(self, values=[], default=0):

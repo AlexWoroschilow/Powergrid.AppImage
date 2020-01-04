@@ -30,15 +30,15 @@ class Exporter(object):
         """
         powersave_ignored = []
         performance_ignored = []
-        for device in service.cores():
+        for device in service.devices():
             value_ignored = config.get('sata.permanent.{}'.format(device.code), 0)
             if not int(value_ignored):
                 continue
             if int(value_ignored) == 1:
-                performance_ignored.append(device.path)
+                performance_ignored.append(device.code)
                 continue
             if int(value_ignored) == 2:
-                powersave_ignored.append(device.path)
+                powersave_ignored.append(device.code)
                 continue
 
         performance = Template(open('templates/sata.tpl', 'r').read())

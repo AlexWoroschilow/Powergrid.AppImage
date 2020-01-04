@@ -15,15 +15,63 @@ import os
 import sys
 import glob
 
-ignored = [$ignored]
-source = '/sys/class/scsi_host/'
-if not os.path.exists(source): sys.exit()
 
-for device in glob.glob('{}/*'.format(source)):
-    if device in ignored:
-        continue
+class Device(object):
+    def __init__(self, path=None):
+        self.path = path
 
-    policy = '{}/link_power_management_policy'.format(device)
-    if not os.path.exists(policy): continue
-    with open(policy, 'w', errors='ignore') as stream:
-        stream.write('$schema')
+    @property
+    def name(self):
+        name = os.path.basename(self.path)
+        return name.capitalize()
+
+    @property
+    def power_control(self):
+        path = "{}/link_power_management_policy".format(self.path)
+        if not os.path.exists(path):
+            return None
+
+        with open(path, 'r') as stream:
+            return stream.read().strip("\n")
+
+    @power_control.setter
+    def power_control(self, value):
+        path = "{}/link_power_management_policy".format(self.path)
+        if not os.path.exists(path):
+            return None
+
+        with open(path, 'w') as stream:
+            stream.write('{}'.format(value))
+            stream.close()
+
+    @property
+    def code(self):
+        return self.name.lower()
+
+
+class Finder(object):
+
+    def __init__(self, path=None):
+        self.path = path
+        pass
+
+    def __call__(self, *args, **kwargs):
+        return self
+
+    def devices(self):
+        for device in glob.glob('{}/*'.format(self.path)):
+            yield Device(device)
+
+
+if __name__ == "__main__":
+
+    ignored = [$ignored]
+    source = '/sys/class/scsi_host'
+    assert (os.path.exists(source))
+
+    finder = Finder(source)
+    for device in finder.devices():
+        if device.code in ignored:
+            continue
+
+        device.power_control = '$schema'

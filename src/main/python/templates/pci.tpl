@@ -15,15 +15,75 @@ import os
 import sys
 import glob
 
-ignored = [$ignored]
-source = '/sys/bus/pci/devices'
-if not os.path.exists(source): sys.exit()
 
-for device in glob.glob('{}/*'.format(source)):
-    if device in ignored:
-        continue
+class Device(object):
+    def __init__(self, path=None):
+        self.path = path
 
-    power_control = '{}/power/control'.format(device)
-    if not os.path.exists(power_control): continue
-    with open(power_control, 'w', errors='ignore') as stream:
-        stream.write('$schema')
+    @property
+    def power_control(self):
+        path = "{}/power/control".format(self.path)
+        if not os.path.exists(path):
+            return None
+
+        with open(path, 'r') as stream:
+            return stream.read().strip("\n")
+
+    @power_control.setter
+    def power_control(self, value):
+        path = "{}/power/control".format(self.path)
+        if not os.path.exists(path):
+            return None
+
+        with open(path, 'w') as stream:
+            stream.write('{}'.format(value))
+            stream.close()
+
+    @property
+    def product(self):
+        path = "{}/device".format(self.path)
+        if not os.path.exists(path):
+            return None
+
+        with open(path, 'r') as stream:
+            return stream.read().strip("\n0x")
+
+    @property
+    def vendor(self):
+        path = "{}/vendor".format(self.path)
+        if not os.path.exists(path):
+            return None
+
+        with open(path, 'r') as stream:
+            return stream.read().strip("\n0x")
+
+    @property
+    def code(self):
+        return "{}{}".format(self.vendor, self.product)
+
+
+class Finder(object):
+
+    def __init__(self, path=None):
+        self.path = path
+        pass
+
+    def __call__(self, *args, **kwargs):
+        return self
+
+    def devices(self):
+        for path in glob.glob('{}/*'.format(self.path)):
+            yield Device(path)
+
+
+if __name__ == "__main__":
+
+    ignored = [$ignored]
+    source = '/sys/bus/pci/devices'
+    assert (os.path.exists(source))
+
+    finder = Finder(source)
+    for device in finder.devices():
+        if device.code in ignored:
+            continue
+        device.power_control = '$schema'

@@ -74,5 +74,5 @@ class DashboardProperties(QtWidgets.QFrame):
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.layout().setAlignment(Qt.AlignCenter | Qt.AlignTop)
 
-        for device in service.cores():
+        for device in service.devices():
             self.layout().addWidget(DashboardPropertiesDevice(device))

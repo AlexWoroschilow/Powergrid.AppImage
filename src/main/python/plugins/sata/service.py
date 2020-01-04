@@ -46,6 +46,6 @@ class Finder(object):
     def __call__(self, *args, **kwargs):
         return self
 
-    def cores(self):
+    def devices(self):
         for device in glob.glob('{}/*'.format(self.path)):
             yield Device(device)

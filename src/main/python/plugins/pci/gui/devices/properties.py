@@ -27,7 +27,6 @@ class DashboardPropertiesDeviceValue(Value):
     def __init__(self, device=None):
         super(DashboardPropertiesDeviceValue, self).__init__('Scheme: <b>unknown</b>, uncheck to ignore ')
         self.setText(" - {}".format(device.name))
-        self.device = device
 
 
 class DashboardPropertiesDevice(QtWidgets.QWidget):
@@ -36,6 +35,7 @@ class DashboardPropertiesDevice(QtWidgets.QWidget):
     @inject.params(config='config')
     def __init__(self, device=None, config=None):
         super(DashboardPropertiesDevice, self).__init__()
+        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.setContentsMargins(0, 0, 0, 0)
 
         self.device = device

@@ -35,10 +35,10 @@ class Exporter(object):
             if not int(value_ignored):
                 continue
             if int(value_ignored) == 1:
-                performance_ignored.append(device.path)
+                performance_ignored.append(device.code)
                 continue
             if int(value_ignored) == 2:
-                powersave_ignored.append(device.path)
+                powersave_ignored.append(device.code)
                 continue
 
         performance = Template(open('templates/pci.tpl', 'r').read())

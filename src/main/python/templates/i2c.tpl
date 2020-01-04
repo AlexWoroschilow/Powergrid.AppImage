@@ -15,15 +15,57 @@ import os
 import sys
 import glob
 
-ignored = [$ignored]
-source = '/sys/bus/i2c/devices'
-if not os.path.exists(source): sys.exit()
 
-for device in glob.glob('{}/i2c-*'.format(source)):
-    if device in ignored:
-        continue
+class Device(object):
+    def __init__(self, path=None):
+        self.path = path
 
-    power_control = '{}/power/control'.format(device)
-    if not os.path.exists(power_control): continue
-    with open(power_control, 'w', errors='ignore') as stream:
-        stream.write('$schema')
+    @property
+    def power_control(self):
+        path = "{}/power/control".format(self.path)
+        if not os.path.exists(path):
+            return None
+
+        with open(path, 'r') as stream:
+            return stream.read().strip("\n")
+
+    @power_control.setter
+    def power_control(self, value):
+        path = "{}/power/control".format(self.path)
+        if not os.path.exists(path):
+            return None
+
+        with open(path, 'w') as stream:
+            stream.write('{}'.format(value))
+            stream.close()
+
+    @property
+    def code(self):
+        return os.path.basename(self.path)
+
+
+class Finder(object):
+
+    def __init__(self, path=None):
+        self.path = path
+        pass
+
+    def __call__(self, *args, **kwargs):
+        return self
+
+    def devices(self):
+        for path in glob.glob('{}/*'.format(self.path)):
+            yield Device(path)
+
+
+if __name__ == "__main__":
+
+    ignored = [$ignored]
+    source = '/sys/bus/i2c/devices'
+    assert (os.path.exists(source))
+
+    finder = Finder(source)
+    for device in finder.devices():
+        if device.code in ignored:
+            continue
+        device.power_control = '$schema'

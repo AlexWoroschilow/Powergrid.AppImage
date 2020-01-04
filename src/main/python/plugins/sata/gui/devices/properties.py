@@ -10,6 +10,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+import time
 import inject
 
 from PyQt5 import QtWidgets
@@ -23,19 +24,39 @@ from .checkbox import CheckboxTriState
 from .text import DashboardDescription
 
 
+class ThreadScanner(QtCore.QThread):
+    status = QtCore.pyqtSignal(object)
+
+    def __init__(self, device):
+        super(ThreadScanner, self).__init__()
+        self.device = device
+
+    @inject.params(service='plugin.service.cpu')
+    def run(self, service=None):
+        """
+
+        :param service:
+        :return:
+        """
+
+        while True:
+            time.sleep(2)
+
+            power_control = self.device.power_control
+            self.status.emit("Not supported" if power_control is None else power_control)
+
+
 class DashboardPropertiesDeviceValue(Value):
     def __init__(self, device=None):
         super(DashboardPropertiesDeviceValue, self).__init__('')
-        self.device = device
+        self.template = " - <b>{}</b>, power control: <b>{{}}</b>".format(device.name)
 
-        self.timerRefresh = QtCore.QTimer()
-        self.timerRefresh.timeout.connect(self.update_text_event)
-        self.timerRefresh.start(1000)
+        self.thread = ThreadScanner(device)
+        self.thread.status.connect(self.status_update_event)
+        self.thread.start()
 
-    def update_text_event(self):
-        self.setText(' - <b>{}</b>, power control: <b>{}</b>'.format(
-            self.device.name.replace('Host', 'Host '), self.device.power_control
-        ))
+    def status_update_event(self, status):
+        return self.setText(self.template.format(status))
 
 
 class DashboardPropertiesDevice(QtWidgets.QWidget):
@@ -44,6 +65,7 @@ class DashboardPropertiesDevice(QtWidgets.QWidget):
     @inject.params(config='config')
     def __init__(self, device=None, config=None):
         super(DashboardPropertiesDevice, self).__init__()
+        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.setContentsMargins(0, 0, 0, 0)
 
         self.device = device
@@ -81,7 +103,7 @@ class DashboardProperties(QtWidgets.QFrame):
         self.layout().addWidget(Title('SATA - devices'))
         self.layout().addWidget(DashboardDescription())
 
-        for device in service.cores():
+        for device in service.devices():
             device_widget = DashboardPropertiesDevice(device)
             device_widget.toggleDeviceAction.connect(self.toggleDeviceAction.emit)
             self.layout().addWidget(device_widget)

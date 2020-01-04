@@ -43,6 +43,7 @@ class DashboardPropertiesDevice(QtWidgets.QWidget):
     @inject.params(config='config')
     def __init__(self, device=None, config=None):
         super(DashboardPropertiesDevice, self).__init__()
+        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.setContentsMargins(0, 0, 0, 0)
 
         self.device = device

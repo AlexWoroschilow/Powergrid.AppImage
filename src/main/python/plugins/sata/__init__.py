@@ -40,7 +40,7 @@ class Loader(object):
         from .service import Finder
 
         binder.bind_to_constructor('plugin.service.sata', functools.partial(
-            Finder, path='/sys/class/scsi_host/'
+            Finder, path='/sys/class/scsi_host'
         ))
 
     @inject.params(performance='container.dashboard.performance', powersave='container.dashboard.powersave',

@@ -15,12 +15,16 @@ DashboardWidget DashboardProperties Field { font-size: 18px; color: #8a8a8a; }
 DashboardWidget DashboardProperties Value { font-size: 12px; margin: 5px 10px 0px 0px; }
 DashboardWidget DashboardProperties Title { font-size: 26px;  }
 DashboardWidget DashboardProperties { margin: 20px 0px 20px 0px; }
-DashboardWidget DashboardTitle { font-size: 32px; }
+DashboardWidget DashboardTitle { font-size: 32px; margin: 25px 0px 0px 0px; }
 DashboardWidget { margin: 0px 0px 0px 0px; }
-
-
 DashboardSettingsPerformance { min-width: 50px; }
 DashboardSettingsPowersave { min-width: 50px; }
+
+
+CheckboxTriState CheckboxButtonPowersave { background-color: #62C106; }
+CheckboxTriState CheckboxButtonPerformance { background-color: #ff0000; }
+CheckboxTriState CheckboxButton { margin: 0px; padding: 5px; }
+CheckboxTriState { margin: 0px; padding: 0px; }
 
 
 QMessageBox { background: #ffffff; }

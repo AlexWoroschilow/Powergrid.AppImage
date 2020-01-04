@@ -32,56 +32,56 @@ class Device(object):
 
     @property
     def power_level(self):
-        power_control = "{}/power/level".format(self.path)
-        if not os.path.exists(power_control):
+        value = "{}/power/level".format(self.path)
+        if not os.path.exists(value):
             return None
 
-        with open(power_control, 'r') as stream:
+        with open(value, 'r') as stream:
             return stream.read().strip("\n")
 
     @property
     def power_control(self):
-        power_control = "{}/power/control".format(self.path)
-        if not os.path.exists(power_control):
+        value = "{}/power/control".format(self.path)
+        if not os.path.exists(value):
             return None
 
-        with open(power_control, 'r') as stream:
+        with open(value, 'r') as stream:
             return stream.read().strip("\n")
 
     @property
     def power_autosuspend(self):
-        power_control = "{}/power/autosuspend".format(self.path)
-        if not os.path.exists(power_control):
+        value = "{}/power/autosuspend".format(self.path)
+        if not os.path.exists(value):
             return None
 
-        with open(power_control, 'r') as stream:
+        with open(value, 'r') as stream:
             return stream.read().strip("\n")
 
     @property
     def power_autosuspend_timeout(self):
-        power_control = "{}/power/autosuspend_delay_ms".format(self.path)
-        if not os.path.exists(power_control):
+        value = "{}/power/autosuspend_delay_ms".format(self.path)
+        if not os.path.exists(value):
             return None
 
-        with open(power_control, 'r') as stream:
+        with open(value, 'r') as stream:
             return stream.read().strip("\n")
 
     @property
     def vendor(self):
-        power_control = "{}/idVendor".format(self.path)
-        if not os.path.exists(power_control):
+        value = "{}/idVendor".format(self.path)
+        if not os.path.exists(value):
             return None
 
-        with open(power_control, 'r') as stream:
+        with open(value, 'r') as stream:
             return stream.read().strip("\n")
 
     @property
     def product(self):
-        power_control = "{}/idProduct".format(self.path)
-        if not os.path.exists(power_control):
+        value = "{}/idProduct".format(self.path)
+        if not os.path.exists(value):
             return None
 
-        with open(power_control, 'r') as stream:
+        with open(value, 'r') as stream:
             return stream.read().strip("\n")
 
     @property
@@ -98,7 +98,7 @@ class Finder(object):
     def __call__(self, *args, **kwargs):
         return self
 
-    def cores(self):
+    def devices(self):
 
         for device in glob.glob('{}/*'.format(self.path)):
 

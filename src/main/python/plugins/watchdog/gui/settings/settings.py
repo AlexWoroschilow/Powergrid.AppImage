@@ -21,7 +21,26 @@ from PyQt5 import QtGui
 from .slider import DashboardSlider
 
 
-class DashboardSettingsPerformance(QtWidgets.QWidget):
+class DashboardSettings(QtWidgets.QWidget):
+    default_performance = None
+    default_powersave = None
+
+    @inject.params(config='config')
+    def __init__(self, config):
+        """
+        The time-out for automatic power-off can be specified via power_save module option of snd-ac97-codec
+        and snd-hda-intel modules. Specify the time-out value in seconds. 0 means to disable the automatic power-saving.
+        The default value of timeout is given via CONFIG_SND_AC97_POWER_SAVE_DEFAULT and CONFIG_SND_HDA_POWER_SAVE_DEFAULT Kconfig options.
+        Setting this to 1 (the minimum value) isn’t recommended because many applications try to reopen the device frequently.
+        10 would be a good choice for normal operations.
+        :param config:
+        """
+        self.default_performance = int(config.get('default.performance.watchdog', 1))
+        self.default_powersave = int(config.get('default.powersave.watchdog', 0))
+        super(DashboardSettings, self).__init__()
+
+
+class DashboardSettingsPerformance(DashboardSettings):
 
     @inject.params(config='config')
     def __init__(self, config):
@@ -33,19 +52,21 @@ class DashboardSettingsPerformance(QtWidgets.QWidget):
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.layout().setAlignment(Qt.AlignCenter)
 
-        value = config.get('watchdog.performance', '1')
-        slider = DashboardSlider('Watchdog', 0 if value == '0' else 1)
+        value = int(config.get('watchdog.performance', self.default_performance))
+        slider = DashboardSlider('Watchdog', 0 if value == self.default_powersave else 1)
         slider.slideAction.connect(self.action_slide)
 
         self.layout().addWidget(slider)
 
     @inject.params(config='config')
-    def action_slide(self, value, config):
-        if value is None: return None
-        config.set('watchdog.performance', '0' if value == 0 else '1')
+    def action_slide(self, slider_state, config):
+        value = self.default_powersave \
+            if slider_state == 0 else \
+            self.default_performance
+        config.set('watchdog.performance', value)
 
 
-class DashboardSettingsPowersave(QtWidgets.QWidget):
+class DashboardSettingsPowersave(DashboardSettings):
 
     @inject.params(config='config')
     def __init__(self, config):
@@ -57,13 +78,15 @@ class DashboardSettingsPowersave(QtWidgets.QWidget):
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.layout().setAlignment(Qt.AlignCenter)
 
-        value = config.get('watchdog.powersave', '0')
-        slider = DashboardSlider('Watchdog', 0 if value == '0' else 1)
+        value = int(config.get('watchdog.powersave', self.default_powersave))
+        slider = DashboardSlider('Watchdog', 0 if value == self.default_powersave else 1)
         slider.slideAction.connect(self.action_slide)
 
         self.layout().addWidget(slider)
 
     @inject.params(config='config')
-    def action_slide(self, value, config):
-        if value is None: return None
-        config.set('watchdog.powersave', '0' if value == 0 else '1')
+    def action_slide(self, slider_state, config):
+        value = self.default_powersave \
+            if slider_state == 0 else \
+            self.default_performance
+        config.set('watchdog.powersave', value)
