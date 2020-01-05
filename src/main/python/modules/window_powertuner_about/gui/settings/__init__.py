@@ -10,14 +10,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import inject
 from PyQt5 import QtWidgets
-from .scroll import SettingsScrollArea
-
-
-class SettingsMenu(QtWidgets.QWidgetAction):
-
-    @inject.params(factory='settings.factory')
-    def __init__(self, parent=None, factory=None):
-        super(SettingsMenu, self).__init__(parent)
-        self.setDefaultWidget(factory.widget)
+from PyQt5.QtCore import Qt
+from PyQt5 import QtCore
+from PyQt5 import QtGui

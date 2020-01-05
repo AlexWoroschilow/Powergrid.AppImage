@@ -21,7 +21,7 @@ class DashboardDescription(QtWidgets.QLabel):
         self.setAlignment(Qt.AlignTop)
         self.setWordWrap(True)
         self.setText("""
-<p>Performance Tuner is a free open source program for the fine-tuning of the energy saving in Linux.</p>
+<p>Performance Tuner is a free open source program for the energy consumption fine-tuning in Linux.</p>
 <p>The graphical interface allows you to configure and generate scripts which will be executed in the background by triggers from udev.</p>
 """)
 

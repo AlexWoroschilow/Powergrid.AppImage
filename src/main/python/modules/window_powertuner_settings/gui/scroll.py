@@ -10,6 +10,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+import inject
 import os
 import platform
 from PyQt5.QtCore import Qt
@@ -19,6 +20,7 @@ from .widget import SettingsWidget
 
 class SettingsScrollArea(QtWidgets.QScrollArea):
 
+    @inject.params(themes='themes')
     def __init__(self, parent=None, themes=None):
         super(SettingsScrollArea, self).__init__(parent)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)

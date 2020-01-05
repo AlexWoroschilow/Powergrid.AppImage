@@ -23,9 +23,9 @@ from .bar import Toolbar
 
 
 class MainWindow(QtWidgets.QMainWindow):
+    settingsAction = QtCore.pyqtSignal(object)
     schema_cleanup = QtCore.pyqtSignal(object)
     schema_apply = QtCore.pyqtSignal(object)
-
     resize_event = QtCore.pyqtSignal(object)
     exit = QtCore.pyqtSignal(object)
 

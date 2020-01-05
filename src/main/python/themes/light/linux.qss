@@ -16,9 +16,19 @@ DashboardWidget DashboardProperties Value { font-size: 12px; margin: 5px 10px 0p
 DashboardWidget DashboardProperties Title { font-size: 26px;  }
 DashboardWidget DashboardProperties { margin: 20px 0px 20px 0px; }
 DashboardWidget DashboardTitle { font-size: 32px; margin: 25px 0px 0px 0px; }
+DashboardWidget DashboardHeader DashboardTitle { margin: 0px; }
+DashboardWidget DashboardHeader { font-size: 32px; }
+
 DashboardWidget { margin: 0px 0px 0px 0px; }
 DashboardSettingsPerformance { min-width: 50px; }
 DashboardSettingsPowersave { min-width: 50px; }
+
+
+SettingsScrollArea SettingsWidget { background: #FFFFFF; padding: 0px; margin: 0px;}
+SettingsScrollArea SettingsWidget PictureButtonFlat { padding: 0px; margin: 0px; text-align: left; }
+SettingsScrollArea SettingsWidget SettingsScrollArea { background: #FFFFFF; }
+SettingsScrollArea SettingsWidget SettingsTitle { text-align: center; font-size: 18px; padding: 5px 0px; }
+SettingsScrollArea { background: #ffffff; }
 
 
 CheckboxTriState CheckboxButtonPowersave { background-color: #62C106; }

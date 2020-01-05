@@ -10,6 +10,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+import inject
 import copy
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
@@ -57,6 +58,7 @@ class ThemeLabel(QtWidgets.QLabel):
 class WidgetSettingsThemes(WidgetSettings):
     theme = QtCore.pyqtSignal(object)
 
+    @inject.params(themes='themes')
     def __init__(self, themes=None):
         super(WidgetSettingsThemes, self).__init__()
 

@@ -23,6 +23,15 @@ class Loader(object):
     def __exit__(self, type, value, traceback):
         pass
 
+    @inject.params(window='window')
+    def __constructor(self, window=None):
+        from .gui.dashboard.widget import DashboardWidget
+
+        widget = DashboardWidget()
+        widget.settingsAction.connect(window.settingsAction.emit)
+
+        return widget
+
     def configure(self, binder, options, args):
         binder.bind_to_constructor('container.dashboard.performance', DashboardContainerHorizontal)
         binder.bind_to_constructor('container.dashboard.powersave', DashboardContainerHorizontal)
@@ -38,8 +47,7 @@ class Loader(object):
         :return:
         """
 
-        from .gui.dashboard.widget import DashboardWidget
-        container_dashboard.append(DashboardWidget, 0)
+        container_dashboard.append(self.__constructor, 0)
 
 
 module = Loader()

@@ -27,17 +27,27 @@ class Loader(object):
     def __exit__(self, type, value, traceback):
         pass
 
+    def _constructor_settings(self):
+        from .gui.settings.themes import WidgetSettingsThemes
+        widget = WidgetSettingsThemes()
+        widget.theme.connect(functools.partial(
+            self.actions.on_action_theme, widget=widget
+        ))
+        return widget
+
     @inject.params(config='config')
     def _constructor_themes(self, config=None):
-        themes_default = config.get('themes.default', 'themes/')
-        themes_custom = config.get('themes.custom', '~/.config/AOD-Dictionary/themes')
-        return ServiceTheme([themes_default, themes_custom])
+        return ServiceTheme([config.get('themes.default', 'themes/')])
 
     def enabled(self, options=None, args=None):
         return options.console is None
 
     def configure(self, binder, options, args):
         binder.bind_to_constructor('themes', self._constructor_themes)
+
+    # @inject.params(factory='settings.factory')
+    # def boot(self, options, args, factory=None):
+    #     factory.addWidget(self._constructor_settings, 128)
 
 
 module = Loader()
