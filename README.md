@@ -1,5 +1,15 @@
-# PerformanceTuner
-is a free open source program for the energy consumption fine-tuning in Linux, inspired by the powertop, and tlp.
+# Performance Tuner
+is a free open source program for the energy consumption fine-tuning in Linux, inspired by the powertop, and tlp. You can setup the performance schema using the gui and apply the stup to the system. 
+
+The program will generate folowing files:
+* `/etc/udev/rules.d/70-performance.rules`
+* `/etc/performance-tuner/performance_*`
+* `/etc/performance-tuner/powersave_*`
+
+According to the power source (AC or Battery) the `/etc/performance-tuner/performance_*` or `/etc/performance-tuner/powersave_` will be started by the udev. 
+
+
+
 
 ### How to run
 To be able to run the programm you will need the python3 and python3-virtualenv installed
