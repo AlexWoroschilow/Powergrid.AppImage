@@ -6,7 +6,7 @@ The program will generate folowing files:
 * `/etc/performance-tuner/performance_*`
 * `/etc/performance-tuner/powersave_*`
 
-According to the power source (AC or Battery) the `/etc/performance-tuner/performance_*` or `/etc/performance-tuner/powersave_` will be started by the udev. 
+According to the power source (AC or Battery) the `/etc/performance-tuner/performance_*` or `/etc/performance-tuner/powersave_` scripts will be started by the udev. 
 
 
 
