@@ -13,7 +13,7 @@ Install required modules:
 Run the programm:
 `python3 -m fbs run`
 
-### How to build AppImage
+### How to build an AppImage
 
 To be able to run the programm you will need the python3 (3.7) and python3-virtualenv installed.
 
