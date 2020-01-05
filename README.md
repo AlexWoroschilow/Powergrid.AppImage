@@ -1,16 +1,17 @@
 # Performance Tuner (prototype)
 The performance tuner is a free open source program for the energy consumption fine-tuning in Linux, inspired by the powertop, and tlp. You can setup the performance schema using the gui and apply the setup to the system. 
 
-This is a fully functional prototype and MVP how i see it.
-
-You use it at your own risk still any feedback will be highly appreciated.
-
 The program will generate folowing files:
 * `/etc/udev/rules.d/70-performance.rules`
 * `/etc/performance-tuner/performance_*`
 * `/etc/performance-tuner/powersave_*`
 
 According to the power source (AC or Battery) the `/etc/performance-tuner/performance_*` or `/etc/performance-tuner/powersave_` scripts will be started by the udev. 
+
+
+This is a fully functional prototype and MVP how i see it.
+
+You use it at your own risk still any feedback will be highly appreciated.
 
 
 
