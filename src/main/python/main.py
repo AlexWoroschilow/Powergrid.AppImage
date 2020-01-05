@@ -28,6 +28,7 @@ from PyQt5 import QtQuick
 from PyQt5.QtCore import Qt
 from importlib import util
 import cpuinfo
+import psutil
 
 try:
     from fbs_runtime.application_context.PyQt5 import ApplicationContext

@@ -38,7 +38,7 @@ class DashboardSettings(QtWidgets.QWidget):
         """
         self.default_performance = config.get('default.performance.sata', 'max_performance')
         self.default_balanced = config.get('default.balanced.sata', 'medium_power')
-        self.default_powersave = config.get('default.powersave.sata', 'min_power')
+        self.default_powersave = config.get('default.powersave.sata', 'med_power_with_dipm')
 
         self.default_hashmap = {
             0: self.default_powersave,
