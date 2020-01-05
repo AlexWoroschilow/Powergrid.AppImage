@@ -1,7 +1,7 @@
 # PerformanceTuner
 is a free open source program for the energy consumption fine-tuning in Linux, inspired by the powertop, and tlp.
 
-## How to run
+### How to run
 To be able to run the programm you will need the python3 and python3-virtualenv installed
 
 Activate python virtual environment:
@@ -13,7 +13,7 @@ Install required modules:
 Run the programm:
 `python3 -m fbs run`
 
-## How to build AppImage
+### How to build AppImage
 
 To be able to run the programm you will need the python3 (3.7) and python3-virtualenv installed.
 
