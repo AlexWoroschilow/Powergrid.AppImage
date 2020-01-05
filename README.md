@@ -28,4 +28,7 @@ Run the program:
 
 
 
-![alt text](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/dashboard.png?raw=true)
+![Dashboard](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/dashboard.png?raw=true)
+
+![Device management](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices.png?raw=true)
+
