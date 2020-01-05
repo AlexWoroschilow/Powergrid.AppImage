@@ -17,9 +17,6 @@ Run the programm:
 
 To be able to run the programm you will need the python3 (3.7) and python3-virtualenv installed.
 
-Activate python virtual environment:
-`source venv/bin/activate`
-
 Install required modules:
 `python3 -m pip install -r ./requirements.txt`
 
