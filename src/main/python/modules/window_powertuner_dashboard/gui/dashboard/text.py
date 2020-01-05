@@ -26,31 +26,27 @@ class DashboardDescription(QtWidgets.QLabel):
 """)
 
 
+class DashboardDescriptionDeviceManagement(DashboardDescription):
+
+    def __init__(self):
+        super(DashboardDescriptionDeviceManagement, self).__init__()
+        self.setAlignment(Qt.AlignTop)
+        self.setWordWrap(True)
+        self.setText("""<p>Using these settings, you can force the power-saving or performance mode to be enabled.</p>
+<p>Please note that according to the architecture of the program, the selected power-mode will be applied at the moment of switching of the power supply. 
+The selected mode <b>will not be turned on immediately</b>, but the device will be <b>ignored when switching</b> to the opposite mode.</p>
+""")
+
+
 class DashboardDescriptionACAdapter(DashboardDescription):
 
     def __init__(self):
         super(DashboardDescriptionACAdapter, self).__init__()
         self.setAlignment(Qt.AlignTop)
         self.setWordWrap(True)
-        self.setText("""
-<p><b>CPU</b> - frequencies can be scaled automatically depending on the system load, in response to ACPI events, or manually by userspace programs.</p>
-<h3>HDA</h3>
-<p></p>
-<h3>I2C</h3>
-<p></p>
-<h3>Laptop</h3>
-<p></p>
-<h3>PCI</h3>
-<p></p>
-<h3>SATA</h3>
-<p></p>
-<h3>USB</h3>
-<p></p>
-<h3>Watchdog</h3>
-<p></p>
-<h3>Writeback</h3>
-<p></p>
-""")
+        self.setText("""<p>These settings will be applied when powered from the AC-Adapter. Settings will be applied only 
+once during the switch of the power source. After that, you can change the settings <b>manually</b> or with the help of the <b>powertop</b>. 
+These changes will work until the next switching of the power supply</p>""")
 
 
 class DashboardDescriptionBattery(DashboardDescription):
@@ -59,26 +55,9 @@ class DashboardDescriptionBattery(DashboardDescription):
         super(DashboardDescriptionBattery, self).__init__()
         self.setAlignment(Qt.AlignTop)
         self.setWordWrap(True)
-        self.setText("""
-<h3>CPU<h3>
-<p></p>
-<h3>HDA<h3>
-<p></p>
-<h3>I2C<h3>
-<p></p>
-<h3>Laptop<h3>
-<p></p>
-<h3>PCI<h3>
-<p></p>
-<h3>SATA<h3>
-<p></p>
-<h3>USB<h3>
-<p></p>
-<h3>Watchdog<h3>
-<p></p>
-<h3>Writeback<h3>
-<p></p>        
-""")
+        self.setText("""<p>These settings will be applied when powered from the Battery. Settings will be applied only 
+once during the switch of the power source. After that, you can change the settings <b>manually</b> or with the help of the <b>powertop</b>. 
+These changes will work until the next switching of the power supply</p>""")
 
 
 class DashboardDescriptionPerformance(DashboardDescription):

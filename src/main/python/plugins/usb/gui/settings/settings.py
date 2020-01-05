@@ -63,7 +63,7 @@ class DashboardSettingsPerformance(DashboardSettings):
         self.layout().setAlignment(Qt.AlignCenter)
 
         value = config.get('usb.performance', self.default_performance)
-        slider = DashboardSlider('USB', int(value == self.default_powersave))
+        slider = DashboardSlider('USB', int(value == self.default_performance))
         slider.slideAction.connect(self.action_slide)
 
         self.layout().addWidget(slider)
@@ -104,7 +104,7 @@ class DashboardSettingsPowersave(DashboardSettings):
         self.layout().setAlignment(Qt.AlignCenter)
 
         value = config.get('usb.powersave', self.default_powersave)
-        slider = DashboardSlider('USB', int(value == self.default_powersave))
+        slider = DashboardSlider('USB', int(value == self.default_performance))
         slider.slideAction.connect(self.action_slide)
 
         self.layout().addWidget(slider)

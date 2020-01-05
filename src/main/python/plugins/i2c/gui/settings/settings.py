@@ -53,7 +53,7 @@ class DashboardSettingsPerformance(DashboardSettings):
         self.layout().setAlignment(Qt.AlignCenter)
 
         value = config.get('i2c.performance', self.default_performance)
-        slider = DashboardSlider('I2C', 0 if value == self.default_powersave else 1)
+        slider = DashboardSlider('I2C', int(value == self.default_performance))
         slider.slideAction.connect(self.action_slide)
 
         self.layout().addWidget(slider)
@@ -79,7 +79,7 @@ class DashboardSettingsPowersave(DashboardSettings):
         self.layout().setAlignment(Qt.AlignCenter)
 
         value = config.get('i2c.powersave', self.default_powersave)
-        slider = DashboardSlider('I2C', 0 if value == self.default_powersave else 1)
+        slider = DashboardSlider('I2C', int(value == self.default_performance))
         slider.slideAction.connect(self.action_slide)
 
         self.layout().addWidget(slider)

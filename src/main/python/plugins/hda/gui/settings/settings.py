@@ -57,7 +57,7 @@ class DashboardSettingsPerformance(DashboardSettings):
         self.setContentsMargins(0, 0, 0, 0)
 
         value = int(config.get('hda.performance', self.default_performance))
-        slider = DashboardSlider('HDA', 0 if value == self.default_powersave else 1)
+        slider = DashboardSlider('HDA', int(value == self.default_performance))
         slider.slideAction.connect(self.action_slide)
 
         self.setLayout(QtWidgets.QVBoxLayout())
@@ -90,7 +90,7 @@ class DashboardSettingsPowersave(DashboardSettings):
         self.setContentsMargins(0, 0, 0, 0)
 
         value = int(config.get('hda.powersave', self.default_powersave))
-        slider = DashboardSlider('HDA', 0 if value == self.default_powersave else 1)
+        slider = DashboardSlider('HDA', int(value == self.default_performance))
         slider.slideAction.connect(self.action_slide)
 
         self.setLayout(QtWidgets.QVBoxLayout())

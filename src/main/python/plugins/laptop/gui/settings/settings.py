@@ -53,7 +53,7 @@ class DashboardSettingsPerformance(DashboardSettings):
         self.layout().setAlignment(Qt.AlignCenter)
 
         value = int(config.get('laptop.performance', self.default_performance))
-        slider = DashboardSlider('Laptop', 0 if value == self.default_powersave else 1)
+        slider = DashboardSlider('Laptop', int(value == self.default_performance))
         slider.slideAction.connect(self.action_slide)
 
         self.layout().addWidget(slider)
@@ -79,7 +79,7 @@ class DashboardSettingsPowersave(DashboardSettings):
         self.layout().setAlignment(Qt.AlignCenter)
 
         value = int(config.get('laptop.powersave', self.default_powersave))
-        slider = DashboardSlider('Laptop', 0 if value == self.default_powersave else 1)
+        slider = DashboardSlider('Laptop', int(value == self.default_performance))
         slider.slideAction.connect(self.action_slide)
 
         self.layout().addWidget(slider)
