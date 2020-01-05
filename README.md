@@ -3,7 +3,7 @@ The performance tuner is a free open source program for the energy consumption f
 
 This is a fully functional prototype and MVP how i see it.
 
-You use it at your own risk.
+You use it at your own risk still any feedback will be highly appreciated.
 
 The program will generate folowing files:
 * `/etc/udev/rules.d/70-performance.rules`
