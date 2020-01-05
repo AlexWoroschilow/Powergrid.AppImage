@@ -1,5 +1,5 @@
 # Performance Tuner (prototype)
-The performance tuner is a free open source program for the energy consumption fine-tuning in Linux, inspired by the powertop, and tlp. You can setup the performance schema using the gui and apply the stup to the system. 
+The performance tuner is a free open source program for the energy consumption fine-tuning in Linux, inspired by the powertop, and tlp. You can setup the performance schema using the gui and apply the setup to the system. 
 
 This is a fully functional prototype and MVP how i see it.
 
