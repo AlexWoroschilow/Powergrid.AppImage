@@ -1,0 +1,8 @@
+.idea
+__pycache__
+AppDir/opt
+AppDir/venv
+venv
+*.pyc
+**.pyc
+*/**.pyc
