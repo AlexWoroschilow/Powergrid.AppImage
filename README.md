@@ -29,7 +29,7 @@ Run the programm:
 
 ### How to build an AppImage
 
-To be able to run the programm you will need the python3 (3.7) and python3-virtualenv installed.
+To be able to run the programm you will need the python3 and python3-virtualenv installed.
 
 Build appimage:
 `make`
