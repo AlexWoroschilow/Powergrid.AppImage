@@ -1,5 +1,3 @@
-#! /usr/bin/python3
-#
 # -*- coding: utf-8 -*-
 # Copyright 2015 Alex Woroschilow (alex.woroschilow@gmail.com)
 #
@@ -14,26 +12,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
 import sys
-import logging
-import optparse
 import inject
-import glob
-import configparser
-import importlib
-import mmap
-from PyQt5 import QtCore
-from PyQt5 import QtWidgets
-from PyQt5 import QtGui
-from PyQt5 import QtQuick
-from PyQt5.QtCore import Qt
+import optparse
+import logging
 from importlib import util
-import cpuinfo
-import psutil
 
-try:
-    from fbs_runtime.application_context.PyQt5 import ApplicationContext
-except ImportError:
-    from fbs_runtime.application_context import ApplicationContext
+from PyQt5 import QtWidgets
 
 abspath = os.path.abspath(__file__)
 os.chdir(os.path.dirname(abspath))
@@ -42,20 +26,28 @@ sys.path.append(os.path.join(os.getcwd(), 'lib'))
 sys.path.append(os.path.join(os.getcwd(), 'modules'))
 sys.path.append(os.path.join(os.getcwd(), 'plugins'))
 
-from lib.kernel import Kernel
 
+class Application(QtWidgets.QApplication):
+    kernel = None
 
-class ApplicationContainer(ApplicationContext):
+    def __init__(self, options=None, args=None):
+        super(Application, self).__init__(sys.argv)
+        self.setApplicationName('Performance Tuner')
 
-    def run(self, options=None, args=None):
-        self.app.setAttribute(Qt.AA_ShareOpenGLContexts)
-
-        spec = util.find_spec('application')
+        spec = util.find_spec('lib.kernel')
         module = spec.loader.load_module()
-
         if module is None: return None
 
-        return module.Application(options, args).exec_()
+        self.kernel = module.Kernel(options, args)
+
+    @inject.params(window='window')
+    def exec_(self, window=None):
+        if window is None: return None
+
+        window.exit.connect(self.exit)
+        window.show()
+
+        return super(Application, self).exec_()
 
 
 if __name__ == "__main__":
@@ -64,14 +56,12 @@ if __name__ == "__main__":
     logfile = os.path.expanduser('~/.config/AOD-PowerTuner/default.log')
     parser.add_option("--logfile", default=logfile, dest="logfile", help="Logfile location")
     parser.add_option("--loglevel", default=logging.DEBUG, dest="loglevel", help="Logging level")
-
     configfile = os.path.expanduser('~/.config/AOD-PowerTuner/default.conf')
     parser.add_option("--config", default=configfile, dest="config", help="Config file location")
-
     (options, args) = parser.parse_args()
 
     log_format = '[%(relativeCreated)d][%(name)s] %(levelname)s - %(message)s'
     logging.basicConfig(level=options.loglevel, format=log_format)
 
-    application = ApplicationContainer()
-    sys.exit(application.run(options, args))
+    application = Application(options, args)
+    sys.exit(application.exec_())
