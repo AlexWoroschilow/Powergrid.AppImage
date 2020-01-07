@@ -15,25 +15,21 @@ You use it at your own risk still any feedback will be highly appreciated.
 
 
 
-
 ### How to run
 To be able to run the programm you will need the python3 and python3-virtualenv installed
+
+Install required modules:
+`make init`
 
 Activate python virtual environment:
 `source venv/bin/activate`
 
-Install required modules:
-`python3 -m pip install -r ./requirements.txt`
-
 Run the programm:
-`python3 -m fbs run`
+`python3 src/main.py`
 
 ### How to build an AppImage
 
-To be able to run the programm you will need the python3 (3.7) and python3-virtualenv installed.
-
-Install required modules:
-`python3 -m pip install -r ./requirements.txt`
+To be able to run the programm you will need the python3 and python3-virtualenv installed.
 
 Build appimage:
 `make`
