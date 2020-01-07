@@ -9,7 +9,3 @@ venv
 *.qmlc
 **.qmlc
 */**.qmlc
-!/src/charts/gauge-left-side.qmlc
-!/src/charts/gauge-right-side.qmlc
-!/src/charts/gauge-right.qmlc
-!/src/charts/gauge-left.qmlc
