@@ -22,7 +22,7 @@ appimage: clean
 	cp -r ./src/themes $(APPDIR_APPLICATION)
 	cp ./src/main.py $(APPDIR_APPLICATION)
 	bin/appimagetool-x86_64.AppImage  ./AppDir bin/AOD-PerformanceTuner.AppImage
-	@echo "done: bin/dicis-server.AppImage"
+	@echo "done: bin/AOD-PerformanceTuner.AppImage"
 
 clean:
 	rm -rf ${APPDIR}/venv
