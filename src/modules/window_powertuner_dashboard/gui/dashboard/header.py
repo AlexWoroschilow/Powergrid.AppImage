@@ -10,6 +10,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+import os
 import inject
 
 from PyQt5.QtCore import Qt
@@ -30,7 +31,8 @@ class DashboardHeader(QtWidgets.QWidget):
         self.setLayout(QtWidgets.QGridLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
 
-        title = DashboardTitle("Performance tuner")
+        title = DashboardTitle("{} {}".format("Performance tuner", "" \
+            if not os.path.exists('/etc/performance-tuner') else u"\u2611"))
 
         button = PictureButtonFlat("icons/icons")
         button.clicked.connect(self.settingsAction.emit)
