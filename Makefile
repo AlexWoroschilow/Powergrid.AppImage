@@ -2,11 +2,17 @@ SHELL := /usr/bin/bash
 APPDIR := ./AppDir
 APPDIR_APPLICATION := ${APPDIR}/opt/application
 GLIBC_VERSION := $(shell getconf GNU_LIBC_VERSION | sed 's/ /-/g' )
+PWD := $(shell pwd)
 
 all: init appimage clean
 
 init:
-	ls -lah venv || (python3 -m venv --copies venv && source venv/bin/activate && python3 -m pip install -r ./requirements.txt)
+	rm -rf $(PWD)/builds/python
+	exec scripts/install-python-3.6.sh $(PWD)/builds/python
+	rm -rf venv
+	builds/python/bin/python3 -m venv --copies venv
+	source venv/bin/activate && python3 -m pip install -r ./requirements.txt
+
 
 appimage: clean
 	rm -rf ${APPDIR}/venv
