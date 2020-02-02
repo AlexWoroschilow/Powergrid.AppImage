@@ -4,7 +4,6 @@ set -ex
 
 PYTHON=`which python3`
 
-
 VIRTUAL_ENV=${APPDIR}/venv
 export VIRTUAL_ENV
 
