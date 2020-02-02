@@ -19,12 +19,10 @@ from importlib import util
 
 from PyQt5 import QtWidgets
 
-abspath = os.path.abspath(__file__)
+abspath = sys.argv[0] \
+    if len(sys.argv) else \
+    os.path.abspath(__file__)
 os.chdir(os.path.dirname(abspath))
-
-sys.path.append(os.path.join(os.getcwd(), 'lib'))
-sys.path.append(os.path.join(os.getcwd(), 'modules'))
-sys.path.append(os.path.join(os.getcwd(), 'plugins'))
 
 
 class Application(QtWidgets.QApplication):
@@ -43,10 +41,11 @@ class Application(QtWidgets.QApplication):
     @inject.params(window='window')
     def exec_(self, window=None):
         if window is None: return None
+        self.setActiveWindow(window)
 
         window.exit.connect(self.exit)
         window.show()
-
+        
         return super(Application, self).exec_()
 
 

@@ -7,11 +7,9 @@ PWD := $(shell pwd)
 all: init appimage clean
 
 init:
-	rm -rf $(PWD)/builds/python
-	exec scripts/install-python-3.6.sh $(PWD)/builds/python
-	rm -rf venv
-	builds/python/bin/python3 -m venv --copies venv
-	source venv/bin/activate && python3 -m pip install -r ./requirements.txt
+	rm -rf $(PWD)/venv
+	python3 -m venv --copies $(PWD)/venv
+	source $(PWD)/venv/bin/activate && python3 -m pip install -r $(PWD)/requirements.txt
 
 
 appimage: clean
