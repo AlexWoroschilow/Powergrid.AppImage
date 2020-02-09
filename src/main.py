@@ -15,9 +15,20 @@ import sys
 import inject
 import optparse
 import logging
+import mmap
+import PyQt5
+import webbrowser
+import cpuinfo
+import configparser
+import psutil
+
 from importlib import util
 
+from PyQt5.QtCore import Qt
 from PyQt5 import QtWidgets
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtQuick
 
 abspath = sys.argv[0] \
     if len(sys.argv) else \
@@ -45,7 +56,7 @@ class Application(QtWidgets.QApplication):
 
         window.exit.connect(self.exit)
         window.show()
-        
+
         return super(Application, self).exec_()
 
 

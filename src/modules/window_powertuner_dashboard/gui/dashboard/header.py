@@ -37,5 +37,5 @@ class DashboardHeader(QtWidgets.QWidget):
         button = PictureButtonFlat("icons/icons")
         button.clicked.connect(self.settingsAction.emit)
 
-        self.layout().addWidget(title, 0, 0, 1, 9)
-        self.layout().addWidget(button, 0, 10, 1, 1)
+        self.layout().addWidget(title, 0, 0, 1, 2)
+        self.layout().addWidget(button, 0, 3, 1, 1)

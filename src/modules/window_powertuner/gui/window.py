@@ -51,7 +51,6 @@ class MainWindow(QtWidgets.QMainWindow):
     @inject.params(container='container.dashboard')
     def show(self, container=None):
         self.content.layout().addWidget(container.widget)
-
         self.content.layout().addWidget(self.toolbar)
 
         super(MainWindow, self).show()

@@ -1,6 +1,5 @@
 SHELL := /usr/bin/bash
 APPDIR := ./AppDir
-APPDIR_APPLICATION := ${APPDIR}/opt/application
 GLIBC_VERSION := $(shell getconf GNU_LIBC_VERSION | sed 's/ /-/g' )
 PWD := $(shell pwd)
 
@@ -13,18 +12,15 @@ init:
 
 
 appimage: clean
-	rm -rf ${APPDIR}/venv
-	cp -r ./venv ${APPDIR}
-	rm -rf $(APPDIR_APPLICATION)
-	mkdir -p $(APPDIR_APPLICATION)
-	cp -r ./src/charts $(APPDIR_APPLICATION)
-	cp -r ./src/icons $(APPDIR_APPLICATION)
-	cp -r ./src/lib $(APPDIR_APPLICATION)
-	cp -r ./src/modules $(APPDIR_APPLICATION)
-	cp -r ./src/plugins $(APPDIR_APPLICATION)
-	cp -r ./src/templates $(APPDIR_APPLICATION)
-	cp -r ./src/themes $(APPDIR_APPLICATION)
-	cp ./src/main.py $(APPDIR_APPLICATION)
+	source $(PWD)/venv/bin/activate && python3 -O -m PyInstaller src/main.py --distpath $(APPDIR) --name application --noconfirm
+	cp -r ./src/charts $(APPDIR)/application
+	cp -r ./src/icons $(APPDIR)/application
+	cp -r ./src/lib $(APPDIR)/application
+	cp -r ./src/modules $(APPDIR)/application
+	cp -r ./src/plugins $(APPDIR)/application
+	cp -r ./src/templates $(APPDIR)/application
+	cp -r ./src/themes $(APPDIR)/application
+
 	bin/appimagetool-x86_64.AppImage  ./AppDir bin/AOD-PerformanceTuner.AppImage
 	@echo "done: bin/AOD-PerformanceTuner.AppImage"
 
