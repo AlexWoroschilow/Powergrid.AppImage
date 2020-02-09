@@ -26,4 +26,5 @@ appimage: clean
 
 clean:
 	rm -rf ${APPDIR}/venv
+	rm -rf ${APPDIR}/application
 	rm -rf ${APPDIR}/opt
