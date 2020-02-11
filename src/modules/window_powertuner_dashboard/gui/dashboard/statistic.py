@@ -20,13 +20,19 @@ from PyQt5 import QtGui
 from PyQt5 import QtQuick
 import psutil
 
+from .label import DashboardStatisticTitle
+from .painter import StatisticPainterCPUPercent
+from .painter import StatisticPainterCPUFrequency
+from .painter import StatisticPainterCPUFrequencyChart
+from .painter import StatisticPainterBackground
+from .painter import StatisticPainterGitter
+
 
 class ThreadScanner(QtCore.QThread):
     core_temp = QtCore.pyqtSignal(object)
-    core_load = QtCore.pyqtSignal(object)
-    core_freq = QtCore.pyqtSignal(object)
     core_percent = QtCore.pyqtSignal(object)
     battery_percent = QtCore.pyqtSignal(object)
+    core = QtCore.pyqtSignal(object, object)
 
     @inject.params(service='plugin.service.cpu')
     def run(self, service=None):
@@ -40,102 +46,103 @@ class ThreadScanner(QtCore.QThread):
             time.sleep(2)
 
             collection = [device.load for device in service.cores()]
-            self.core_load.emit(sum(collection) / len(collection))
+            load = sum(collection) / len(collection)
 
             collection = [device.frequence for device in service.cores()]
-            self.core_freq.emit(sum(collection) / len(collection))
+            frequency = sum(collection) / len(collection)
 
-            temperatures = psutil.sensors_temperatures()
-            collection = [x.current for x in temperatures['coretemp']]
-            self.core_temp.emit(sum(collection) / len(collection))
+            self.core.emit(frequency, load)
 
-            percent = psutil.cpu_percent()
-            self.core_percent.emit(percent)
+            # temperatures = psutil.sensors_temperatures()
+            # collection = [x.current for x in temperatures['coretemp']]
+            # self.core_temp.emit(sum(collection) / len(collection))
+            #
+            # percent = psutil.cpu_percent()
+            # self.core_percent.emit(percent)
+            #
+            # battery = psutil.sensors_battery()
+            # self.battery_percent.emit(battery.percent)
 
-            battery = psutil.sensors_battery()
-            self.battery_percent.emit(battery.percent)
+
+class StatisticChart(QtWidgets.QLabel):
+    def __init__(self, width, height):
+        super(StatisticChart, self).__init__()
+
+        self.width = width
+        self.height = height
+
+        self.pixmap = QtGui.QPixmap(width, height)
+        self.pixmap.fill(Qt.white)
+        self.setPixmap(self.pixmap)
+
+        self.painter_gitter = StatisticPainterGitter(self.pixmap)
+        self.painter_background = StatisticPainterBackground(self.pixmap)
+        self.painter_cpu_percent = StatisticPainterCPUPercent(self.pixmap)
+        self.painter_cpu_frequency = StatisticPainterCPUFrequency(self.pixmap)
+        self.painter_cpu_frequency_chart = StatisticPainterCPUFrequencyChart(self.pixmap)
+
+        self.draw_cpu(0.0, 0.0)
+
+    def draw_cpu(self, frequency, load):
+        self.setPixmap(self.painter_background.refresh(frequency))
+        self.setPixmap(self.painter_gitter.refresh(frequency))
+        self.setPixmap(self.painter_cpu_frequency_chart.refresh(load if load <= 100 else 100))
+        self.setPixmap(self.painter_cpu_frequency.refresh("{:.1f}".format(float(frequency) / 1000000)))
+        self.setPixmap(self.painter_cpu_percent.refresh(load if load <= 100 else 100))
 
 
-class DashboardImage(QtWidgets.QWidget):
+class DashboardStatistic(QtWidgets.QWidget):
 
     @inject.params(service='plugin.service.cpu')
     def __init__(self, service=None):
-        super(DashboardImage, self).__init__()
+        super(DashboardStatistic, self).__init__()
         self.setMinimumHeight(250)
 
         self.setLayout(QtWidgets.QGridLayout())
         self.layout().setAlignment(Qt.AlignCenter)
         self.layout().setContentsMargins(0, 0, 0, 0)
 
-        self.chart1 = QtQuick.QQuickView()
-        self.chart1.setResizeMode(QtQuick.QQuickView.SizeRootObjectToView)
-        self.chart1.setSource(QtCore.QUrl("charts/gauge-left-side.qml"))
-
-        contianer = QtWidgets.QWidget.createWindowContainer(self.chart1, self)
-        contianer.setMinimumSize(QtCore.QSize(110, 110))
-        self.layout().addWidget(contianer, 18, 0, 2, 2)
-
-        self.chart2 = QtQuick.QQuickView()
-        self.chart2.setResizeMode(QtQuick.QQuickView.SizeRootObjectToView)
-        self.chart2.setSource(QtCore.QUrl("charts/gauge-left.qml"))
-
-        contianer = QtWidgets.QWidget.createWindowContainer(self.chart2, self)
-        contianer.setMinimumSize(QtCore.QSize(200, 200))
-        self.layout().addWidget(contianer, 0, 1, 20, 20)
-
-        self.chart3 = QtQuick.QQuickView()
-        self.chart3.setResizeMode(QtQuick.QQuickView.SizeRootObjectToView)
-        self.chart3.setSource(QtCore.QUrl("charts/gauge-right-side.qml"))
-
-        contianer = QtWidgets.QWidget.createWindowContainer(self.chart3, self)
-        contianer.setMinimumSize(QtCore.QSize(110, 110))
-        self.layout().addWidget(contianer, 18, 40, 2, 2)
-
-        self.chart4 = QtQuick.QQuickView()
-        self.chart4.setResizeMode(QtQuick.QQuickView.SizeRootObjectToView)
-        self.chart4.setSource(QtCore.QUrl("charts/gauge-right.qml"))
-
-        contianer = QtWidgets.QWidget.createWindowContainer(self.chart4, self)
-        contianer.setMinimumSize(QtCore.QSize(200, 200))
-        self.layout().addWidget(contianer, 0, 21, 20, 20)
+        self.chart = StatisticChart(self.width(), 250)
+        self.layout().addWidget(self.chart, 18, 0, 2, 2)
 
         self.thread = ThreadScanner()
-        self.thread.core_temp.connect(self.update_value_core_temp)
-        self.thread.core_load.connect(self.update_value_core_load)
-        self.thread.core_freq.connect(self.update_value_core_freq)
-        self.thread.core_percent.connect(self.update_value_core_percent)
-        self.thread.battery_percent.connect(self.update_value_battery_percent)
+        self.thread.core.connect(self.chart.draw_cpu)
+        #     self.thread.battery_percent.connect(self.update_value_battery_percent)
         self.thread.start()
 
-    def update_value_core_temp(self, value=None):
-        if value is None: return None
+    #
+    # def update_value_core_temp(self, value=None):
+    #     if value is None: return None
+    #
+    #     gauge = self.chart1.findChild(QtCore.QObject, 'performance')
+    #     gauge.setProperty('load', int(value))
+    #
+    # def update_value_core_freq(self, value=None):
+    #     (value)
+    # if value is None: return None
+    #
+    # gauge = self.chart2.findChild(QtCore.QObject, 'title')
+    # gauge.setProperty('title', "{:.1f} GHz".format(int(value) / 1000000))
 
-        gauge = self.chart1.findChild(QtCore.QObject, 'performance')
-        gauge.setProperty('load', int(value))
-
-    def update_value_core_freq(self, value=None):
-        if value is None: return None
-
-        gauge = self.chart2.findChild(QtCore.QObject, 'title')
-        gauge.setProperty('title', "{:.1f} GHz".format(int(value) / 1000000))
-
-    def update_value_core_load(self, value=None):
-        if value is None: return None
-
-        gauge = self.chart2.findChild(QtCore.QObject, 'performance')
-        gauge.setProperty('load', int(value))
-
-    def update_value_core_percent(self, value=None):
-        if value is None: return None
-
-        gauge = self.chart4.findChild(QtCore.QObject, 'performance')
-        gauge.setProperty('load', int(value))
-
-        gauge = self.chart4.findChild(QtCore.QObject, 'title')
-        gauge.setProperty('title', "{:.1f} %".format(value))
-
-    def update_value_battery_percent(self, value=None):
-        if value is None: return None
-
-        gauge = self.chart3.findChild(QtCore.QObject, 'performance')
-        gauge.setProperty('load', int(value))
+    # def update_value_core_load(self, value=None):
+    #     self.chart.draw_cpu_load("{:.1f}".format(int(value) / 1000000))
+    #     if value is None: return None
+    #
+    #     gauge = self.chart2.findChild(QtCore.QObject, 'performance')
+    #     gauge.setProperty('load', int(value))
+    #
+    # def update_value_core_percent(self, value=None):
+    #     self.chart.draw_cpu_percent("{:.1f}".format(value))
+    # if value is None: return None
+    #
+    #     gauge = self.chart4.findChild(QtCore.QObject, 'performance')
+    #     gauge.setProperty('load', int(value))
+    #
+    #     gauge = self.chart4.findChild(QtCore.QObject, 'title')
+    #     gauge.setProperty('title', "{:.1f} %".format(value))
+    #
+    # def update_value_battery_percent(self, value=None):
+    #     if value is None: return None
+    #
+    #     gauge = self.chart3.findChild(QtCore.QObject, 'performance')
+    #     gauge.setProperty('load', int(value))

@@ -22,3 +22,10 @@ class DashboardTitle(QtWidgets.QLabel):
     def __init__(self, text):
         super(DashboardTitle, self).__init__(text)
         self.setAlignment(Qt.AlignCenter | Qt.AlignTop)
+
+
+class DashboardStatisticTitle(QtWidgets.QLabel):
+
+    def __init__(self, text):
+        super(DashboardStatisticTitle, self).__init__(text)
+        self.setAlignment(Qt.AlignCenter | Qt.AlignTop)

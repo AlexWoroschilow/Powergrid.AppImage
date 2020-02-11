@@ -26,7 +26,7 @@ from .settings import DashboardSettingsPerformance
 from .settings import DashboardSettingsPowersave
 from .settings import DashboardSettingsDevices
 
-from .statistic import DashboardImage
+from .statistic import DashboardStatistic
 
 
 class DashboardWidget(QtWidgets.QWidget):
@@ -46,7 +46,7 @@ class DashboardWidget(QtWidgets.QWidget):
 
         self.layout().addWidget(header)
         self.layout().addWidget(DashboardDescription())
-        self.layout().addWidget(DashboardImage())
+        self.layout().addWidget(DashboardStatistic())
 
         self.layout().addWidget(DashboardTitle("AC- Adapter"))
         self.layout().addWidget(DashboardDescriptionACAdapter())
