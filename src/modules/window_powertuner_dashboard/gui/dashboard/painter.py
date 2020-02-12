@@ -149,7 +149,7 @@ class StatisticPainterCPUFrequencyChart(StatisticPainterAbstract):
             x = 30 * index
             x = x - 15
             y = self.height - point
-            painter.setPen(QtGui.QPen(QtCore.Qt.green, 28))
+            painter.setPen(QtGui.QPen(QtGui.QColor('#62C106'), 28))
             painter.drawLine(x, y, x, self.height)
 
         painter.end()
