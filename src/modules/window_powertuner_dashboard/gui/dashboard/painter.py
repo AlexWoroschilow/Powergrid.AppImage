@@ -45,7 +45,7 @@ class StatisticPainterCPUPercent(StatisticPainterAbstract):
         painter = QtGui.QPainter()
         painter.begin(self.pixmap)
 
-        text = "{:.1f}".format(value)
+        text = "{:.1f} %".format(value)
 
         painter.setFont(QtGui.QFont('Helvetica', 30))
         painter.setPen(QtGui.QPen(QtGui.QColor('#e0e0e0')))
@@ -126,7 +126,7 @@ class StatisticPainterCPUFrequencyChart(StatisticPainterAbstract):
         if float(value) <= 0:
             return self.pixmap
 
-        value = float(value) / 100 * self.height
+        value = (float(value) / 100 * self.height) / 2
         self.append(value if value <= self.height else self.height)
 
         painter = QtGui.QPainter()
