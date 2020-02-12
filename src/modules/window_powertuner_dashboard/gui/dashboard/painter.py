@@ -44,27 +44,28 @@ class StatisticPainterCPUPercent(StatisticPainterAbstract):
     def refresh(self, value):
         painter = QtGui.QPainter()
         painter.begin(self.pixmap)
+        painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
 
         text = "{:.1f} %".format(value)
 
-        painter.setFont(QtGui.QFont('Helvetica', 30))
+        painter.setFont(QtGui.QFont('Tahoma', 30))
         painter.setPen(QtGui.QPen(QtGui.QColor('#e0e0e0')))
         painter.drawText(self.get_relative_width(55.5),
                          self.get_relative_height(72), text)
 
-        painter.setFont(QtGui.QFont('Helvetica', 30))
+        painter.setFont(QtGui.QFont('Tahoma', 30))
         painter.setPen(QtGui.QPen(QtGui.QColor('#000000')))
         painter.drawText(self.get_relative_width(55),
                          self.get_relative_height(70), text)
 
         text = "CPU load"
 
-        painter.setFont(QtGui.QFont('Helvetica', 15))
+        painter.setFont(QtGui.QFont('Tahoma', 15))
         painter.setPen(QtGui.QPen(QtGui.QColor('#e0e0e0')))
         painter.drawText(self.get_relative_width(57.5),
                          self.get_relative_height(82), text)
 
-        painter.setFont(QtGui.QFont('Helvetica', 15))
+        painter.setFont(QtGui.QFont('Tahoma', 15))
         painter.setPen(QtGui.QPen(QtGui.QColor('#000000')))
         painter.drawText(self.get_relative_width(57),
                          self.get_relative_height(80), text)
@@ -82,27 +83,26 @@ class StatisticPainterCPUFrequency(StatisticPainterAbstract):
         painter = QtGui.QPainter()
         painter.begin(self.pixmap)
         painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
-
         text = "{} GHz".format(value)
 
-        painter.setFont(QtGui.QFont('Helvetica', 30))
+        painter.setFont(QtGui.QFont('Tahoma', 30))
         painter.setPen(QtGui.QPen(QtGui.QColor('#e0e0e0')))
         painter.drawText(self.get_relative_width(25.5),
                          self.get_relative_height(72), text)
 
-        painter.setFont(QtGui.QFont('Helvetica', 30))
+        painter.setFont(QtGui.QFont('Tahoma', 30))
         painter.setPen(QtGui.QPen(QtGui.QColor('#000000')))
         painter.drawText(self.get_relative_width(25),
                          self.get_relative_height(70), text)
 
         text = "CPU frequency"
 
-        painter.setFont(QtGui.QFont('Helvetica', 15))
+        painter.setFont(QtGui.QFont('Tahoma', 15))
         painter.setPen(QtGui.QPen(QtGui.QColor('#e0e0e0')))
         painter.drawText(self.get_relative_width(25.5),
                          self.get_relative_height(82), text)
 
-        painter.setFont(QtGui.QFont('Helvetica', 15))
+        painter.setFont(QtGui.QFont('Tahoma', 15))
         painter.setPen(QtGui.QPen(QtGui.QColor('#000000')))
         painter.drawText(self.get_relative_width(25),
                          self.get_relative_height(80), text)
