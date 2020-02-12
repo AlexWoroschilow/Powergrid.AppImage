@@ -51,7 +51,7 @@ class StatisticPainterCPUPercent(StatisticPainterAbstract):
         painter.setFont(QtGui.QFont('Tahoma', 30))
         painter.setPen(QtGui.QPen(QtGui.QColor('#e0e0e0')))
         painter.drawText(self.get_relative_width(55.5),
-                         self.get_relative_height(72), text)
+                         self.get_relative_height(68), text)
 
         painter.setFont(QtGui.QFont('Tahoma', 30))
         painter.setPen(QtGui.QPen(QtGui.QColor('#000000')))
@@ -63,7 +63,7 @@ class StatisticPainterCPUPercent(StatisticPainterAbstract):
         painter.setFont(QtGui.QFont('Tahoma', 15))
         painter.setPen(QtGui.QPen(QtGui.QColor('#e0e0e0')))
         painter.drawText(self.get_relative_width(57.5),
-                         self.get_relative_height(82), text)
+                         self.get_relative_height(78), text)
 
         painter.setFont(QtGui.QFont('Tahoma', 15))
         painter.setPen(QtGui.QPen(QtGui.QColor('#000000')))
@@ -88,7 +88,7 @@ class StatisticPainterCPUFrequency(StatisticPainterAbstract):
         painter.setFont(QtGui.QFont('Tahoma', 30))
         painter.setPen(QtGui.QPen(QtGui.QColor('#e0e0e0')))
         painter.drawText(self.get_relative_width(25.5),
-                         self.get_relative_height(72), text)
+                         self.get_relative_height(68), text)
 
         painter.setFont(QtGui.QFont('Tahoma', 30))
         painter.setPen(QtGui.QPen(QtGui.QColor('#000000')))
@@ -100,7 +100,7 @@ class StatisticPainterCPUFrequency(StatisticPainterAbstract):
         painter.setFont(QtGui.QFont('Tahoma', 15))
         painter.setPen(QtGui.QPen(QtGui.QColor('#e0e0e0')))
         painter.drawText(self.get_relative_width(25.5),
-                         self.get_relative_height(82), text)
+                         self.get_relative_height(78), text)
 
         painter.setFont(QtGui.QFont('Tahoma', 15))
         painter.setPen(QtGui.QPen(QtGui.QColor('#000000')))
@@ -118,7 +118,7 @@ class StatisticPainterCPUFrequencyChart(StatisticPainterAbstract):
         self.points = []
 
     def append(self, point):
-        if len(self.points) >= self.width / 3:
+        if len(self.points) >= self.width / 31:
             self.points.pop(0)
         self.points.append(point)
 
@@ -126,17 +126,31 @@ class StatisticPainterCPUFrequencyChart(StatisticPainterAbstract):
         if float(value) <= 0:
             return self.pixmap
 
-        value = (float(value) / 100 * self.height) / 2
+        value = (float(value) / 100 * self.height) / 1.5
         self.append(value if value <= self.height else self.height)
 
         painter = QtGui.QPainter()
         painter.begin(self.pixmap)
-        pen = QtGui.QPen(QtCore.Qt.green)
-        pen.setWidth(2)
-        painter.setPen(pen)
+
         painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
         for index, point in enumerate(self.points, start=1):
-            painter.drawLine(3 * index, self.height - point, 3 * index, self.height)
+            x = 30 * index + 4
+            x = x - 15
+            y = self.height - (self.height / 1.5) - 5
+            painter.setPen(QtGui.QPen(QtGui.QColor('#f0f0f0'), 28))
+            painter.drawLine(x, y, x, self.height)
+
+            x = 30 * index + 2
+            x = x - 15
+            y = self.height - point - 5
+            painter.setPen(QtGui.QPen(QtGui.QColor('#e0e0e0'), 28))
+            painter.drawLine(x, y, x, self.height)
+
+            x = 30 * index
+            x = x - 15
+            y = self.height - point
+            painter.setPen(QtGui.QPen(QtCore.Qt.green, 28))
+            painter.drawLine(x, y, x, self.height)
 
         painter.end()
 
