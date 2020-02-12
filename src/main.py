@@ -26,7 +26,6 @@ from importlib import util
 
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
-from PyQt5 import QtQuick
 from PyQt5 import QtGui
 
 abspath = sys.argv[0] \
