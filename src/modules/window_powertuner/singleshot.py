@@ -23,22 +23,38 @@ from .gui.box import MessageBox
 
 class SingleShot(object):
 
-    @inject.params(container='container.exporter')
-    def script_apply(self, single_shot=None, container=None):
+    @inject.params(storage='storage')
+    def script_apply(self, single_shot=None, storage=None):
+
+        state = storage.get_state()
+        if state is None: return None
 
         if not os.path.exists(os.path.dirname(single_shot)):
             os.makedirs(os.path.dirname(single_shot), exist_ok=True)
 
         errors = []
+
         with open(single_shot, 'w') as stream_temp:
             stream_temp.write("#! /bin/sh\n\n")
-            for exporter, priority in container.collection:
-                performance, powersave = exporter.export()
-                if performance is None and powersave is None:
-                    continue
+            for callback_performance, callback_powersave in zip(state.performance, state.powersave):
 
                 try:
-                    origin, content = performance
+
+                    origin, content = callback_performance()
+                    if origin is None: continue
+
+                    file = "{}{}".format(os.path.dirname(single_shot), origin)
+                    if not self._write_file(file, content):
+                        raise Exception('Can not write file: {}'.format(file))
+
+                    shell = "mkdir -p {}".format(os.path.dirname(origin))
+                    stream_temp.write("{}\n".format(shell))
+
+                    shell = "mv --force {} {}".format(file, origin)
+                    stream_temp.write("{}\n\n".format(shell))
+
+                    origin, content = callback_powersave()
+                    if origin is None: continue
 
                     file = "{}{}".format(os.path.dirname(single_shot), origin)
                     if not self._write_file(file, content):
@@ -53,75 +69,31 @@ class SingleShot(object):
                 except Exception as ex:
                     errors.append("{}".format(ex))
 
-                try:
-                    origin, content = powersave
-
-                    file = "{}{}".format(os.path.dirname(single_shot), origin)
-                    if not self._write_file(file, content):
-                        raise Exception('Can not write file: {}'.format(file))
-
-                    shell = "mkdir -p {}".format(os.path.dirname(origin))
-                    stream_temp.write("{}\n".format(shell))
-
-                    shell = "mv --force {} {}".format(file, origin)
-                    stream_temp.write("{}\n\n".format(shell))
-
-                except Exception as ex:
-                    errors.append("{}".format(ex))
             stream_temp.close()
 
             return (single_shot, errors)
 
         return (None, None)
 
-    @inject.params(container='container.exporter')
-    def script_performance(self, single_shot=None, container=None):
+    @inject.params(storage='storage')
+    def script_performance(self, single_shot=None, storage=None):
+
+        state = storage.get_state()
+        if state is None: return None
 
         if not os.path.exists(os.path.dirname(single_shot)):
             os.makedirs(os.path.dirname(single_shot), exist_ok=True)
 
         errors = []
+
         with open(single_shot, 'w') as stream_temp:
             stream_temp.write("#! /bin/sh\n\n")
-            for exporter, priority in container.collection:
-                performance, powersave = exporter.export()
-                if performance is None and powersave is None:
-                    continue
+            for callback_performance in state.performance:
 
                 try:
-                    origin, content = performance
 
-                    file = "{}{}".format(os.path.dirname(single_shot), origin)
-                    if not self._write_file(file, content):
-                        raise Exception('Can not write file: {}'.format(file))
-
-                    stream_temp.write("{}\n".format(file))
-
-                except Exception as ex:
-                    errors.append("{}".format(ex))
-
-            stream_temp.close()
-
-            return (single_shot, errors)
-
-        return (None, None)
-
-    @inject.params(container='container.exporter')
-    def script_powersave(self, single_shot=None, container=None):
-
-        if not os.path.exists(os.path.dirname(single_shot)):
-            os.makedirs(os.path.dirname(single_shot), exist_ok=True)
-
-        errors = []
-        with open(single_shot, 'w') as stream_temp:
-            stream_temp.write("#! /bin/sh\n\n")
-            for exporter, priority in container.collection:
-                performance, powersave = exporter.export()
-                if performance is None and powersave is None:
-                    continue
-
-                try:
-                    origin, content = powersave
+                    origin, content = callback_performance()
+                    if origin is None: continue
 
                     file = "{}{}".format(os.path.dirname(single_shot), origin)
                     if not self._write_file(file, content):
@@ -137,8 +109,44 @@ class SingleShot(object):
 
         return (None, None)
 
-    @inject.params(container='container.exporter')
-    def script_cleanup(self, single_shot=None, container=None):
+    @inject.params(storage='storage')
+    def script_powersave(self, single_shot=None, storage=None):
+
+        state = storage.get_state()
+        if state is None: return None
+
+        if not os.path.exists(os.path.dirname(single_shot)):
+            os.makedirs(os.path.dirname(single_shot), exist_ok=True)
+
+        errors = []
+        with open(single_shot, 'w') as stream_temp:
+            stream_temp.write("#! /bin/sh\n\n")
+
+            for callback_powersave in state.powersave:
+
+                try:
+                    origin, content = callback_powersave()
+                    if origin is None: continue
+
+                    file = "{}{}".format(os.path.dirname(single_shot), origin)
+                    if not self._write_file(file, content):
+                        raise Exception('Can not write file: {}'.format(file))
+
+                    stream_temp.write("{}\n".format(file))
+
+                except Exception as ex:
+                    errors.append("{}".format(ex))
+            stream_temp.close()
+
+            return (single_shot, errors)
+
+        return (None, None)
+
+    @inject.params(storage='storage')
+    def script_cleanup(self, single_shot=None, storage=None):
+
+        state = storage.get_state()
+        if state is None: return None
 
         if not os.path.exists(os.path.dirname(single_shot)):
             os.makedirs(os.path.dirname(single_shot), exist_ok=True)
@@ -147,17 +155,16 @@ class SingleShot(object):
 
         with open(single_shot, 'w') as stream_temp:
             stream_temp.write("#! /bin/sh\n\n")
-            for exporter, priority in container.collection:
-                performance, powersave = exporter.cleanup()
+
+            for callback_cleanup in state.cleanup:
 
                 try:
-                    origin, content = performance
-                    shell = "rm -f {}".format(origin)
-                    stream_temp.write("{}\n".format(shell))
 
-                    origin, content = powersave
-                    shell = "rm -f {}".format(origin)
-                    stream_temp.write("{}\n\n".format(shell))
+                    for script in callback_cleanup():
+                        if script is None: continue
+
+                        shell = "rm -f {}".format(script)
+                        stream_temp.write("{}\n".format(shell))
 
                 except Exception as ex:
                     errors.append("{}".format(ex))

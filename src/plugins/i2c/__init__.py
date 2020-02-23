@@ -14,7 +14,7 @@ import inject
 import functools
 
 from .service import Finder
-from .exporter import Exporter
+from string import Template
 
 
 class Loader(object):
@@ -44,14 +44,14 @@ class Loader(object):
         ))
 
     @inject.params(performance='container.dashboard.performance', powersave='container.dashboard.powersave',
-                   devices='container.dashboard.devices', container_exporter='container.exporter')
-    def boot(self, options=None, args=None, performance=None, powersave=None, devices=None, container_exporter=None):
+                   devices='container.dashboard.devices', storage='storage')
+    def boot(self, options=None, args=None, performance=None, powersave=None, devices=None, storage=None):
         """
         Define the services and setup the service-container
         :param options:
         :param args:
         :param performance:
-        :param container_exporter:
+        :param storage:
         :return:
         """
         from .gui.settings.settings import DashboardSettingsPerformance
@@ -63,8 +63,63 @@ class Loader(object):
         from .gui.devices.properties import DashboardProperties
         devices.append(DashboardProperties, 0)
 
-        from .exporter import Exporter
-        container_exporter.append(Exporter(options, args), 0)
+        storage.dispatch({
+            'type': '@@app/exporter/performance/i2c',
+            'action': self.performance
+        })
+
+        storage.dispatch({
+            'type': '@@app/exporter/powersave/i2c',
+            'action': self.powersave
+        })
+
+        storage.dispatch({
+            'type': '@@app/exporter/cleanup/i2c',
+            'action': self.cleanup
+        })
+
+    @inject.params(config='config', service='plugin.service.i2c')
+    def ignores(self, status=1, config=None, service=None):
+        ignored = []
+        for device in service.cores():
+            value_ignored = config.get('i2c.permanent.{}'.format(device.code), 0)
+            if not int(value_ignored):
+                continue
+            if int(value_ignored) == status:
+                ignored.append(device.code)
+                continue
+        return ignored
+
+    @inject.params(config='config')
+    def performance(self, config=None):
+
+        with open('templates/hda.tpl', 'r') as stream:
+            template = Template(stream.read())
+
+            return ('/etc/performance-tuner/performance_i2c', template.substitute(
+                schema=config.get('i2c.performance', 'on'),
+                ignored="'{}'".format("','".join(self.ignores(1)))
+            ))
+
+        return (None, None)
+
+    @inject.params(config='config')
+    def powersave(self, config=None):
+
+        with open('templates/i2c.tpl', 'r') as stream:
+            template = Template(stream.read())
+
+            return ('/etc/performance-tuner/powersave_i2c', template.substitute(
+                schema=config.get('i2c.powersave', 'auto'),
+                ignored="'{}'".format("','".join(self.ignores(1)))
+            ))
+
+        return (None, None)
+
+    @inject.params(config='config')
+    def cleanup(self, config=None):
+        return ('/etc/performance-tuner/performance_i2c',
+                '/etc/performance-tuner/powersave_i2c')
 
 
 module = Loader()

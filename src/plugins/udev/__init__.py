@@ -11,12 +11,10 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import inject
-
-from .actions import ModuleActions
+from string import Template
 
 
 class Loader(object):
-    actions = ModuleActions()
 
     def __enter__(self):
         return self
@@ -28,10 +26,58 @@ class Loader(object):
     def enabled(self):
         return True
 
-    @inject.params(window='window')
-    def boot(self, options=None, args=None, window=None):
-        window.schema_cleanup.connect(self.actions.onActionSchemaCleanup)
-        window.schema_apply.connect(self.actions.onActionSchemaApply)
+    @inject.params(storage='storage')
+    def boot(self, options=None, args=None, storage=None):
+
+        storage.dispatch({
+            'type': '@@app/exporter/performance/udev',
+            'action': self.performance
+        })
+
+        storage.dispatch({
+            'type': '@@app/exporter/powersave/udev',
+            'action': self.performance
+        })
+
+        storage.dispatch({
+            'type': '@@app/exporter/cleanup/udev',
+            'action': self.cleanup
+        })
+
+    @inject.params(config='config', storage='storage')
+    def performance(self, config=None, storage=None):
+
+        content = ""
+        with open('templates/udev.tpl', 'r') as stream:
+            template = Template(stream.read())
+            if template is None: return (None, None)
+
+            state = storage.get_state()
+            if state is None: return (None, None)
+
+            for method in state.cleanup:
+                if method is None: continue
+
+                (performance, powersave) = method()
+                if performance is None: continue
+                if powersave is None: continue
+
+                if performance.find('.rules') != -1: continue
+                if powersave.find('.rules') != -1: continue
+
+                content += "{}".format(template.substitute(
+                    performance=performance,
+                    powersave=powersave
+                ))
+
+            return ('/etc/udev/rules.d/70-performance.rules', content)
+
+        return (None, None)
+
+    @inject.params(config='config')
+    def cleanup(self, config=None):
+        return ('/etc/udev/rules.d/70-performance.rules',
+                '/etc/udev/rules.d/70-performance.rules')
 
 
 module = Loader()

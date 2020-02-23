@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import inject
 import functools
+from string import Template
 
 
 class Loader(object):
@@ -41,14 +42,14 @@ class Loader(object):
         ))
 
     @inject.params(performance='container.dashboard.performance', powersave='container.dashboard.powersave',
-                   container_exporter='container.exporter')
-    def boot(self, options=None, args=None, performance=None, powersave=None, container_exporter=None):
+                   storage='storage')
+    def boot(self, options=None, args=None, performance=None, powersave=None, storage=None):
         """
         Define the services and setup the service-container
         :param options:
         :param args:
         :param performance:
-        :param container_exporter:
+        :param storage:
         :return:
         """
         from .gui.settings.settings import DashboardSettingsPerformance
@@ -57,8 +58,63 @@ class Loader(object):
         from .gui.settings.settings import DashboardSettingsPowersave
         powersave.append(DashboardSettingsPowersave, 0)
 
-        from .exporter import Exporter
-        container_exporter.append(Exporter(options, args), 0)
+        storage.dispatch({
+            'type': '@@app/exporter/performance/laptop',
+            'action': self.performance
+        })
+
+        storage.dispatch({
+            'type': '@@app/exporter/powersave/laptop',
+            'action': self.powersave
+        })
+
+        storage.dispatch({
+            'type': '@@app/exporter/cleanup/laptop',
+            'action': self.cleanup
+        })
+
+    @inject.params(config='config', service='plugin.service.laptop')
+    def ignores(self, status=1, config=None, service=None):
+        ignored = []
+        for device in service.devices():
+            value_ignored = config.get('laptop.permanent.{}'.format(device.name), 0)
+            if not int(value_ignored):
+                continue
+            if int(value_ignored) == status:
+                ignored.append(device.code)
+                continue
+        return ignored
+
+    @inject.params(config='config')
+    def performance(self, config=None):
+
+        with open('templates/laptop.tpl', 'r') as stream:
+            template = Template(stream.read())
+
+            return ('/etc/performance-tuner/performance_laptop', template.substitute(
+                schema=config.get('laptop.performance', '0'),
+                ignored="'{}'".format("','".join(self.ignores(1)))
+            ))
+
+        return (None, None)
+
+    @inject.params(config='config')
+    def powersave(self, config=None):
+
+        with open('templates/laptop.tpl', 'r') as stream:
+            template = Template(stream.read())
+
+            return ('/etc/performance-tuner/powersave_laptop', template.substitute(
+                schema=config.get('laptop.powersave', '5'),
+                ignored="'{}'".format("','".join(self.ignores(1)))
+            ))
+
+        return (None, None)
+
+    @inject.params(config='config')
+    def cleanup(self, config=None):
+        return ('/etc/performance-tuner/performance_laptop',
+                '/etc/performance-tuner/powersave_laptop')
 
 
 module = Loader()

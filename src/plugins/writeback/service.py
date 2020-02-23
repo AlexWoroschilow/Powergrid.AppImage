@@ -19,6 +19,10 @@ class Device(object):
         self.path = path
 
     @property
+    def code(self):
+        return os.path.basename(self.path)
+
+    @property
     def name(self):
         name = os.path.basename(self.path)
         return name.capitalize()

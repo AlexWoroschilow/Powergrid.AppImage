@@ -12,9 +12,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import inject
 import functools
+from string import Template
 
 from .service import Finder
-from .exporter import Exporter
 
 
 class Loader(object):
@@ -44,15 +44,14 @@ class Loader(object):
         ))
 
     @inject.params(performance='container.dashboard.performance', powersave='container.dashboard.powersave',
-                   devices='container.dashboard.devices', container_exporter='container.exporter')
-    def boot(self, options=None, args=None, performance=None, powersave=None, devices=None,
-             container_exporter=None):
+                   devices='container.dashboard.devices', storage='storage')
+    def boot(self, options=None, args=None, performance=None, powersave=None, devices=None, storage=None):
         """
         Define the services and setup the service-container
         :param options:
         :param args:
         :param performance:
-        :param container_exporter:
+        :param storage:
         :return:
         """
         from .gui.settings.settings import DashboardSettingsPerformance
@@ -64,8 +63,69 @@ class Loader(object):
         from .gui.devices.properties import DashboardProperties
         devices.append(DashboardProperties, 0)
 
-        from .exporter import Exporter
-        container_exporter.append(Exporter(options, args), 0)
+        storage.dispatch({
+            'type': '@@app/exporter/performance/usb',
+            'action': self.performance
+        })
+
+        storage.dispatch({
+            'type': '@@app/exporter/powersave/usb',
+            'action': self.powersave
+        })
+
+        storage.dispatch({
+            'type': '@@app/exporter/cleanup/usb',
+            'action': self.cleanup
+        })
+
+    @inject.params(config='config', service='plugin.service.usb')
+    def ignores(self, status=1, config=None, service=None):
+        ignored = []
+        for device in service.devices():
+            value_ignored = config.get('usb.permanent.{}'.format(device.code), 0)
+            if not int(value_ignored):
+                continue
+            if int(value_ignored) == status:
+                ignored.append(device.code)
+                continue
+        return ignored
+
+    @inject.params(config='config')
+    def performance(self, config=None):
+
+        with open('templates/usb.tpl', 'r') as stream:
+            template = Template(stream.read())
+
+            return ('/etc/performance-tuner/performance_usb', template.substitute(
+                power_level=config.get('usb.performance.power_level', 'on'),
+                power_control=config.get('usb.performance.power_control', 'on'),
+                autosuspend_delay=config.get('usb.performance.autosuspend_delay', '-1'),
+                autosuspend=config.get('usb.performance.autosuspend', '-1'),
+                ignored="'{}'".format("','".join(self.ignores(1)))
+            ))
+
+        return (None, None)
+
+    @inject.params(config='config')
+    def powersave(self, config=None):
+
+        with open('templates/usb.tpl', 'r') as stream:
+            template = Template(stream.read())
+
+            return ('/etc/performance-tuner/powersave_usb', template.substitute(
+                power_level=config.get('usb.powersave.power_level', 'auto'),
+                power_control=config.get('usb.powersave.power_control', 'auto'),
+                autosuspend_delay=config.get('usb.powersave.autosuspend_delay', '500'),
+                autosuspend=config.get('usb.powersave.autosuspend', '500'),
+                ignored="'{}'".format("','".join(self.ignores(2)))
+            ))
+
+        return (None, None)
+
+    @inject.params(config='config')
+    def cleanup(self, config=None):
+        return ('/etc/performance-tuner/performance_usb',
+                '/etc/performance-tuner/powersave_usb')
 
 
 module = Loader()
