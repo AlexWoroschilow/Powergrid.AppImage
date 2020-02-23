@@ -31,11 +31,11 @@ class Loader(object):
     @inject.params(config='config')
     def _constructor(self, config=None):
         widget = MainWindow()
-        widget.resize_event.connect(self.actions.onActionWindowResize)
-        widget.schema_cleanup.connect(self.actions.onActionSchemaCleanup)
-        widget.schema_performance.connect(self.actions.onActionPerformance)
-        widget.schema_powersave.connect(self.actions.onActionPowersave)
-        widget.schema_apply.connect(self.actions.onActionSchemaApply)
+        widget.resize_event.connect(self.actions.on_window_resize)
+        widget.schema_cleanup.connect(self.actions.on_schema_cleanup)
+        widget.schema_performance.connect(self.actions.on_schema_performance)
+        widget.schema_powersave.connect(self.actions.on_schema_powersave)
+        widget.schema_apply.connect(self.actions.on_schema_apply)
 
         width = int(config.get('window.width', 640))
         height = int(config.get('window.height', 480))

@@ -19,7 +19,6 @@ from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 
 from .gui.box import MessageBox
-
 from .singleshot import SingleShot
 
 
@@ -27,7 +26,7 @@ class ModuleActions(object):
     singleshot = SingleShot()
 
     @inject.params(config='config')
-    def onActionWindowResize(self, event=None, config=None):
+    def on_window_resize(self, event=None, config=None):
         config.set('window.width', '%s' % event.size().width())
         config.set('window.height', '%s' % event.size().height())
         return event.accept()
@@ -58,8 +57,7 @@ class ModuleActions(object):
         result = MessageBox(window, 'Execute optimisation script?', message, MessageBox.Ok, MessageBox.Cancel)
         return result.exec_()
 
-    @inject.params(window='window', container='container.exporter')
-    def onActionSchemaApply(self, event=None, window=None, container=None):
+    def on_schema_apply(self, event=None):
 
         single_shot, errors = self.singleshot.script_apply("/tmp/performance-tuner/apply.sh")
         if errors is not None and len(errors):
@@ -79,8 +77,7 @@ class ModuleActions(object):
             shutil.rmtree(os.path.dirname(single_shot))
             return self._dialog_script_error("{}".format(ex))
 
-    @inject.params(window='window', container='container.exporter')
-    def onActionSchemaCleanup(self, event=None, window=None, container=None):
+    def on_schema_cleanup(self, event=None):
 
         single_shot, errors = self.singleshot.script_cleanup("/tmp/performance-tuner/cleanup.sh")
         if errors is not None and len(errors):
@@ -100,8 +97,7 @@ class ModuleActions(object):
             shutil.rmtree(os.path.dirname(single_shot))
             return self._dialog_script_error("{}".format(ex))
 
-    @inject.params(window='window', container='container.exporter')
-    def onActionPerformance(self, event=None, window=None, container=None):
+    def on_schema_performance(self, event=None):
 
         single_shot, errors = self.singleshot.script_performance("/tmp/performance-tuner/performance.sh")
         if errors is not None and len(errors):
@@ -121,8 +117,7 @@ class ModuleActions(object):
             shutil.rmtree(os.path.dirname(single_shot))
             return self._dialog_script_error("{}".format(ex))
 
-    @inject.params(window='window', container='container.exporter')
-    def onActionPowersave(self, event=None, window=None, container=None):
+    def on_schema_powersave(self, event=None):
 
         single_shot, errors = self.singleshot.script_powersave("/tmp/performance-tuner/powersave.sh")
         if errors is not None and len(errors):
