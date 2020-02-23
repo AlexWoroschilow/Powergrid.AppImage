@@ -13,6 +13,7 @@
 import os
 import sys
 import inject
+import pydux
 import optparse
 import logging
 import mmap
