@@ -14,6 +14,7 @@ import inject
 import functools
 from string import Template
 
+from .service import Finder
 from .gui.settings.settings import DashboardSettingsPerformance
 from .gui.settings.settings import DashboardSettingsPowersave
 
@@ -40,10 +41,8 @@ class Loader(object):
 
     @inject.params(config='config')
     def _performance(self, config=None):
-
         with open('templates/hda.tpl', 'r') as stream:
             template = Template(stream.read())
-
             return ('/etc/performance-tuner/performance_hda', template.substitute(
                 schema=config.get('hda.performance', ''),
                 ignored="'{}'".format("','".join(self._ignores(1)))
@@ -53,10 +52,8 @@ class Loader(object):
 
     @inject.params(config='config')
     def _powersave(self, config=None):
-
         with open('templates/hda.tpl', 'r') as stream:
             template = Template(stream.read())
-
             return ('/etc/performance-tuner/powersave_hda', template.substitute(
                 schema=config.get('hda.powersave', '1'),
                 ignored="'{}'".format("','".join(self._ignores(2)))
@@ -74,28 +71,12 @@ class Loader(object):
         return True
 
     def configure(self, binder, options, args):
-        """
-        Setup plugin services
-        :param binder:
-        :param options:
-        :param args:
-        :return:
-        """
-        from .service import Finder
-
         binder.bind_to_constructor('plugin.service.hda', functools.partial(
             Finder, path='/sys/module/snd_hda_intel'
         ))
 
     @inject.params(storage='storage')
     def boot(self, options=None, args=None, storage=None):
-        """
-        Define the services and setup the service-container
-        :param options:
-        :param args:
-        :param storage:
-        :return:
-        """
 
         storage.dispatch({
             'type': '@@app/dashboard/settings/performance/hda',

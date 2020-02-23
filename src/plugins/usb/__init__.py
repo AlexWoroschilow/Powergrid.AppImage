@@ -28,33 +28,63 @@ class Loader(object):
     def __exit__(self, type, value, traceback):
         pass
 
+    @inject.params(config='config', service='plugin.service.usb')
+    def _ignores(self, status=1, config=None, service=None):
+        ignored = []
+        for device in service.devices():
+            value_ignored = config.get('usb.permanent.{}'.format(device.code), 0)
+            if not int(value_ignored):
+                continue
+            if int(value_ignored) == status:
+                ignored.append(device.code)
+                continue
+        return ignored
+
+    @inject.params(config='config')
+    def _performance(self, config=None):
+        with open('templates/usb.tpl', 'r') as stream:
+            template = Template(stream.read())
+            return ('/etc/performance-tuner/performance_usb', template.substitute(
+                power_level=config.get('usb.performance.power_level', 'on'),
+                power_control=config.get('usb.performance.power_control', 'on'),
+                autosuspend_delay=config.get('usb.performance.autosuspend_delay', '-1'),
+                autosuspend=config.get('usb.performance.autosuspend', '-1'),
+                ignored="'{}'".format("','".join(self._ignores(1)))
+            ))
+
+        return (None, None)
+
+    @inject.params(config='config')
+    def _powersave(self, config=None):
+        with open('templates/usb.tpl', 'r') as stream:
+            template = Template(stream.read())
+            return ('/etc/performance-tuner/powersave_usb', template.substitute(
+                power_level=config.get('usb.powersave.power_level', 'auto'),
+                power_control=config.get('usb.powersave.power_control', 'auto'),
+                autosuspend_delay=config.get('usb.powersave.autosuspend_delay', '500'),
+                autosuspend=config.get('usb.powersave.autosuspend', '500'),
+                ignored="'{}'".format("','".join(self._ignores(2)))
+            ))
+
+        return (None, None)
+
+    @inject.params(config='config')
+    def _cleanup(self, config=None):
+        return ('/etc/performance-tuner/performance_usb',
+                '/etc/performance-tuner/powersave_usb')
+
     @property
     def enabled(self):
         return True
 
     def configure(self, binder, options, args):
-        """
-        Setup plugin services
-        :param binder:
-        :param options:
-        :param args:
-        :return:
-        """
-        from .service import Finder
-
         binder.bind_to_constructor('plugin.service.usb', functools.partial(
             Finder, path='/sys/bus/usb/devices'
         ))
 
     @inject.params(storage='storage')
     def boot(self, options=None, args=None, storage=None):
-        """
-        Define the services and setup the service-container
-        :param options:
-        :param args:
-        :param storage:
-        :return:
-        """
+
         storage.dispatch({
             'type': '@@app/dashboard/settings/performance/usb',
             'action': DashboardSettingsPerformance,
@@ -87,55 +117,6 @@ class Loader(object):
             'type': '@@app/exporter/cleanup/usb',
             'action': self._cleanup
         })
-
-    @inject.params(config='config', service='plugin.service.usb')
-    def _ignores(self, status=1, config=None, service=None):
-        ignored = []
-        for device in service.devices():
-            value_ignored = config.get('usb.permanent.{}'.format(device.code), 0)
-            if not int(value_ignored):
-                continue
-            if int(value_ignored) == status:
-                ignored.append(device.code)
-                continue
-        return ignored
-
-    @inject.params(config='config')
-    def _performance(self, config=None):
-
-        with open('templates/usb.tpl', 'r') as stream:
-            template = Template(stream.read())
-
-            return ('/etc/performance-tuner/performance_usb', template.substitute(
-                power_level=config.get('usb.performance.power_level', 'on'),
-                power_control=config.get('usb.performance.power_control', 'on'),
-                autosuspend_delay=config.get('usb.performance.autosuspend_delay', '-1'),
-                autosuspend=config.get('usb.performance.autosuspend', '-1'),
-                ignored="'{}'".format("','".join(self._ignores(1)))
-            ))
-
-        return (None, None)
-
-    @inject.params(config='config')
-    def _powersave(self, config=None):
-
-        with open('templates/usb.tpl', 'r') as stream:
-            template = Template(stream.read())
-
-            return ('/etc/performance-tuner/powersave_usb', template.substitute(
-                power_level=config.get('usb.powersave.power_level', 'auto'),
-                power_control=config.get('usb.powersave.power_control', 'auto'),
-                autosuspend_delay=config.get('usb.powersave.autosuspend_delay', '500'),
-                autosuspend=config.get('usb.powersave.autosuspend', '500'),
-                ignored="'{}'".format("','".join(self._ignores(2)))
-            ))
-
-        return (None, None)
-
-    @inject.params(config='config')
-    def _cleanup(self, config=None):
-        return ('/etc/performance-tuner/performance_usb',
-                '/etc/performance-tuner/powersave_usb')
 
 
 module = Loader()

@@ -29,33 +29,57 @@ class Loader(object):
     def __exit__(self, type, value, traceback):
         pass
 
+    @inject.params(config='config', service='plugin.service.sata')
+    def _ignores(self, status=1, config=None, service=None):
+        ignored = []
+        for device in service.devices():
+            value_ignored = config.get('sata.permanent.{}'.format(device.code), 0)
+            if not int(value_ignored):
+                continue
+            if int(value_ignored) == status:
+                ignored.append(device.code)
+                continue
+        return ignored
+
+    @inject.params(config='config')
+    def _performance(self, config=None):
+        with open('templates/sata.tpl', 'r') as stream:
+            template = Template(stream.read())
+            return ('/etc/performance-tuner/performance_sata', template.substitute(
+                schema=config.get('sata.performance', 'max_performance'),
+                ignored="'{}'".format("','".join(self._ignores(1)))
+            ))
+
+        return (None, None)
+
+    @inject.params(config='config')
+    def _powersave(self, config=None):
+        with open('templates/sata.tpl', 'r') as stream:
+            template = Template(stream.read())
+            return ('/etc/performance-tuner/powersave_sata', template.substitute(
+                schema=config.get('sata.powersave', 'min_power'),
+                ignored="'{}'".format("','".join(self._ignores(2)))
+            ))
+
+        return (None, None)
+
+    @inject.params(config='config')
+    def _cleanup(self, config=None):
+        return ('/etc/performance-tuner/performance_sata',
+                '/etc/performance-tuner/powersave_sata')
+
     @property
     def enabled(self):
         return True
 
     def configure(self, binder, options, args):
-        """
-        Setup plugin services
-        :param binder:
-        :param options:
-        :param args:
-        :return:
-        """
-        from .service import Finder
-
         binder.bind_to_constructor('plugin.service.sata', functools.partial(
             Finder, path='/sys/class/scsi_host'
         ))
 
     @inject.params(storage='storage')
     def boot(self, options=None, args=None, storage=None):
-        """
-        Define the services and setup the service-container
-        :param options:
-        :param args:
-        :param storage:
-        :return:
-        """
+
         storage.dispatch({
             'type': '@@app/dashboard/settings/performance/sata',
             'action': DashboardSettingsPerformance,
@@ -88,49 +112,6 @@ class Loader(object):
             'type': '@@app/exporter/cleanup/sata',
             'action': self._cleanup
         })
-
-    @inject.params(config='config', service='plugin.service.sata')
-    def _ignores(self, status=1, config=None, service=None):
-        ignored = []
-        for device in service.devices():
-            value_ignored = config.get('sata.permanent.{}'.format(device.code), 0)
-            if not int(value_ignored):
-                continue
-            if int(value_ignored) == status:
-                ignored.append(device.code)
-                continue
-        return ignored
-
-    @inject.params(config='config')
-    def _performance(self, config=None):
-
-        with open('templates/sata.tpl', 'r') as stream:
-            template = Template(stream.read())
-
-            return ('/etc/performance-tuner/performance_sata', template.substitute(
-                schema=config.get('sata.performance', 'max_performance'),
-                ignored="'{}'".format("','".join(self._ignores(1)))
-            ))
-
-        return (None, None)
-
-    @inject.params(config='config')
-    def _powersave(self, config=None):
-
-        with open('templates/sata.tpl', 'r') as stream:
-            template = Template(stream.read())
-
-            return ('/etc/performance-tuner/powersave_sata', template.substitute(
-                schema=config.get('sata.powersave', 'min_power'),
-                ignored="'{}'".format("','".join(self._ignores(2)))
-            ))
-
-        return (None, None)
-
-    @inject.params(config='config')
-    def _cleanup(self, config=None):
-        return ('/etc/performance-tuner/performance_sata',
-                '/etc/performance-tuner/powersave_sata')
 
 
 module = Loader()

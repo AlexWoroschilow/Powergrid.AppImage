@@ -41,10 +41,8 @@ class Loader(object):
 
     @inject.params(config='config')
     def _performance(self, config=None):
-
         with open('templates/writeback.tpl', 'r') as stream:
             template = Template(stream.read())
-
             return ('/etc/performance-tuner/performance_writeback', template.substitute(
                 schema=config.get('writeback.performance', ''),
                 ignored="'{}'".format("','".join(self._ignores(1)))
@@ -54,10 +52,8 @@ class Loader(object):
 
     @inject.params(config='config')
     def _powersave(self, config=None):
-
         with open('templates/writeback.tpl', 'r') as stream:
             template = Template(stream.read())
-
             return ('/etc/performance-tuner/powersave_writeback', template.substitute(
                 schema=config.get('writeback.powersave', '1500'),
                 ignored="'{}'".format("','".join(self._ignores(2)))

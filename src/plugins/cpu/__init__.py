@@ -14,6 +14,7 @@ import inject
 import functools
 from string import Template
 
+from .service import Finder
 from .gui.settings.settings import DashboardSettingsPerformance
 from .gui.settings.settings import DashboardSettingsPowersave
 from .gui.devices.properties import DashboardProperties
@@ -27,34 +28,56 @@ class Loader(object):
     def __exit__(self, type, value, traceback):
         pass
 
+    @inject.params(config='config', service='plugin.service.cpu')
+    def _ignores(self, status=1, config=None, service=None):
+        ignored = []
+        for device in service.cores():
+            value_ignored = config.get('cpu.permanent.{}'.format(device.code), 0)
+            if not int(value_ignored):
+                continue
+            if int(value_ignored) == status:
+                ignored.append(device.code)
+                continue
+        return ignored
+
+    @inject.params(config='config')
+    def _performance(self, config=None):
+        with open('templates/cpu.tpl', 'r') as stream:
+            template = Template(stream.read())
+            return ('/etc/performance-tuner/performance_cpu', template.substitute(
+                schema=config.get('cpu.performance', 'ondemand'),
+                ignored="'{}'".format("','".join(self._ignores(1)))
+            ))
+
+        return (None, None)
+
+    @inject.params(config='config')
+    def _powersave(self, config=None):
+        with open('templates/cpu.tpl', 'r') as stream:
+            template = Template(stream.read())
+            return ('/etc/performance-tuner/powersave_cpu', template.substitute(
+                schema=config.get('cpu.powersave', 'powersave'),
+                ignored="'{}'".format("','".join(self._ignores(2)))
+            ))
+
+        return (None, None)
+
+    @inject.params(config='config')
+    def _cleanup(self, config=None):
+        return ('/etc/performance-tuner/performance_cpu',
+                '/etc/performance-tuner/powersave_cpu')
+
     @property
     def enabled(self):
         return True
 
     def configure(self, binder, options, args):
-        """
-        Setup plugin services
-
-        :param binder:
-        :param options:
-        :param args:
-        :return:
-        """
-        from .service import Finder
-
         binder.bind_to_constructor('plugin.service.cpu', functools.partial(
             Finder, path='/sys/devices/system/cpu'
         ))
 
     @inject.params(storage='storage')
     def boot(self, options=None, args=None, storage=None):
-        """
-        Define the services and setup the service-container
-        :param options:
-        :param args:
-        :param storage:
-        :return:
-        """
 
         storage.dispatch({
             'type': '@@app/dashboard/settings/performance/cpu',
@@ -88,49 +111,6 @@ class Loader(object):
             'type': '@@app/exporter/cleanup/cpu',
             'action': self._cleanup
         })
-
-    @inject.params(config='config', service='plugin.service.cpu')
-    def _ignores(self, status=1, config=None, service=None):
-        ignored = []
-        for device in service.cores():
-            value_ignored = config.get('cpu.permanent.{}'.format(device.code), 0)
-            if not int(value_ignored):
-                continue
-            if int(value_ignored) == status:
-                ignored.append(device.code)
-                continue
-        return ignored
-
-    @inject.params(config='config')
-    def _performance(self, config=None):
-
-        with open('templates/cpu.tpl', 'r') as stream:
-            template = Template(stream.read())
-
-            return ('/etc/performance-tuner/performance_cpu', template.substitute(
-                schema=config.get('cpu.performance', 'ondemand'),
-                ignored="'{}'".format("','".join(self._ignores(1)))
-            ))
-
-        return (None, None)
-
-    @inject.params(config='config')
-    def _powersave(self, config=None):
-
-        with open('templates/cpu.tpl', 'r') as stream:
-            template = Template(stream.read())
-
-            return ('/etc/performance-tuner/powersave_cpu', template.substitute(
-                schema=config.get('cpu.powersave', 'powersave'),
-                ignored="'{}'".format("','".join(self._ignores(2)))
-            ))
-
-        return (None, None)
-
-    @inject.params(config='config')
-    def _cleanup(self, config=None):
-        return ('/etc/performance-tuner/performance_cpu',
-                '/etc/performance-tuner/powersave_cpu')
 
 
 module = Loader()

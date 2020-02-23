@@ -22,30 +22,8 @@ class Loader(object):
     def __exit__(self, type, value, traceback):
         pass
 
-    @property
-    def enabled(self):
-        return True
-
-    @inject.params(storage='storage')
-    def boot(self, options=None, args=None, storage=None):
-
-        storage.dispatch({
-            'type': '@@app/exporter/performance/udev',
-            'action': self.performance
-        })
-
-        storage.dispatch({
-            'type': '@@app/exporter/powersave/udev',
-            'action': self.powersave
-        })
-
-        storage.dispatch({
-            'type': '@@app/exporter/cleanup/udev',
-            'action': self.cleanup
-        })
-
     @inject.params(config='config', storage='storage')
-    def performance(self, config=None, storage=None):
+    def _performance(self, config=None, storage=None):
 
         content = ""
         with open('templates/udev.tpl', 'r') as stream:
@@ -71,7 +49,7 @@ class Loader(object):
         return (None, None)
 
     @inject.params(config='config', storage='storage')
-    def powersave(self, config=None, storage=None):
+    def _powersave(self, config=None, storage=None):
 
         content = ""
         with open('templates/udev.tpl', 'r') as stream:
@@ -98,9 +76,31 @@ class Loader(object):
         return (None, None)
 
     @inject.params(config='config')
-    def cleanup(self, config=None):
+    def _cleanup(self, config=None):
         return ('/etc/udev/rules.d/70-performance.rules',
                 '/etc/udev/rules.d/70-powersave.rules')
+
+    @property
+    def enabled(self):
+        return True
+
+    @inject.params(storage='storage')
+    def boot(self, options=None, args=None, storage=None):
+
+        storage.dispatch({
+            'type': '@@app/exporter/performance/udev',
+            'action': self._performance
+        })
+
+        storage.dispatch({
+            'type': '@@app/exporter/powersave/udev',
+            'action': self._powersave
+        })
+
+        storage.dispatch({
+            'type': '@@app/exporter/cleanup/udev',
+            'action': self._cleanup
+        })
 
 
 module = Loader()

@@ -43,10 +43,8 @@ class Loader(object):
 
     @inject.params(config='config')
     def _performance(self, config=None):
-
         with open('templates/hda.tpl', 'r') as stream:
             template = Template(stream.read())
-
             return ('/etc/performance-tuner/performance_i2c', template.substitute(
                 schema=config.get('i2c.performance', 'on'),
                 ignored="'{}'".format("','".join(self._ignores(1)))
@@ -56,10 +54,8 @@ class Loader(object):
 
     @inject.params(config='config')
     def _powersave(self, config=None):
-
         with open('templates/i2c.tpl', 'r') as stream:
             template = Template(stream.read())
-
             return ('/etc/performance-tuner/powersave_i2c', template.substitute(
                 schema=config.get('i2c.powersave', 'auto'),
                 ignored="'{}'".format("','".join(self._ignores(2)))
@@ -77,29 +73,12 @@ class Loader(object):
         return True
 
     def configure(self, binder, options, args):
-        """
-        Setup plugin services
-        :param binder:
-        :param options:
-        :param args:
-        :return:
-        """
-        from .service import Finder
-
         binder.bind_to_constructor('plugin.service.i2c', functools.partial(
             Finder, path='/sys/bus/i2c/devices'
         ))
 
     @inject.params(storage='storage')
     def boot(self, options=None, args=None, storage=None):
-        """
-        Define the services and setup the service-container
-        :param options:
-        :param args:
-        :param performance:
-        :param storage:
-        :return:
-        """
 
         storage.dispatch({
             'type': '@@app/dashboard/settings/performance/i2c',

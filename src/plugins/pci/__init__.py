@@ -43,10 +43,8 @@ class Loader(object):
 
     @inject.params(config='config')
     def _performance(self, config=None):
-
         with open('templates/pci.tpl', 'r') as stream:
             template = Template(stream.read())
-
             return ('/etc/performance-tuner/performance_pci', template.substitute(
                 schema=config.get('pci.performance', 'on'),
                 ignored="'{}'".format("','".join(self._ignores(1)))
@@ -56,10 +54,8 @@ class Loader(object):
 
     @inject.params(config='config')
     def _powersave(self, config=None):
-
         with open('templates/pci.tpl', 'r') as stream:
             template = Template(stream.read())
-
             return ('/etc/performance-tuner/powersave_pci', template.substitute(
                 schema=config.get('pci.powersave', 'auto'),
                 ignored="'{}'".format("','".join(self._ignores(2)))
