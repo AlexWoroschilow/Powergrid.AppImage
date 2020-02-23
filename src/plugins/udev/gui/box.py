@@ -10,18 +10,42 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+import os
 import inject
 
+from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5 import QtGui
+
+from PyQt5.QtCore import Qt
 
 
 class MessageBox(QtWidgets.QMessageBox):
 
     @inject.params(themes='themes')
-    def __init__(self, parent=None, themes=None):
+    def __init__(self, parent, title, message, button1, button2, themes=None):
         super(MessageBox, self).__init__(parent)
-        self.setContentsMargins(0, 0, 0, 0)
-        self.setWindowTitle('AOD - Power Tuner')
         self.setWindowIcon(QtGui.QIcon("icons/tuner"))
         self.setStyleSheet(themes.get_stylesheet())
+        self.setWindowTitle(title)
+
+        self.setLayout(QtWidgets.QGridLayout())
+
+        scroll = QtWidgets.QScrollArea(self)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setAlignment(Qt.AlignTop)
+        scroll.setStyleSheet("QScrollArea{min-width:500 px; min-height: 400px}")
+        scroll.setWidgetResizable(True)
+
+        self.content = QtWidgets.QWidget()
+        self.content.setContentsMargins(0, 0, 0, 0)
+        scroll.setWidget(self.content)
+
+        layout = QtWidgets.QVBoxLayout(self.content)
+        layout.addWidget(QtWidgets.QLabel(message, self))
+        layout.setAlignment(Qt.AlignTop)
+
+        self.layout().addWidget(scroll, 0, 0, 2, 1)
+
+        self.addButton(button1)
+        self.addButton(button2)

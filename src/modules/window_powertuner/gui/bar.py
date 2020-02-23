@@ -15,11 +15,14 @@ from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5 import QtGui
 
+from .button import CPUButtonFlat
 from .button import PictureButtonFlat
 
 
 class Toolbar(QtWidgets.QFrame):
     schema_cleanup = QtCore.pyqtSignal(object)
+    schema_performance = QtCore.pyqtSignal(object)
+    schema_powersave = QtCore.pyqtSignal(object)
     schema_apply = QtCore.pyqtSignal(object)
 
     def __init__(self):
@@ -30,17 +33,24 @@ class Toolbar(QtWidgets.QFrame):
         self.layout().setAlignment(Qt.AlignCenter)
 
         self.apply = PictureButtonFlat(QtGui.QIcon("icons/start"))
-        self.apply.setText(' Apply current schema')
-        self.apply.setShortcut("Ctrl+N")
+        self.apply.clicked.connect(self.schema_apply.emit)
+        self.apply.setText(' Apply schema')
         self.layout().addWidget(self.apply)
 
-        self.cleanup = PictureButtonFlat(QtGui.QIcon("icons/cleanup"))
-        self.cleanup.setText(' Remove schema from the system')
-        self.cleanup.setShortcut("Ctrl+G")
-        self.layout().addWidget(self.cleanup)
+        self.performance = PictureButtonFlat(QtGui.QIcon("icons/performance"))
+        self.performance.clicked.connect(self.schema_performance.emit)
+        self.performance.setText(' Performance')
+        self.layout().addWidget(self.performance)
 
+        self.powersave = PictureButtonFlat(QtGui.QIcon("icons/powersave"))
+        self.powersave.clicked.connect(self.schema_powersave.emit)
+        self.powersave.setText(' Powersave')
+        self.layout().addWidget(self.powersave)
+
+        self.cleanup = CPUButtonFlat(QtGui.QIcon("icons/cleanup"))
         self.cleanup.clicked.connect(self.schema_cleanup.emit)
-        self.apply.clicked.connect(self.schema_apply.emit)
+        self.cleanup.setText(' Cleanup system')
+        self.layout().addWidget(self.cleanup)
 
     def close(self):
         super(Toolbar, self).deleteLater()

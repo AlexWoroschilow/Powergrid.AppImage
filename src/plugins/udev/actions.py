@@ -58,7 +58,8 @@ class ModuleActions(object):
         message_content = open(file, 'r').read()
         message_content = message_content.replace("\n", "<br/>")
         message = "<h2>Execute optimisation script?</h2> <p>{}</p><br/>".format(message_content)
-        return MessageBox.question(window, 'Execute optimisation script?', message, MessageBox.Ok, MessageBox.Cancel)
+        result = MessageBox(window, 'Execute optimisation script?', message, MessageBox.Ok, MessageBox.Cancel)
+        return result.exec_()
 
     @inject.params(window='window')
     def _dialog_script_missed(self, message=None, window=None):

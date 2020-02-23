@@ -48,11 +48,11 @@ class DashboardWidget(QtWidgets.QWidget):
         self.layout().addWidget(DashboardDescription())
         self.layout().addWidget(DashboardStatistic())
 
-        self.layout().addWidget(DashboardTitle("AC- Adapter"))
+        self.layout().addWidget(DashboardTitle("AC- Adapter mode"))
         self.layout().addWidget(DashboardDescriptionACAdapter())
         self.layout().addWidget(DashboardSettingsPerformance())
 
-        self.layout().addWidget(DashboardTitle("Battery"))
+        self.layout().addWidget(DashboardTitle("Battery mode"))
         self.layout().addWidget(DashboardDescriptionBattery())
         self.layout().addWidget(DashboardSettingsPowersave())
 

@@ -31,8 +31,7 @@ class DashboardHeader(QtWidgets.QWidget):
         self.setLayout(QtWidgets.QGridLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
 
-        title = DashboardTitle("{} {}".format("Performance tuner", "" \
-            if not os.path.exists('/etc/performance-tuner') else u"\u2611"))
+        title = DashboardTitle("Performance tuner")
 
         button = PictureButtonFlat("icons/icons")
         button.clicked.connect(self.settingsAction.emit)

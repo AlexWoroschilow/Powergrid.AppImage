@@ -10,6 +10,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+import os
 import functools
 
 from PyQt5.QtCore import Qt
@@ -49,7 +50,16 @@ class PictureButton(QtWidgets.QPushButton):
 
 class PictureButtonFlat(PictureButton):
     def __init__(self, icon=None, text=None):
-        super(QtWidgets.QPushButton, self).__init__(icon, None)
+        super(PictureButtonFlat, self).__init__(icon, None)
+        self.setToolTipDuration(0)
+        self.setToolTip(text)
+        self.setFlat(True)
+
+
+class CPUButtonFlat(PictureButton):
+    def __init__(self, icon=None, text=None):
+        super(CPUButtonFlat, self).__init__(icon, None)
+        self.setDisabled(not os.path.exists('/etc/performance-tuner'))
         self.setToolTipDuration(0)
         self.setToolTip(text)
         self.setFlat(True)

@@ -50,7 +50,7 @@ class StatisticPainterCPUPercent(StatisticPainterAbstract):
         painter.setFont(QtGui.QFont('Tahoma', 30))
         painter.setPen(QtGui.QPen(QtGui.QColor('#e0e0e0')))
         painter.drawText(self.get_relative_width(55.5),
-                         self.get_relative_height(68), text)
+                         self.get_relative_height(69), text)
 
         painter.setFont(QtGui.QFont('Tahoma', 30))
         painter.setPen(QtGui.QPen(QtGui.QColor('#000000')))
@@ -62,7 +62,7 @@ class StatisticPainterCPUPercent(StatisticPainterAbstract):
         painter.setFont(QtGui.QFont('Tahoma', 15))
         painter.setPen(QtGui.QPen(QtGui.QColor('#e0e0e0')))
         painter.drawText(self.get_relative_width(57.5),
-                         self.get_relative_height(78), text)
+                         self.get_relative_height(79), text)
 
         painter.setFont(QtGui.QFont('Tahoma', 15))
         painter.setPen(QtGui.QPen(QtGui.QColor('#000000')))
@@ -87,7 +87,7 @@ class StatisticPainterCPUFrequency(StatisticPainterAbstract):
         painter.setFont(QtGui.QFont('Tahoma', 30))
         painter.setPen(QtGui.QPen(QtGui.QColor('#e0e0e0')))
         painter.drawText(self.get_relative_width(25.5),
-                         self.get_relative_height(68), text)
+                         self.get_relative_height(69), text)
 
         painter.setFont(QtGui.QFont('Tahoma', 30))
         painter.setPen(QtGui.QPen(QtGui.QColor('#000000')))
@@ -99,7 +99,7 @@ class StatisticPainterCPUFrequency(StatisticPainterAbstract):
         painter.setFont(QtGui.QFont('Tahoma', 15))
         painter.setPen(QtGui.QPen(QtGui.QColor('#e0e0e0')))
         painter.drawText(self.get_relative_width(25.5),
-                         self.get_relative_height(78), text)
+                         self.get_relative_height(79), text)
 
         painter.setFont(QtGui.QFont('Tahoma', 15))
         painter.setPen(QtGui.QPen(QtGui.QColor('#000000')))
@@ -133,20 +133,17 @@ class StatisticPainterCPUFrequencyChart(StatisticPainterAbstract):
 
         painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
         for index, point in enumerate(self.points, start=1):
-            x = 30 * index + 4
-            x = x - 15
+            x = (30 * index) - 15
             y = self.height - (self.height / 1.5) - 5
             painter.setPen(QtGui.QPen(QtGui.QColor('#f0f0f0'), 28))
             painter.drawLine(x, y, x, self.height)
 
-            x = 30 * index + 2
-            x = x - 15
+            x = (30 * index) - 15
             y = self.height - point - 5
             painter.setPen(QtGui.QPen(QtGui.QColor('#e0e0e0'), 28))
             painter.drawLine(x, y, x, self.height)
 
-            x = 30 * index
-            x = x - 15
+            x = (30 * index) - 15
             y = self.height - point
             painter.setPen(QtGui.QPen(QtGui.QColor('#62C106'), 28))
             painter.drawLine(x, y, x, self.height)

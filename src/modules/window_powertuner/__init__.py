@@ -33,6 +33,8 @@ class Loader(object):
         widget = MainWindow()
         widget.resize_event.connect(self.actions.onActionWindowResize)
         widget.schema_cleanup.connect(self.actions.onActionSchemaCleanup)
+        widget.schema_performance.connect(self.actions.onActionPerformance)
+        widget.schema_powersave.connect(self.actions.onActionPowersave)
         widget.schema_apply.connect(self.actions.onActionSchemaApply)
 
         width = int(config.get('window.width', 640))
