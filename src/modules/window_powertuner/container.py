@@ -12,14 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 from .gui.scroll import DashboardScrollArea
 
-
-class ExporterContainer(object):
-    collection = []
-
-    def append(self, bundle=None, priority=None):
-        self.collection.append((bundle, priority))
-
-
 class DashboardContainer(object):
     collection = []
 

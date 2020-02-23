@@ -16,7 +16,6 @@ import functools
 from .gui.window import MainWindow
 from .actions import ModuleActions
 from .container import DashboardContainer
-from .container import ExporterContainer
 
 
 class Loader(object):
@@ -49,7 +48,6 @@ class Loader(object):
     def configure(self, binder, options, args):
         binder.bind_to_constructor('window', self._constructor)
         binder.bind_to_constructor('container.dashboard', DashboardContainer)
-        binder.bind_to_constructor('container.exporter', ExporterContainer)
 
 
 module = Loader()
