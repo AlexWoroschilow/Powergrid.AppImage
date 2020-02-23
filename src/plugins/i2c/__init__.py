@@ -13,8 +13,12 @@
 import inject
 import functools
 
-from .service import Finder
 from string import Template
+
+from .service import Finder
+from .gui.settings.settings import DashboardSettingsPerformance
+from .gui.settings.settings import DashboardSettingsPowersave
+from .gui.devices.properties import DashboardProperties
 
 
 class Loader(object):
@@ -24,6 +28,49 @@ class Loader(object):
 
     def __exit__(self, type, value, traceback):
         pass
+
+    @inject.params(config='config', service='plugin.service.i2c')
+    def _ignores(self, status=1, config=None, service=None):
+        ignored = []
+        for device in service.cores():
+            value_ignored = config.get('i2c.permanent.{}'.format(device.code), 0)
+            if not int(value_ignored):
+                continue
+            if int(value_ignored) == status:
+                ignored.append(device.code)
+                continue
+        return ignored
+
+    @inject.params(config='config')
+    def _performance(self, config=None):
+
+        with open('templates/hda.tpl', 'r') as stream:
+            template = Template(stream.read())
+
+            return ('/etc/performance-tuner/performance_i2c', template.substitute(
+                schema=config.get('i2c.performance', 'on'),
+                ignored="'{}'".format("','".join(self._ignores(1)))
+            ))
+
+        return (None, None)
+
+    @inject.params(config='config')
+    def _powersave(self, config=None):
+
+        with open('templates/i2c.tpl', 'r') as stream:
+            template = Template(stream.read())
+
+            return ('/etc/performance-tuner/powersave_i2c', template.substitute(
+                schema=config.get('i2c.powersave', 'auto'),
+                ignored="'{}'".format("','".join(self._ignores(2)))
+            ))
+
+        return (None, None)
+
+    @inject.params(config='config')
+    def _cleanup(self, config=None):
+        return ('/etc/performance-tuner/performance_i2c',
+                '/etc/performance-tuner/powersave_i2c')
 
     @property
     def enabled(self):
@@ -43,9 +90,8 @@ class Loader(object):
             Finder, path='/sys/bus/i2c/devices'
         ))
 
-    @inject.params(performance='container.dashboard.performance', powersave='container.dashboard.powersave',
-                   devices='container.dashboard.devices', storage='storage')
-    def boot(self, options=None, args=None, performance=None, powersave=None, devices=None, storage=None):
+    @inject.params(storage='storage')
+    def boot(self, options=None, args=None, storage=None):
         """
         Define the services and setup the service-container
         :param options:
@@ -54,72 +100,39 @@ class Loader(object):
         :param storage:
         :return:
         """
-        from .gui.settings.settings import DashboardSettingsPerformance
-        performance.append(DashboardSettingsPerformance, 0)
 
-        from .gui.settings.settings import DashboardSettingsPowersave
-        powersave.append(DashboardSettingsPowersave, 0)
+        storage.dispatch({
+            'type': '@@app/dashboard/settings/performance/i2c',
+            'action': DashboardSettingsPerformance,
+            'priority': 0,
+        })
 
-        from .gui.devices.properties import DashboardProperties
-        devices.append(DashboardProperties, 0)
+        storage.dispatch({
+            'type': '@@app/dashboard/settings/powersave/i2c',
+            'action': DashboardSettingsPowersave,
+            'priority': 0,
+        })
+
+        storage.dispatch({
+            'type': '@@app/dashboard/properties/i2c',
+            'action': DashboardProperties,
+            'priority': 0,
+        })
 
         storage.dispatch({
             'type': '@@app/exporter/performance/i2c',
-            'action': self.performance
+            'action': self._performance
         })
 
         storage.dispatch({
             'type': '@@app/exporter/powersave/i2c',
-            'action': self.powersave
+            'action': self._powersave
         })
 
         storage.dispatch({
             'type': '@@app/exporter/cleanup/i2c',
-            'action': self.cleanup
+            'action': self._cleanup
         })
-
-    @inject.params(config='config', service='plugin.service.i2c')
-    def ignores(self, status=1, config=None, service=None):
-        ignored = []
-        for device in service.cores():
-            value_ignored = config.get('i2c.permanent.{}'.format(device.code), 0)
-            if not int(value_ignored):
-                continue
-            if int(value_ignored) == status:
-                ignored.append(device.code)
-                continue
-        return ignored
-
-    @inject.params(config='config')
-    def performance(self, config=None):
-
-        with open('templates/hda.tpl', 'r') as stream:
-            template = Template(stream.read())
-
-            return ('/etc/performance-tuner/performance_i2c', template.substitute(
-                schema=config.get('i2c.performance', 'on'),
-                ignored="'{}'".format("','".join(self.ignores(1)))
-            ))
-
-        return (None, None)
-
-    @inject.params(config='config')
-    def powersave(self, config=None):
-
-        with open('templates/i2c.tpl', 'r') as stream:
-            template = Template(stream.read())
-
-            return ('/etc/performance-tuner/powersave_i2c', template.substitute(
-                schema=config.get('i2c.powersave', 'auto'),
-                ignored="'{}'".format("','".join(self.ignores(1)))
-            ))
-
-        return (None, None)
-
-    @inject.params(config='config')
-    def cleanup(self, config=None):
-        return ('/etc/performance-tuner/performance_i2c',
-                '/etc/performance-tuner/powersave_i2c')
 
 
 module = Loader()

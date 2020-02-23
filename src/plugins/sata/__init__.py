@@ -13,8 +13,12 @@
 import inject
 import functools
 
-from .service import Finder
 from string import Template
+
+from .service import Finder
+from .gui.settings.settings import DashboardSettingsPerformance
+from .gui.settings.settings import DashboardSettingsPowersave
+from .gui.devices.properties import DashboardProperties
 
 
 class Loader(object):
@@ -43,43 +47,50 @@ class Loader(object):
             Finder, path='/sys/class/scsi_host'
         ))
 
-    @inject.params(performance='container.dashboard.performance', powersave='container.dashboard.powersave',
-                   devices='container.dashboard.devices', storage='storage')
-    def boot(self, options=None, args=None, performance=None, powersave=None, devices=None, storage=None):
+    @inject.params(storage='storage')
+    def boot(self, options=None, args=None, storage=None):
         """
         Define the services and setup the service-container
         :param options:
         :param args:
-        :param performance:
         :param storage:
         :return:
         """
-        from .gui.settings.settings import DashboardSettingsPerformance
-        performance.append(DashboardSettingsPerformance, 0)
+        storage.dispatch({
+            'type': '@@app/dashboard/settings/performance/sata',
+            'action': DashboardSettingsPerformance,
+            'priority': 0,
+        })
 
-        from .gui.settings.settings import DashboardSettingsPowersave
-        powersave.append(DashboardSettingsPowersave, 0)
+        storage.dispatch({
+            'type': '@@app/dashboard/settings/powersave/sata',
+            'action': DashboardSettingsPowersave,
+            'priority': 0,
+        })
 
-        from .gui.devices.properties import DashboardProperties
-        devices.append(DashboardProperties, 0)
+        storage.dispatch({
+            'type': '@@app/dashboard/properties/sata',
+            'action': DashboardProperties,
+            'priority': 0,
+        })
 
         storage.dispatch({
             'type': '@@app/exporter/performance/sata',
-            'action': self.performance
+            'action': self._performance
         })
 
         storage.dispatch({
             'type': '@@app/exporter/powersave/sata',
-            'action': self.powersave
+            'action': self._powersave
         })
 
         storage.dispatch({
             'type': '@@app/exporter/cleanup/sata',
-            'action': self.cleanup
+            'action': self._cleanup
         })
 
     @inject.params(config='config', service='plugin.service.sata')
-    def ignores(self, status=1, config=None, service=None):
+    def _ignores(self, status=1, config=None, service=None):
         ignored = []
         for device in service.devices():
             value_ignored = config.get('sata.permanent.{}'.format(device.code), 0)
@@ -91,33 +102,33 @@ class Loader(object):
         return ignored
 
     @inject.params(config='config')
-    def performance(self, config=None):
+    def _performance(self, config=None):
 
         with open('templates/sata.tpl', 'r') as stream:
             template = Template(stream.read())
 
             return ('/etc/performance-tuner/performance_sata', template.substitute(
                 schema=config.get('sata.performance', 'max_performance'),
-                ignored="'{}'".format("','".join(self.ignores(1)))
+                ignored="'{}'".format("','".join(self._ignores(1)))
             ))
 
         return (None, None)
 
     @inject.params(config='config')
-    def powersave(self, config=None):
+    def _powersave(self, config=None):
 
         with open('templates/sata.tpl', 'r') as stream:
             template = Template(stream.read())
 
             return ('/etc/performance-tuner/powersave_sata', template.substitute(
                 schema=config.get('sata.powersave', 'min_power'),
-                ignored="'{}'".format("','".join(self.ignores(2)))
+                ignored="'{}'".format("','".join(self._ignores(2)))
             ))
 
         return (None, None)
 
     @inject.params(config='config')
-    def cleanup(self, config=None):
+    def _cleanup(self, config=None):
         return ('/etc/performance-tuner/performance_sata',
                 '/etc/performance-tuner/powersave_sata')
 

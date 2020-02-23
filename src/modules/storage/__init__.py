@@ -54,12 +54,15 @@ class Loader(object):
     def __exit__(self, type, value, traceback):
         pass
 
+    def __test(self):
+        return pydux.create_store(self.storage)
+
     @property
     def enabled(self):
         return True
 
     def configure(self, binder, options, args):
-        binder.bind('storage', pydux.create_store(self.storage))
+        binder.bind_to_constructor('storage', self.__test)
 
     def storage(self, state=None, action=None):
 
@@ -81,6 +84,21 @@ class Loader(object):
 
         if action['type'].find('/exporter/cleanup') != -1:
             state.cleanup.append(action['action'])
+
+        if action['type'].find('/dashboard/settings/performance') != -1:
+            instance = inject.get_injector_or_die()
+            performance = instance.get_instance('container.dashboard.performance')
+            performance.append(action['action'], action['priority'])
+
+        if action['type'].find('/dashboard/settings/powersave') != -1:
+            instance = inject.get_injector_or_die()
+            powersave = instance.get_instance('container.dashboard.powersave')
+            powersave.append(action['action'], action['priority'])
+
+        if action['type'].find('/dashboard/properties') != -1:
+            instance = inject.get_injector_or_die()
+            devices = instance.get_instance('container.dashboard.devices')
+            devices.append(action['action'], action['priority'])
 
         return state
 
