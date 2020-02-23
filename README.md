@@ -41,5 +41,7 @@ Run the program:
 
 ![Dashboard](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/dashboard.png?raw=true)
 
-![Device management](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices.png?raw=true)
+![Device management](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices-01.png?raw=true)
+
+![Device management](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices-02.png?raw=true)
 
