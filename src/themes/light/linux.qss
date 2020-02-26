@@ -7,8 +7,8 @@ ContainerWidget { background: #ffffff; padding: 0px; margin: 0px; }
 ContainerWidget DashboardButtonFlat { padding: 5px; margin: 0px; text-align: left; }
 ContainerWidget DashboardSlider Title { font-size: 10px; color: #8a8a8a;  }
 ContainerWidget DashboardSlider { max-height: 100px; }
-DashboardWidget DashboardSchema { margin: 10px 0px 10px 0px; }
 ContainerWidget DashboardDescription { font-size: 12px; background: #ffffff; color: #8a8a8a; margin: 10px 0px 10px 0px; }
+DashboardWidget DashboardSchema { margin: 10px 0px 10px 0px; }
 DashboardWidget DashboardProperties Field { font-size: 18px; color: #8a8a8a; }
 DashboardWidget DashboardProperties Value { font-size: 12px; margin: 5px 10px 0px 0px; }
 DashboardWidget DashboardProperties Title { font-size: 26px;  }
@@ -16,8 +16,8 @@ DashboardWidget DashboardProperties { margin: 20px 0px 20px 0px; }
 DashboardWidget DashboardTitle { font-size: 32px; margin: 25px 0px 0px 0px; }
 DashboardWidget DashboardHeader DashboardTitle { margin: 0px; }
 DashboardWidget DashboardHeader { font-size: 32px; }
-
 DashboardWidget { margin: 0px 0px 0px 0px; }
+
 DashboardSettingsPerformance { min-width: 50px; }
 DashboardSettingsPowersave { min-width: 50px; }
 

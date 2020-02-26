@@ -10,10 +10,6 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import os
-import inject
-
-from PyQt5.QtCore import Qt
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 
@@ -28,7 +24,7 @@ class DashboardHeader(QtWidgets.QWidget):
         super(DashboardHeader, self).__init__()
         self.setContentsMargins(0, 0, 0, 0)
 
-        self.setLayout(QtWidgets.QGridLayout())
+        self.setLayout(QtWidgets.QHBoxLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
 
         title = DashboardTitle("Performance tuner")
@@ -36,5 +32,5 @@ class DashboardHeader(QtWidgets.QWidget):
         button = PictureButtonFlat("icons/icons")
         button.clicked.connect(self.settingsAction.emit)
 
-        self.layout().addWidget(title, 0, 0, 1, 2)
-        self.layout().addWidget(button, 0, 3, 1, 1)
+        self.layout().addWidget(title)
+        self.layout().addWidget(button)

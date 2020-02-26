@@ -10,6 +10,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+import os
 import inject
 import functools
 
@@ -70,7 +71,7 @@ class Loader(object):
 
     @property
     def enabled(self):
-        return True
+        return os.path.exists('/sys/class/scsi_host')
 
     def configure(self, binder, options, args):
         binder.bind_to_constructor('plugin.service.sata', functools.partial(
