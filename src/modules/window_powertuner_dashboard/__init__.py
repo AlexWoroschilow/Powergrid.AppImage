@@ -11,8 +11,8 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import inject
-from .container import DashboardContainerHorizontal
-from .container import DashboardContainerVertical
+
+from .gui.dashboard.widget import DashboardWidget
 
 
 class Loader(object):
@@ -25,28 +25,12 @@ class Loader(object):
 
     @inject.params(window='window')
     def __constructor(self, window=None):
-        from .gui.dashboard.widget import DashboardWidget
-
         widget = DashboardWidget()
         widget.settingsAction.connect(window.settingsAction.emit)
-
         return widget
-
-    def configure(self, binder, options, args):
-        binder.bind_to_constructor('container.dashboard.performance', DashboardContainerHorizontal)
-        binder.bind_to_constructor('container.dashboard.powersave', DashboardContainerHorizontal)
-        binder.bind_to_constructor('container.dashboard.devices', DashboardContainerVertical)
 
     @inject.params(container_dashboard='container.dashboard')
     def boot(self, options=None, args=None, container_dashboard=None):
-        """
-        Define the services and setup the service-container
-        :param options:
-        :param args:
-        :param container_dashboard:
-        :return:
-        """
-
         container_dashboard.append(self.__constructor, 0)
 
 

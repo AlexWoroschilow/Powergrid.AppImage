@@ -16,13 +16,12 @@ from PyQt5.QtCore import Qt
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 from PyQt5 import QtGui
-import psutil
 
 
 class DashboardSettingsPerformance(QtWidgets.QWidget):
 
-    @inject.params(container='container.dashboard.performance')
-    def __init__(self, container=None):
+    @inject.params(storage='storage')
+    def __init__(self, storage=None):
         super(DashboardSettingsPerformance, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
 
@@ -30,13 +29,29 @@ class DashboardSettingsPerformance(QtWidgets.QWidget):
         self.layout().setAlignment(Qt.AlignCenter)
         self.layout().setContentsMargins(0, 0, 0, 0)
 
-        self.layout().addWidget(container.widget)
+        state = storage.get_state()
+        if state is None: return None
+
+        widget = QtWidgets.QWidget()
+        widget.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        widget.setLayout(QtWidgets.QHBoxLayout())
+        self.layout().addWidget(widget)
+
+        for bundle in sorted(state.settings.performance, key=lambda x: x[1]):
+            constructor, priority = bundle
+            if not callable(constructor):
+                continue
+
+            child = constructor()
+            if child is None: continue
+
+            widget.layout().addWidget(child)
 
 
 class DashboardSettingsPowersave(QtWidgets.QWidget):
 
-    @inject.params(container='container.dashboard.powersave')
-    def __init__(self, container=None):
+    @inject.params(storage='storage')
+    def __init__(self, storage=None):
         super(DashboardSettingsPowersave, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
 
@@ -44,13 +59,29 @@ class DashboardSettingsPowersave(QtWidgets.QWidget):
         self.layout().setAlignment(Qt.AlignCenter)
         self.layout().setContentsMargins(0, 0, 0, 0)
 
-        self.layout().addWidget(container.widget)
+        state = storage.get_state()
+        if state is None: return None
+
+        widget = QtWidgets.QWidget()
+        widget.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        widget.setLayout(QtWidgets.QHBoxLayout())
+        self.layout().addWidget(widget)
+
+        for bundle in sorted(state.settings.powersave, key=lambda x: x[1]):
+            constructor, priority = bundle
+            if not callable(constructor):
+                continue
+
+            child = constructor()
+            if child is None: continue
+
+            widget.layout().addWidget(child)
 
 
 class DashboardSettingsDevices(QtWidgets.QWidget):
 
-    @inject.params(container='container.dashboard.devices')
-    def __init__(self, container=None):
+    @inject.params(storage='storage')
+    def __init__(self, storage=None):
         super(DashboardSettingsDevices, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
 
@@ -58,4 +89,15 @@ class DashboardSettingsDevices(QtWidgets.QWidget):
         self.layout().setAlignment(Qt.AlignCenter)
         self.layout().setContentsMargins(0, 0, 0, 0)
 
-        self.layout().addWidget(container.widget)
+        state = storage.get_state()
+        if state is None: return None
+
+        for bundle in sorted(state.devices, key=lambda x: x[1]):
+            constructor, priority = bundle
+            if not callable(constructor):
+                continue
+
+            widget = constructor()
+            if widget is None: continue
+
+            self.layout().addWidget(widget)
