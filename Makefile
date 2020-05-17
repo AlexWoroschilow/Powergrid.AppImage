@@ -21,7 +21,7 @@ appimage: clean
 	cp -r ./src/templates $(APPDIR)/application
 	cp -r ./src/themes $(APPDIR)/application
 
-	bin/appimagetool-x86_64.AppImage  ./AppDir bin/AOD-PerformanceTuner.AppImage
+	bin/appimagetool-x86_64.AppImage  ./AppDir AOD-PerformanceTuner.AppImage
 	@echo "done: bin/AOD-PerformanceTuner.AppImage"
 
 clean:
