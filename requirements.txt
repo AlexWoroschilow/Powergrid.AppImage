@@ -9,4 +9,4 @@ pydux==0.2.2
 PyInstaller==3.6
 PyQt5==5.14.1
 PyQt5-sip==12.7.1
-sip==4.19.8
+sip
