@@ -11,11 +11,9 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
-import inject
-import functools
-from string import Template
 
-from .service import Finder
+import inject
+
 from .gui.settings.settings import DashboardSettingsPerformance
 from .gui.settings.settings import DashboardSettingsPowersave
 
@@ -40,71 +38,41 @@ class Loader(object):
                 continue
         return ignored
 
-    @inject.params(config='config')
-    def _performance(self, config=None):
-        with open('templates/laptop.tpl', 'r') as stream:
-            template = Template(stream.read())
-            return ('/etc/performance-tuner/performance_laptop', template.substitute(
-                schema=config.get('laptop.performance', '0'),
-                ignored="'{}'".format("','".join(self._ignores(1)))
-            ))
 
-        return (None, None)
-
-    @inject.params(config='config')
-    def _powersave(self, config=None):
-        with open('templates/laptop.tpl', 'r') as stream:
-            template = Template(stream.read())
-            return ('/etc/performance-tuner/powersave_laptop', template.substitute(
-                schema=config.get('laptop.powersave', '5'),
-                ignored="'{}'".format("','".join(self._ignores(2)))
-            ))
-
-        return (None, None)
-
-    @inject.params(config='config')
-    def _cleanup(self, config=None):
-        return ('/etc/performance-tuner/performance_laptop',
-                '/etc/performance-tuner/powersave_laptop')
-
-    @property
-    def enabled(self):
-        return os.path.exists('/proc/sys/vm/laptop_mode')
-
-    def configure(self, binder, options, args):
-        binder.bind_to_constructor('plugin.service.laptop', functools.partial(
-            Finder, path='/proc/sys/vm/laptop_mode'
-        ))
-
-    @inject.params(storage='storage')
-    def boot(self, options=None, args=None, storage=None):
-
-        storage.dispatch({
-            'type': '@@app/dashboard/settings/performance/laptop',
-            'action': DashboardSettingsPerformance,
-            'priority': 0,
-        })
-
-        storage.dispatch({
-            'type': '@@app/dashboard/settings/powersave/laptop',
-            'action': DashboardSettingsPowersave,
-            'priority': 0,
-        })
-
-        storage.dispatch({
-            'type': '@@app/exporter/performance/laptop',
-            'action': self._performance
-        })
-
-        storage.dispatch({
-            'type': '@@app/exporter/powersave/laptop',
-            'action': self._powersave
-        })
-
-        storage.dispatch({
-            'type': '@@app/exporter/cleanup/laptop',
-            'action': self._cleanup
-        })
+def configure(binder: inject.Binder, options: {} = None, args: {} = None):
+    from .service import Finder
+    binder.bind_to_constructor('plugin.service.laptop', Finder)
 
 
-module = Loader()
+def bootstrap(options: {} = None, args: [] = None):
+    from modules import qt5_workspace_battery
+    from modules import qt5_workspace_adapter
+
+    @qt5_workspace_battery.element()
+    def battery_element(parent=None):
+        return DashboardSettingsPowersave()
+
+    @qt5_workspace_adapter.element()
+    def adapter_element(parent=None):
+        return DashboardSettingsPerformance()
+
+    from modules.qt5_workspace_udev import performance
+    from modules.qt5_workspace_udev import powersave
+
+    @performance.rule()
+    @inject.params(config='config', service='plugin.service.laptop')
+    def rule_performance(config, service):
+        for device in service.devices():
+            if not os.path.exists(device.path):
+                continue
+
+            yield 'echo {} > {}'.format(config.get('laptop.performance', '0'), device.path)
+
+    @powersave.rule()
+    @inject.params(config='config', service='plugin.service.laptop')
+    def rule_powersave(config, service):
+        for device in service.devices():
+            if not os.path.exists(device.path):
+                continue
+
+            yield 'echo {} > {}'.format(config.get('laptop.powersave', '5'), device.path)

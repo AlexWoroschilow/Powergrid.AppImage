@@ -12,25 +12,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import functools
 
+import inject
+
 from .services import ConfigService
 
 
-class Loader(object):
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, type, value, traceback):
-        pass
-
-    @property
-    def enabled(self):
-        return True
-
-    def configure(self, binder, options, args):
-        binder.bind_to_constructor('config', functools.partial(
-            ConfigService, file=options.config
-        ))
-
-
-module = Loader()
+def configure(binder: inject.Binder, options: {} = None, args: {} = None):
+    binder.bind_to_constructor('config', functools.partial(
+        ConfigService, file=options.config
+    ))

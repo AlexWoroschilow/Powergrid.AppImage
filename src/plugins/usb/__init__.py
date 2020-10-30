@@ -10,14 +10,11 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+import os
+
 import inject
-import functools
-from string import Template
 
 from .service import Finder
-from .gui.settings.settings import DashboardSettingsPerformance
-from .gui.settings.settings import DashboardSettingsPowersave
-from .gui.devices.properties import DashboardProperties
 
 
 class Loader(object):
@@ -40,83 +37,85 @@ class Loader(object):
                 continue
         return ignored
 
-    @inject.params(config='config')
-    def _performance(self, config=None):
-        with open('templates/usb.tpl', 'r') as stream:
-            template = Template(stream.read())
-            return ('/etc/performance-tuner/performance_usb', template.substitute(
-                power_level=config.get('usb.performance.power_level', 'on'),
-                power_control=config.get('usb.performance.power_control', 'on'),
-                autosuspend_delay=config.get('usb.performance.autosuspend_delay', '-1'),
-                autosuspend=config.get('usb.performance.autosuspend', '-1'),
-                ignored="'{}'".format("','".join(self._ignores(1)))
-            ))
 
-        return (None, None)
-
-    @inject.params(config='config')
-    def _powersave(self, config=None):
-        with open('templates/usb.tpl', 'r') as stream:
-            template = Template(stream.read())
-            return ('/etc/performance-tuner/powersave_usb', template.substitute(
-                power_level=config.get('usb.powersave.power_level', 'auto'),
-                power_control=config.get('usb.powersave.power_control', 'auto'),
-                autosuspend_delay=config.get('usb.powersave.autosuspend_delay', '500'),
-                autosuspend=config.get('usb.powersave.autosuspend', '500'),
-                ignored="'{}'".format("','".join(self._ignores(2)))
-            ))
-
-        return (None, None)
-
-    @inject.params(config='config')
-    def _cleanup(self, config=None):
-        return ('/etc/performance-tuner/performance_usb',
-                '/etc/performance-tuner/powersave_usb')
-
-    @property
-    def enabled(self):
-        return True
-
-    def configure(self, binder, options, args):
-        binder.bind_to_constructor('plugin.service.usb', functools.partial(
-            Finder, path='/sys/bus/usb/devices'
-        ))
-
-    @inject.params(storage='storage')
-    def boot(self, options=None, args=None, storage=None):
-
-        storage.dispatch({
-            'type': '@@app/dashboard/settings/performance/usb',
-            'action': DashboardSettingsPerformance,
-            'priority': 0,
-        })
-
-        storage.dispatch({
-            'type': '@@app/dashboard/settings/powersave/usb',
-            'action': DashboardSettingsPowersave,
-            'priority': 0,
-        })
-
-        storage.dispatch({
-            'type': '@@app/dashboard/properties/usb',
-            'action': DashboardProperties,
-            'priority': 0,
-        })
-
-        storage.dispatch({
-            'type': '@@app/exporter/performance/usb',
-            'action': self._performance
-        })
-
-        storage.dispatch({
-            'type': '@@app/exporter/powersave/usb',
-            'action': self._powersave
-        })
-
-        storage.dispatch({
-            'type': '@@app/exporter/cleanup/usb',
-            'action': self._cleanup
-        })
+def configure(binder: inject.Binder, options: {} = None, args: {} = None):
+    from .workspace.settings import SettingsWidget
+    binder.bind_to_constructor('workspace.usb', SettingsWidget)
+    binder.bind_to_constructor('plugin.service.usb', Finder)
 
 
-module = Loader()
+def bootstrap(options: {} = None, args: [] = None):
+    from modules import qt5_window
+    from modules import qt5_workspace_battery
+    from modules import qt5_workspace_adapter
+    from modules.qt5_workspace_udev import performance
+    from modules.qt5_workspace_udev import powersave
+
+    @qt5_window.workspace(name='USB', focus=False, position=2)
+    @inject.params(workspace='workspace.usb')
+    def window_workspace(parent=None, workspace=None):
+        return workspace
+
+    @qt5_workspace_battery.element()
+    def battery_element(parent=None):
+        from .settings.panel import SettingsPowersaveWidget
+        return SettingsPowersaveWidget()
+
+    @qt5_workspace_adapter.element()
+    def adapter_element(parent=None):
+        from .settings.panel import SettingsPerformanceWidget
+        return SettingsPerformanceWidget()
+
+    @performance.rule()
+    @inject.params(config='config', service='plugin.service.usb')
+    def rule_performance(config, service):
+        for device in service.devices():
+            if not os.path.exists(device.path):
+                continue
+
+            file = '{}/power/level'.format(device.path)
+            schema = config.get('usb.performance.power_level', 'on')
+            if os.path.exists(file) and os.path.isfile(file):
+                yield 'echo {} > {}'.format(schema, file)
+
+            file = '{}/power/control'.format(device.path)
+            schema = config.get('usb.performance.power_control', 'on')
+            if os.path.exists(file) and os.path.isfile(file):
+                yield 'echo {} > {}'.format(schema, file)
+
+            file = '{}/power/autosuspend'.format(device.path)
+            schema = config.get('usb.performance.autosuspend', '-1')
+            if os.path.exists(file) and os.path.isfile(file):
+                yield 'echo {} > {}'.format(schema, file)
+
+            file = '{}/power/autosuspend_delay_ms'.format(device.path)
+            schema = config.get('usb.performance.autosuspend_delay', '-1')
+            if os.path.exists(file) and os.path.isfile(file):
+                yield 'echo {} > {}'.format(schema, file)
+
+    @powersave.rule()
+    @inject.params(config='config', service='plugin.service.usb')
+    def rule_powersave(config, service):
+        for device in service.devices():
+            if not os.path.exists(device.path):
+                continue
+
+            file = '{}/power/level'.format(device.path)
+            schema = config.get('usb.powersave.power_level', 'auto')
+            if os.path.exists(file) and os.path.isfile(file):
+                yield 'echo {} > {}'.format(schema, file)
+
+            file = '{}/power/control'.format(device.path)
+            schema = config.get('usb.powersave.power_control', 'auto')
+            if os.path.exists(file) and os.path.isfile(file):
+                yield 'echo {} > {}'.format(schema, file)
+
+            file = '{}/power/autosuspend'.format(device.path)
+            schema = config.get('usb.powersave.autosuspend', '500')
+            if os.path.exists(file) and os.path.isfile(file):
+                yield 'echo {} > {}'.format(schema, file)
+
+            file = '{}/power/autosuspend_delay_ms'.format(device.path)
+            schema = config.get('usb.powersave.autosuspend_delay', '500')
+            if os.path.exists(file) and os.path.isfile(file):
+                yield 'echo {} > {}'.format(schema, file)

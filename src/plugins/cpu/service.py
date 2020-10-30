@@ -11,7 +11,6 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
-import glob
 import re
 
 
@@ -80,14 +79,8 @@ class Device(object):
 
 
 class Finder(object):
-
-    def __init__(self, path=None):
-        self.path = path
-        pass
-
-    def __call__(self, *args, **kwargs):
-        return self
-
-    def cores(self):
-        for device in glob.glob('{}/cpu[0-9]*'.format(self.path)):
-            yield Device(device)
+    def devices(self):
+        import pyudev
+        context = pyudev.Context()
+        for device in context.list_devices(subsystem='cpu'):
+            yield Device('/sys{}'.format(device.get('DEVPATH')))

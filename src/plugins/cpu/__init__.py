@@ -10,14 +10,9 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import inject
-import functools
-from string import Template
+import os
 
-from .service import Finder
-from .gui.settings.settings import DashboardSettingsPerformance
-from .gui.settings.settings import DashboardSettingsPowersave
-from .gui.devices.properties import DashboardProperties
+import inject
 
 
 class Loader(object):
@@ -40,77 +35,56 @@ class Loader(object):
                 continue
         return ignored
 
-    @inject.params(config='config')
-    def _performance(self, config=None):
-        with open('templates/cpu.tpl', 'r') as stream:
-            template = Template(stream.read())
-            return ('/etc/performance-tuner/performance_cpu', template.substitute(
-                schema=config.get('cpu.performance', 'ondemand'),
-                ignored="'{}'".format("','".join(self._ignores(1)))
-            ))
 
-        return (None, None)
+def configure(binder: inject.Binder, options: {} = None, args: {} = None):
+    from .workspace.settings import SettingsWidget
+    binder.bind_to_constructor('workspace.cpu', SettingsWidget)
 
-    @inject.params(config='config')
-    def _powersave(self, config=None):
-        with open('templates/cpu.tpl', 'r') as stream:
-            template = Template(stream.read())
-            return ('/etc/performance-tuner/powersave_cpu', template.substitute(
-                schema=config.get('cpu.powersave', 'powersave'),
-                ignored="'{}'".format("','".join(self._ignores(2)))
-            ))
-
-        return (None, None)
-
-    @inject.params(config='config')
-    def _cleanup(self, config=None):
-        return ('/etc/performance-tuner/performance_cpu',
-                '/etc/performance-tuner/powersave_cpu')
-
-    @property
-    def enabled(self):
-        return True
-
-    def configure(self, binder, options, args):
-        binder.bind_to_constructor('plugin.service.cpu', functools.partial(
-            Finder, path='/sys/devices/system/cpu'
-        ))
-
-    @inject.params(storage='storage')
-    def boot(self, options=None, args=None, storage=None):
-
-        storage.dispatch({
-            'type': '@@app/dashboard/settings/performance/cpu',
-            'action': DashboardSettingsPerformance,
-            'priority': 0,
-        })
-
-        storage.dispatch({
-            'type': '@@app/dashboard/settings/powersave/cpu',
-            'action': DashboardSettingsPowersave,
-            'priority': 0,
-        })
-
-        storage.dispatch({
-            'type': '@@app/dashboard/properties/cpu',
-            'action': DashboardProperties,
-            'priority': 0,
-        })
-
-        storage.dispatch({
-            'type': '@@app/exporter/performance/cpu',
-            'action': self._performance
-        })
-
-        storage.dispatch({
-            'type': '@@app/exporter/powersave/cpu',
-            'action': self._powersave
-        })
-
-        storage.dispatch({
-            'type': '@@app/exporter/cleanup/cpu',
-            'action': self._cleanup
-        })
+    from .service import Finder
+    binder.bind_to_constructor('plugin.service.cpu', Finder)
 
 
-module = Loader()
+def bootstrap(options: {} = None, args: [] = None):
+    from modules import qt5_window
+    from modules import qt5_workspace_battery
+    from modules import qt5_workspace_adapter
+
+    @qt5_window.workspace(name='CPU', focus=False, position=2)
+    @inject.params(workspace='workspace.cpu')
+    def window_workspace(parent=None, workspace=None):
+        return workspace
+
+    @qt5_workspace_battery.element()
+    def battery_element(parent=None):
+        from .settings.panel import SettingsPowersaveWidget
+        return SettingsPowersaveWidget()
+
+    @qt5_workspace_adapter.element()
+    def adapter_element(parent=None):
+        from .settings.panel import SettingsPerformanceWidget
+        return SettingsPerformanceWidget()
+
+    from modules.qt5_workspace_udev import performance
+    from modules.qt5_workspace_udev import powersave
+
+    @performance.rule()
+    @inject.params(config='config', service='plugin.service.cpu')
+    def rule_performance(config, service):
+        for device in service.devices():
+            if not os.path.exists(device.path):
+                continue
+
+            yield 'echo {} > {}/cpufreq/scaling_governor'.format(
+                config.get('cpu.performance', 'ondemand'), device.path
+            )
+
+    @powersave.rule()
+    @inject.params(config='config', service='plugin.service.cpu')
+    def rule_powersave(config, service):
+        for device in service.devices():
+            if not os.path.exists(device.path):
+                continue
+
+            yield 'echo {} > {}/cpufreq/scaling_governor'.format(
+                config.get('cpu.powersave', 'powersave'), device.path
+            )

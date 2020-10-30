@@ -11,7 +11,6 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
-import glob
 
 
 class Device(object):
@@ -30,13 +29,5 @@ class Device(object):
 
 
 class Finder(object):
-
-    def __init__(self, path=None):
-        self.path = path
-        pass
-
-    def __call__(self, *args, **kwargs):
-        return self
-
     def devices(self):
-        yield Device(self.path)
+        yield Device('/proc/sys/vm/laptop_mode')

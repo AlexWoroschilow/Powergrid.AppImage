@@ -10,8 +10,8 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import pydux
 import inject
+import pydux
 
 
 class StorageExporter(object):
@@ -44,59 +44,45 @@ class Storage(object):
         return self.exporter.cleanup
 
 
-class Loader(object):
+def configure(binder: inject.Binder, options: {} = None, args: {} = None):
+    def _construct():
 
-    def __enter__(self):
-        return self
+        def storage(state=None, action=None):
 
-    def __exit__(self, type, value, traceback):
-        pass
+            state = Storage() \
+                if state is None \
+                else state
 
-    def __test(self):
-        return pydux.create_store(self.storage)
+            if 'type' not in action.keys():
+                raise Exception('type is required')
 
-    @property
-    def enabled(self):
-        return True
+            action_type = action['type']
+            if 'action' not in action.keys():
+                return state
 
-    def configure(self, binder, options, args):
-        binder.bind_to_constructor('storage', self.__test)
+            if action_type.find('/exporter/performance') != -1:
+                state.exporter.performance.append(action['action'])
 
-    def storage(self, state=None, action=None):
+            if action_type.find('/exporter/powersave') != -1:
+                state.exporter.powersave.append(action['action'])
 
-        state = Storage() \
-            if state is None \
-            else state
+            if action_type.find('/exporter/cleanup') != -1:
+                state.exporter.cleanup.append(action['action'])
 
-        if 'type' not in action.keys():
-            raise Exception('type is required')
+            if action_type.find('/dashboard/settings/performance') != -1:
+                bunch = (action['action'], action['priority'])
+                state.settings.performance.append(bunch)
 
-        action_type = action['type']
-        if 'action' not in action.keys():
+            if action_type.find('/dashboard/settings/powersave') != -1:
+                bunch = (action['action'], action['priority'])
+                state.settings.powersave.append(bunch)
+
+            if action_type.find('/dashboard/properties') != -1:
+                bunch = (action['action'], action['priority'])
+                state.devices.append(bunch)
+
             return state
 
-        if action_type.find('/exporter/performance') != -1:
-            state.exporter.performance.append(action['action'])
+        return pydux.create_store(storage)
 
-        if action_type.find('/exporter/powersave') != -1:
-            state.exporter.powersave.append(action['action'])
-
-        if action_type.find('/exporter/cleanup') != -1:
-            state.exporter.cleanup.append(action['action'])
-
-        if action_type.find('/dashboard/settings/performance') != -1:
-            bunch = (action['action'], action['priority'])
-            state.settings.performance.append(bunch)
-
-        if action_type.find('/dashboard/settings/powersave') != -1:
-            bunch = (action['action'], action['priority'])
-            state.settings.powersave.append(bunch)
-
-        if action_type.find('/dashboard/properties') != -1:
-            bunch = (action['action'], action['priority'])
-            state.devices.append(bunch)
-
-        return state
-
-
-module = Loader()
+    binder.bind_to_constructor('storage', _construct)

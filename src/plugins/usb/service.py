@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2015 Alex Woroschilow (alex.woroschilow@gmail.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,30 +10,26 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
-import glob
-import inject
+
+import pyudev
 
 
-class Device(object):
-    def __init__(self, path=None):
-        self.path = path
+class Device(pyudev.Device):
+    def __init__(self, device):
+        self.device = device
 
     @property
-    @inject.params(usbids='usbids')
-    def name(self, usbids=None):
-        product = "{}/product".format(self.path)
-        if not os.path.exists(product):
-            return usbids.get(self.vendor, self.product)
+    def name(self):
+        return self.device.get('ID_MODEL_ENC')
 
-        with open(product, 'r') as stream:
-            return stream.read().strip(" \n")
-        return usbids.get(self.vendor, self.product)
+    @property
+    def path(self):
+        return "/sys{}".format(self.device.get('DEVPATH'))
 
     @property
     def power_level(self):
         value = "{}/power/level".format(self.path)
-        if not os.path.exists(value):
-            return None
+        if not os.path.exists(value): return None
 
         with open(value, 'r') as stream:
             return stream.read().strip("\n")
@@ -51,8 +46,7 @@ class Device(object):
     @property
     def power_autosuspend(self):
         value = "{}/power/autosuspend".format(self.path)
-        if not os.path.exists(value):
-            return None
+        if not os.path.exists(value): return None
 
         with open(value, 'r') as stream:
             return stream.read().strip("\n")
@@ -60,51 +54,31 @@ class Device(object):
     @property
     def power_autosuspend_timeout(self):
         value = "{}/power/autosuspend_delay_ms".format(self.path)
-        if not os.path.exists(value):
-            return None
+        if not os.path.exists(value): return None
 
         with open(value, 'r') as stream:
             return stream.read().strip("\n")
 
     @property
     def vendor(self):
-        value = "{}/idVendor".format(self.path)
-        if not os.path.exists(value):
-            return None
-
-        with open(value, 'r') as stream:
-            return stream.read().strip("\n")
+        return self.device.get('ID_VENDOR')
 
     @property
     def product(self):
-        value = "{}/idProduct".format(self.path)
-        if not os.path.exists(value):
-            return None
-
-        with open(value, 'r') as stream:
-            return stream.read().strip("\n")
+        return self.device.get('ID_MODEL')
 
     @property
     def code(self):
-        return "{}{}".format(self.vendor, self.product)
+        return self.device.get('PRODUCT') \
+            .replace('/', '.')
 
 
 class Finder(object):
-
-    def __init__(self, path=None):
-        self.path = path
-        pass
-
-    def __call__(self, *args, **kwargs):
-        return self
-
     def devices(self):
-
-        for device in glob.glob('{}/*'.format(self.path)):
-
-            instance = Device(device)
-            if instance.vendor is None:
+        context = pyudev.Context()
+        for device in context.list_devices(subsystem='usb'):
+            devname = device.get('DEVNAME')
+            if devname is None:
                 continue
-            if instance.product is None:
-                continue
-            yield instance
+
+            yield Device(device)

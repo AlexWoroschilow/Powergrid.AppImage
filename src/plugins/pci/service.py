@@ -11,60 +11,45 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
-import glob
-import inject
 
 
 class Device(object):
-    def __init__(self, path=None):
-        self.path = path
+    def __init__(self, device=None):
+        self.device = device
 
     @property
-    @inject.params(pciids='pciids')
-    def name(self, pciids=None):
-        return pciids.get(self.vendor, self.product)
+    def name(self):
+        return self.device.get('ID_MODEL_FROM_DATABASE')
+
+    @property
+    def path(self):
+        return "/sys{}".format(self.device.get('DEVPATH'))
 
     @property
     def power_control(self):
         path = "{}/power/control".format(self.path)
-        if not os.path.exists(path):
-            return None
+        if not os.path.exists(path): return None
 
         with open(path, 'r') as stream:
             return stream.read().strip("\n")
 
     @property
     def product(self):
-        path = "{}/device".format(self.path)
-        if not os.path.exists(path):
-            return None
-
-        with open(path, 'r') as stream:
-            return stream.read().strip("\n0x")
+        return self.device.get('PCI_ID')
 
     @property
     def vendor(self):
-        path = "{}/vendor".format(self.path)
-        if not os.path.exists(path):
-            return None
-
-        with open(path, 'r') as stream:
-            return stream.read().strip("\n0x")
+        return self.device.get('PCI_ID')
 
     @property
     def code(self):
-        return "{}{}".format(self.vendor, self.product)
+        return self.device.get('PCI_ID'). \
+            replace(':', '.')
 
 
 class Finder(object):
-
-    def __init__(self, path=None):
-        self.path = path
-        pass
-
-    def __call__(self, *args, **kwargs):
-        return self
-
-    def cores(self):
-        for device in glob.glob('{}/*'.format(self.path)):
+    def devices(self):
+        import pyudev
+        context = pyudev.Context()
+        for device in context.list_devices(subsystem='pci'):
             yield Device(device)

@@ -11,13 +11,8 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
-import inject
-import functools
-from string import Template
 
-from .service import Finder
-from .gui.settings.settings import DashboardSettingsPerformance
-from .gui.settings.settings import DashboardSettingsPowersave
+import inject
 
 
 class Loader(object):
@@ -40,71 +35,56 @@ class Loader(object):
                 continue
         return ignored
 
-    @inject.params(config='config')
-    def _performance(self, config=None):
-        with open('templates/hda.tpl', 'r') as stream:
-            template = Template(stream.read())
-            return ('/etc/performance-tuner/performance_hda', template.substitute(
-                schema=config.get('hda.performance', ''),
-                ignored="'{}'".format("','".join(self._ignores(1)))
-            ))
 
-        return (None, None)
+def configure(binder: inject.Binder, options: {} = None, args: {} = None):
+    from .workspace.settings import SettingsWidget
+    binder.bind_to_constructor('workspace.hda', SettingsWidget)
 
-    @inject.params(config='config')
-    def _powersave(self, config=None):
-        with open('templates/hda.tpl', 'r') as stream:
-            template = Template(stream.read())
-            return ('/etc/performance-tuner/powersave_hda', template.substitute(
-                schema=config.get('hda.powersave', '1'),
-                ignored="'{}'".format("','".join(self._ignores(2)))
-            ))
-
-        return (None, None)
-
-    @inject.params(config='config')
-    def _cleanup(self, config=None):
-        return ('/etc/performance-tuner/performance_hda',
-                '/etc/performance-tuner/powersave_hda')
-
-    @property
-    def enabled(self):
-        return os.path.exists('/sys/module/snd_hda_intel')
-
-    def configure(self, binder, options, args):
-        binder.bind_to_constructor('plugin.service.hda', functools.partial(
-            Finder, path='/sys/module/snd_hda_intel'
-        ))
-
-    @inject.params(storage='storage')
-    def boot(self, options=None, args=None, storage=None):
-
-        storage.dispatch({
-            'type': '@@app/dashboard/settings/performance/hda',
-            'action': DashboardSettingsPerformance,
-            'priority': 0,
-        })
-
-        storage.dispatch({
-            'type': '@@app/dashboard/settings/powersave/hda',
-            'action': DashboardSettingsPowersave,
-            'priority': 0,
-        })
-
-        storage.dispatch({
-            'type': '@@app/exporter/performance/hda',
-            'action': self._performance
-        })
-
-        storage.dispatch({
-            'type': '@@app/exporter/powersave/hda',
-            'action': self._powersave
-        })
-
-        storage.dispatch({
-            'type': '@@app/exporter/cleanup/hda',
-            'action': self._cleanup
-        })
+    from .service import Finder
+    binder.bind_to_constructor('plugin.service.hda', Finder)
 
 
-module = Loader()
+def bootstrap(options: {} = None, args: [] = None):
+    from modules import qt5_workspace_battery
+    from modules import qt5_workspace_adapter
+    from modules import qt5_window
+
+    @qt5_window.workspace(name='Intel HDA', focus=False, position=3)
+    @inject.params(workspace='workspace.hda')
+    def window_workspace(parent=None, workspace=None):
+        return workspace
+
+    @qt5_workspace_battery.element()
+    def battery_element(parent=None):
+        from .settings.panel import SettingsPowersaveWidget
+        return SettingsPowersaveWidget()
+
+    @qt5_workspace_adapter.element()
+    def adapter_element(parent=None):
+        from .settings.panel import SettingsPerformanceWidget
+        return SettingsPerformanceWidget()
+
+    from modules.qt5_workspace_udev import performance
+    from modules.qt5_workspace_udev import powersave
+
+    @performance.rule()
+    @inject.params(config='config', service='plugin.service.hda')
+    def rule_performance(config, service):
+        for device in service.devices():
+            if not os.path.exists(device.path):
+                continue
+
+            yield 'echo {} > {}/parameters/power_save'.format(
+                config.get('hda.performance', ''), device.path
+            )
+
+    @powersave.rule()
+    @inject.params(config='config', service='plugin.service.hda')
+    def rule_powersave(config, service):
+        for device in service.devices():
+            if not os.path.exists(device.path):
+                continue
+
+            yield 'echo {} > {}/parameters/power_save'.format(
+                config.get('hda.powersave', '5'), device.path
+            )

@@ -10,15 +10,9 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+import os
+
 import inject
-import functools
-
-from string import Template
-
-from .service import Finder
-from .gui.settings.settings import DashboardSettingsPerformance
-from .gui.settings.settings import DashboardSettingsPowersave
-from .gui.devices.properties import DashboardProperties
 
 
 class Loader(object):
@@ -41,77 +35,55 @@ class Loader(object):
                 continue
         return ignored
 
-    @inject.params(config='config')
-    def _performance(self, config=None):
-        with open('templates/hda.tpl', 'r') as stream:
-            template = Template(stream.read())
-            return ('/etc/performance-tuner/performance_i2c', template.substitute(
-                schema=config.get('i2c.performance', 'on'),
-                ignored="'{}'".format("','".join(self._ignores(1)))
-            ))
 
-        return (None, None)
+def configure(binder: inject.Binder, options: {} = None, args: {} = None):
+    from .workspace.settings import SettingsWidget
+    binder.bind_to_constructor('workspace.i2c', SettingsWidget)
 
-    @inject.params(config='config')
-    def _powersave(self, config=None):
-        with open('templates/i2c.tpl', 'r') as stream:
-            template = Template(stream.read())
-            return ('/etc/performance-tuner/powersave_i2c', template.substitute(
-                schema=config.get('i2c.powersave', 'auto'),
-                ignored="'{}'".format("','".join(self._ignores(2)))
-            ))
-
-        return (None, None)
-
-    @inject.params(config='config')
-    def _cleanup(self, config=None):
-        return ('/etc/performance-tuner/performance_i2c',
-                '/etc/performance-tuner/powersave_i2c')
-
-    @property
-    def enabled(self):
-        return True
-
-    def configure(self, binder, options, args):
-        binder.bind_to_constructor('plugin.service.i2c', functools.partial(
-            Finder, path='/sys/bus/i2c/devices'
-        ))
-
-    @inject.params(storage='storage')
-    def boot(self, options=None, args=None, storage=None):
-
-        storage.dispatch({
-            'type': '@@app/dashboard/settings/performance/i2c',
-            'action': DashboardSettingsPerformance,
-            'priority': 0,
-        })
-
-        storage.dispatch({
-            'type': '@@app/dashboard/settings/powersave/i2c',
-            'action': DashboardSettingsPowersave,
-            'priority': 0,
-        })
-
-        storage.dispatch({
-            'type': '@@app/dashboard/properties/i2c',
-            'action': DashboardProperties,
-            'priority': 0,
-        })
-
-        storage.dispatch({
-            'type': '@@app/exporter/performance/i2c',
-            'action': self._performance
-        })
-
-        storage.dispatch({
-            'type': '@@app/exporter/powersave/i2c',
-            'action': self._powersave
-        })
-
-        storage.dispatch({
-            'type': '@@app/exporter/cleanup/i2c',
-            'action': self._cleanup
-        })
+    from .service import Finder
+    binder.bind_to_constructor('plugin.service.i2c', Finder)
 
 
-module = Loader()
+def bootstrap(options: {} = None, args: [] = None):
+    from modules import qt5_window
+    from modules import qt5_workspace_battery
+    from modules import qt5_workspace_adapter
+    from modules.qt5_workspace_udev import performance
+    from modules.qt5_workspace_udev import powersave
+
+    @qt5_window.workspace(name='I2C', focus=False, position=6)
+    @inject.params(workspace='workspace.i2c')
+    def window_workspace(parent=None, workspace=None):
+        return workspace
+
+    @qt5_workspace_battery.element()
+    def battery_element(parent=None):
+        from .settings.panel import SettingsPowersaveWidget
+        return SettingsPowersaveWidget()
+
+    @qt5_workspace_adapter.element()
+    def adapter_element(parent=None):
+        from .settings.panel import SettingsPerformanceWidget
+        return SettingsPerformanceWidget()
+
+    @performance.rule()
+    @inject.params(config='config', service='plugin.service.i2c')
+    def rule_performance(config, service):
+        for device in service.devices():
+            if not os.path.exists(device.path):
+                continue
+
+            yield 'echo {} > {}/power/control'.format(
+                config.get('i2c.performance', 'on'), device.path
+            )
+
+    @powersave.rule()
+    @inject.params(config='config', service='plugin.service.i2c')
+    def rule_powersave(config, service):
+        for device in service.devices():
+            if not os.path.exists(device.path):
+                continue
+
+            yield 'echo {} > {}/power/control'.format(
+                config.get('i2c.powersave', 'auto'), device.path
+            )

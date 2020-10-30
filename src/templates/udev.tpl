@@ -1,1 +1,0 @@
-SUBSYSTEM=="power_supply", ACTION=="change", ATTR{online}=="$online", RUN+="$script"
