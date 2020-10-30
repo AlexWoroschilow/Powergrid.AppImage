@@ -12,13 +12,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
 import stat
+
 import inject
-import shutil
 
-from PyQt5 import QtWidgets
-from PyQt5 import QtCore
-
-from .gui.box import MessageBox
 
 
 class SingleShot(object):

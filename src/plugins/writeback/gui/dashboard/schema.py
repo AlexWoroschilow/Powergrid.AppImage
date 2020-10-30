@@ -17,7 +17,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
 from .label import DashboardTitle
-
+import hexdi
 
 class DashboardSchema(QtWidgets.QFrame):
 
@@ -45,7 +45,7 @@ class DashboardSchema(QtWidgets.QFrame):
         for device in service.devices():
             return int(device.power_control)
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def update_text_event(self, config=None):
         performance = config.get('writeback.performance', '500')
         powersave = config.get('writeback.powersave', '1500')

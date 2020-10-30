@@ -11,32 +11,17 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-import inject
+import hexdi
+
+from . import performance
+from . import powersave
 
 
-def configure(binder: inject.Binder, options: {} = None, args: {} = None):
-    from . import powersave
-    from . import performance
-
-    binder.bind('udev_rules.performance', performance.Container())
-    binder.bind('udev_rules.powersave', powersave.Container())
+@hexdi.permanent('udev_rules.performance')
+class ContainerPerformance(performance.Container):
+    pass
 
 
-def bootstrap(options: {} = None, args: [] = None):
-    from modules import qt5_window
-
-    @qt5_window.workspace(name='Udev rules', focus=False, position=9)
-    def window_dashboard(parent=None, widget=None):
-        from .workspace.dashboard import DashboardWidget
-        return DashboardWidget()
-
-    @qt5_window.toolbar(name='Udev rules', focus=True, position=0)
-    def window_toolbar(parent=None):
-        from .toolbar.panel import ToolbarWidget
-        from . import actions
-
-        widget = ToolbarWidget()
-        widget.actionApply.connect(actions.onActionApply)
-        widget.actionExport.connect(actions.onActionExport)
-        widget.actionCleanup.connect(actions.onActionCleanup)
-        return widget
+@hexdi.permanent('udev_rules.powersave')
+class ContainerPowersave(performance.Container):
+    pass

@@ -15,11 +15,11 @@ import inject
 from PyQt5 import QtWidgets
 
 from .slider import DashboardSlider
-
+import hexdi
 
 class DashboardSettings(QtWidgets.QWidget):
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def __init__(self, config):
         super(DashboardSettings, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
@@ -38,12 +38,12 @@ class DashboardSettings(QtWidgets.QWidget):
         slider1.slideAction.connect(self.action_slide_performance)
         slider2.slideAction.connect(self.action_slide_powersave)
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def action_slide_performance(self, value, config):
         if value is None: return None
         config.set('writeback.performance', '1500' if value == 0 else '500')
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def action_slide_powersave(self, value, config):
         if value is None: return None
         config.set('writeback.powersave', '1500' if value == 0 else '500')

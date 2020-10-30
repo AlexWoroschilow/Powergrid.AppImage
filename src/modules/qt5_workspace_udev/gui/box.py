@@ -10,20 +10,17 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import os
-import inject
 
-from PyQt5 import QtCore
-from PyQt5 import QtWidgets
+import hexdi
 from PyQt5 import QtGui
-
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
 
 class MessageBox(QtWidgets.QMessageBox):
 
-    @inject.params(themes='themes')
-    def __init__(self, parent, title, message, button1, button2, themes=None):
+    @hexdi.inject('themes')
+    def __init__(self, themes, parent, title, message, button1, button2):
         super(MessageBox, self).__init__(parent)
         self.setWindowIcon(QtGui.QIcon("icons/tuner"))
         self.setStyleSheet(themes.get_stylesheet())

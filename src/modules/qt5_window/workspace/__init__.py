@@ -10,47 +10,50 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import inject
+import hexdi
 
 
-@inject.params(window='window', content='window.content')
 def workspace(*args, **kwargs):
     name = kwargs.get('name', 'New Tab')
     position = kwargs.get('position', 0)
     focus = kwargs.get('focus', True)
 
-    from .window import MainWindow
-    from .content import WindowContent
-    content: WindowContent = kwargs.get('content')
-    window: MainWindow = kwargs.get('window')
-
-    def wrapper1(*args, **kwargs):
-        assert (callable(args[0]))
-
-        widget = args[0](parent=window)
-        content.insertTab(position, widget, name, focus)
-        return args[0]
-
-    return wrapper1
-
-
-@inject.params(window='window', header='window.header')
-def toolbar(*args, **kwargs):
-    name = kwargs.get('name', 'New Tab')
-    position = kwargs.get('position', 0)
-    focus = kwargs.get('focus', True)
-
-    from .window import MainWindow
-    from .header import ToolbarWidget
-    header: ToolbarWidget = kwargs.get('header')
-
+    @hexdi.inject('window', 'window.content')
     def wrapper1(*args, **kwargs):
         assert (callable(args[0]))
 
         widget_class = args[0]
         if not widget_class: return None
 
-        widget = widget_class(parent=header)
+        from .window import MainWindow
+        window: MainWindow = args[1]
+
+        from .content import WindowContent
+        content: WindowContent = args[2]
+
+        widget = widget_class(window)
+        content.insertTab(position, widget, name, focus)
+        return widget_class
+
+    return wrapper1
+
+
+def toolbar(*args, **kwargs):
+    name = kwargs.get('name', 'New Tab')
+    position = kwargs.get('position', 0)
+    focus = kwargs.get('focus', True)
+
+    @hexdi.inject('window.header')
+    def wrapper1(*args, **kwargs):
+        assert (callable(args[0]))
+
+        widget_class = args[0]
+        if not widget_class: return None
+
+        from .header import ToolbarWidget
+        header: ToolbarWidget = args[1]
+
+        widget = widget_class(header)
         header.insertTab(position, widget, name, focus)
 
         return widget_class

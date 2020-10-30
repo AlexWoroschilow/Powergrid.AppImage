@@ -10,25 +10,12 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import inject
-from PyQt5 import QtWidgets
+
+import hexdi
 
 from .gui.dashboard.widget import DashboardWidget
 
 
-def configure(binder: inject.Binder, options: {} = None, args: {} = None):
-    @inject.params(window='window')
-    def _constructor(window: QtWidgets.QWidget):
-        widget = DashboardWidget()
-        return widget
-
-    binder.bind_to_constructor('content.statistic', _constructor)
-
-
-def bootstrap(options: {} = None, args: [] = None):
-    from modules import qt5_window
-
-    @qt5_window.workspace(name='Dashboard', focus=True, position=0)
-    @inject.params(widget='content.statistic')
-    def window_dashboard(parent=None, widget=None):
-        return widget
+@hexdi.permanent('content.statistic')
+class DashboardWidgetInstance(DashboardWidget):
+    pass

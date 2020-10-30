@@ -11,7 +11,7 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-import inject
+import hexdi
 
 
 class Container(object):
@@ -30,11 +30,10 @@ class Container(object):
                     format(online='online', rule=script)
 
 
-@inject.params(container='udev_rules.powersave')
 def rule(*args, **kwargs):
-    container = kwargs.get('container')
-
+    @hexdi.inject('udev_rules.powersave')
     def wrapper1(*args, **kwargs):
+        container = args[1]
         container.append(args[0])
 
         return args[0]

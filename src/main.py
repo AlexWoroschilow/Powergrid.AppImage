@@ -15,6 +15,8 @@ import optparse
 import os
 import sys
 
+import hexdi
+
 abspath = sys.argv[0] \
     if len(sys.argv) else \
     os.path.abspath(__file__)
@@ -22,14 +24,21 @@ os.chdir(os.path.dirname(abspath))
 
 from modules.qt5_application import desktop
 
-if __name__ == "__main__":
-    parser = optparse.OptionParser()
 
-    logfile = os.path.expanduser('~/.config/AOD-PowerTuner/default.log')
-    parser.add_option("--logfile", default=logfile, dest="logfile", help="Logfile location")
-    parser.add_option("--loglevel", default=logging.DEBUG, dest="loglevel", help="Logging level")
-    configfile = os.path.expanduser('~/.config/AOD-PowerTuner/default.conf')
-    parser.add_option("--config", default=configfile, dest="config", help="Config file location")
+@hexdi.permanent('optparser')
+class OptionParser(optparse.OptionParser):
+    def __init__(self):
+        super(OptionParser, self).__init__()
+
+        logfile = os.path.expanduser('~/.config/AOD-PowerTuner/default.log')
+        self.add_option("--logfile", default=logfile, dest="logfile", help="Logfile location")
+        self.add_option("--loglevel", default=logging.DEBUG, dest="loglevel", help="Logging level")
+        configfile = os.path.expanduser('~/.config/AOD-PowerTuner/default.conf')
+        self.add_option("--config", default=configfile, dest="config", help="Config file location")
+
+
+@hexdi.inject('optparser')
+def main(parser):
     (options, args) = parser.parse_args()
 
     log_format = '[%(relativeCreated)d][%(name)s] %(levelname)s - %(message)s'
@@ -37,3 +46,7 @@ if __name__ == "__main__":
 
     application = desktop.Application(options, args)
     sys.exit(application.exec_(options, args))
+
+
+if __name__ == "__main__":
+    main()

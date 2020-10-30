@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
 
-import inject
+import hexdi
 from PyQt5 import QtCore
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
@@ -22,8 +22,9 @@ class MainWindow(QtWidgets.QMainWindow):
     resizeAction = QtCore.pyqtSignal(object)
     exit = QtCore.pyqtSignal(object)
 
-    @inject.params(themes='themes')
-    def __init__(self, parent=None, themes=None):
+    @hexdi.inject('themes')
+    def __init__(self, themes=None, parent=None):
+        print(themes, parent)
         super(MainWindow, self).__init__(parent)
         self.setContentsMargins(0, 0, 0, 0)
         self.setWindowTitle('Screen grabber')

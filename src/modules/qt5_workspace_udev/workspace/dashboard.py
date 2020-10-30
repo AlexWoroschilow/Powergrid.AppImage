@@ -10,12 +10,12 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import inject
+import hexdi
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
 
 from .label import TitleWidget
+
 
 class DashboardWidget(QtWidgets.QSplitter):
     actionReload = QtCore.pyqtSignal(object)
@@ -46,7 +46,7 @@ class DashboardWidget(QtWidgets.QSplitter):
 
         self.actionReload.connect(self.reloadEvent)
 
-    @inject.params(performance='udev_rules.performance', powersave='udev_rules.powersave')
+    @hexdi.inject('udev_rules.performance', 'udev_rules.powersave')
     def reloadEvent(self, event=None, performance=None, powersave=None):
         performance_text = []
         for rule in performance.rules:

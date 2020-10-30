@@ -10,19 +10,13 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import functools
-import os
 
-import inject
+import hexdi
 
-from .services import DeviceLocator
+from modules import qt5_workspace_settings
 
 
-def configure(binder: inject.Binder, options: {} = None, args: {} = None):
-    binder.bind_to_constructor('usbids', functools.partial(
-        DeviceLocator, file="{}/usb.ids.txt".format(os.path.dirname(os.path.realpath(__file__)))
-    ))
-
-    binder.bind_to_constructor('pciids', functools.partial(
-        DeviceLocator, file="{}/pci.ids.txt".format(os.path.dirname(os.path.realpath(__file__)))
-    ))
+@qt5_workspace_settings.element()
+@hexdi.inject('workspace.battery')
+def window_dashboard(parent=None, widget=None):
+    return widget

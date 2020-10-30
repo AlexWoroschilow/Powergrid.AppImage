@@ -13,7 +13,7 @@
 
 import functools
 
-import inject
+import hexdi
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
@@ -57,7 +57,7 @@ class FrequenceWidget(QtWidgets.QLabel):
 class DeviceWidget(QtWidgets.QWidget):
     toggleDeviceAction = QtCore.pyqtSignal(object)
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def __init__(self, device=None, config=None):
         super(DeviceWidget, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
@@ -78,7 +78,7 @@ class DeviceWidget(QtWidgets.QWidget):
         self.layout().addWidget(QtWidgets.QLabel(device.name.replace('Cpu', 'CPU ')), 0, 2)
         self.layout().addWidget(FrequenceWidget(device), 0, 3)
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def toggle_device_event(self, value, config):
         config.set('cpu.permanent.{}'.format(self.device.code), int(value))
         self.toggleDeviceAction.emit((value, self.device))

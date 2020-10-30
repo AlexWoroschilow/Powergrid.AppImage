@@ -10,13 +10,10 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import inject
 
+import hexdi
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
-
-from PyQt5 import QtCore
-from PyQt5 import QtGui
 
 from .slider import DashboardSlider
 
@@ -25,7 +22,7 @@ class DashboardSettings(QtWidgets.QWidget):
     default_performance = None
     default_powersave = None
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def __init__(self, config):
         """
         The time-out for automatic power-off can be specified via power_save module option of snd-ac97-codec
@@ -42,7 +39,7 @@ class DashboardSettings(QtWidgets.QWidget):
 
 class DashboardSettingsPerformance(DashboardSettings):
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def __init__(self, config):
         super(DashboardSettingsPerformance, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
@@ -58,7 +55,7 @@ class DashboardSettingsPerformance(DashboardSettings):
 
         self.layout().addWidget(slider)
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def action_slide(self, slider_state, config):
         value = self.default_powersave \
             if slider_state == 0 else \
@@ -68,7 +65,7 @@ class DashboardSettingsPerformance(DashboardSettings):
 
 class DashboardSettingsPowersave(DashboardSettings):
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def __init__(self, config):
         super(DashboardSettingsPowersave, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
@@ -84,7 +81,7 @@ class DashboardSettingsPowersave(DashboardSettings):
 
         self.layout().addWidget(slider)
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def action_slide(self, slider_state, config):
         value = self.default_powersave \
             if slider_state == 0 else \

@@ -11,7 +11,7 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-import inject
+import hexdi
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
@@ -25,7 +25,7 @@ from .text import DashboardDescription
 class SettingsWidget(QtWidgets.QFrame):
     toggleDeviceAction = QtCore.pyqtSignal(object)
 
-    @inject.params(service='plugin.service.usb')
+    @hexdi.inject('plugin.service.usb')
     def __init__(self, service=None):
         super(SettingsWidget, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)

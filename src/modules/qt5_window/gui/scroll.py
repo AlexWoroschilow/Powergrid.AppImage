@@ -10,17 +10,17 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import inject
 
-from PyQt5.QtCore import Qt
+import hexdi
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import Qt
 
 from .widget import ContainerWidget
 
 
 class DashboardScrollArea(QtWidgets.QScrollArea):
 
-    @inject.params(themes='themes')
+    @hexdi.inject('themes')
     def __init__(self, themes=None):
         super(DashboardScrollArea, self).__init__()
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)

@@ -10,21 +10,23 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import inject
+import hexdi
+
+from .settings import SettingsWidget
 
 
-@inject.params(workspace='workspace.settings')
 def element(*args, **kwargs):
-    from .settings import SettingsWidget
-    workspace: SettingsWidget = kwargs.get('workspace')
-
+    @hexdi.inject('workspace.settings')
     def wrapper1(*args, **kwargs):
         assert (callable(args[0]))
 
         widget_class = args[0]
         if not widget_class: return None
 
-        widget = widget_class(parent=workspace)
+        workspace: SettingsWidget = args[1]
+        if not workspace: return None
+
+        widget = widget_class(workspace)
         workspace.addWidget(widget)
 
         return widget_class

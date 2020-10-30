@@ -10,17 +10,14 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import inject
-import copy
+import hexdi
+from PyQt5 import QtCore
+from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
 from . import SettingsTitle
 from . import WidgetSettings
-from . import PictureButton
-
-from PyQt5 import QtCore
-from PyQt5 import QtGui
 
 
 class ThemeLabel(QtWidgets.QLabel):
@@ -58,7 +55,7 @@ class ThemeLabel(QtWidgets.QLabel):
 class WidgetSettingsThemes(WidgetSettings):
     theme = QtCore.pyqtSignal(object)
 
-    @inject.params(themes='themes')
+    @hexdi.inject('themes')
     def __init__(self, themes=None):
         super(WidgetSettingsThemes, self).__init__()
 

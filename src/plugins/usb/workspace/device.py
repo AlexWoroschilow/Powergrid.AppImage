@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import time
 
-import inject
+import hexdi
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
@@ -45,7 +45,7 @@ class DeviceValueWidget(Value):
         self.thread.status.connect(self.refreshEvent)
         self.thread.start()
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def refreshEvent(self, status, config):
         if status == config.get('usb.powersave.power_control'):
             return self.setText("<b>{}</b>".format('powersave'))
@@ -57,7 +57,7 @@ class DeviceValueWidget(Value):
 class DeviceWidget(QtWidgets.QWidget):
     toggleDeviceAction = QtCore.pyqtSignal(object)
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def __init__(self, device=None, config=None):
         super(DeviceWidget, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -77,7 +77,7 @@ class DeviceWidget(QtWidgets.QWidget):
         self.layout().addWidget(DeviceValueWidget(device), 0, 1)
         self.layout().addWidget(QtWidgets.QLabel(device.name), 0, 2)
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def toggle_device_event(self, value, config):
         config.set('usb.permanent.{}'.format(self.device.code), int(value))
         self.toggleDeviceAction.emit((value, self.device))

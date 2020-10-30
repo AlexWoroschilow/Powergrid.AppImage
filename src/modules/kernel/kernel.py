@@ -9,13 +9,10 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import functools
 import glob
 import logging
 import os
 from importlib import util
-
-import inject
 
 
 class Kernel(object):
@@ -26,24 +23,11 @@ class Kernel(object):
             sources, options, args
         )
 
-        inject.configure(functools.partial(
-            self._configure,
-            modules=self.modules,
-            options=options,
-            args=args
-        ))
-
         logger = logging.getLogger('kernel')
         for module in self.modules:
-            if not hasattr(module, 'bootstrap'):
-                continue
-
-            bootstrap = getattr(module, 'bootstrap')
-            if not callable(bootstrap):
-                continue
-
+            spec = util.find_spec('{}.interface'.format(module.__name__))
             logger.debug("booting: {}".format(module))
-            bootstrap(options, args)
+            if spec and spec.loader: spec.loader.load_module()
 
     def _candidates(self, sources: [] = None):
         for mask in sources:
@@ -87,31 +71,3 @@ class Kernel(object):
                 continue
 
         return modules
-
-    def _configure(self, binder: inject.Binder, modules: [], options=None, args=None):
-
-        logger = logging.getLogger('kernel')
-        for module in modules:
-
-            try:
-
-                if not hasattr(module, 'configure'):
-                    continue
-
-                configure = getattr(module, 'configure')
-                if not callable(configure): continue
-
-                logger.debug("configuring: {}".format(module))
-
-                binder.install(functools.partial(
-                    module.configure,
-                    options=options,
-                    args=args
-                ))
-
-            except (SyntaxError, RuntimeError) as err:
-                logger.critical("{}: {}".format(module, err))
-                continue
-
-        binder.bind('logger', logging.getLogger('app'))
-        binder.bind('kernel', self)

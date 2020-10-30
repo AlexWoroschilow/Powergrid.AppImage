@@ -21,11 +21,11 @@ from PyQt5 import QtCore
 from PyQt5 import QtGui
 
 from .slider import DashboardSlider
-
+import hexdi
 
 class DashboardSettings(QtWidgets.QWidget):
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def __init__(self, config):
         super(DashboardSettings, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
@@ -44,12 +44,12 @@ class DashboardSettings(QtWidgets.QWidget):
         slider1.slideAction.connect(self.actionSlidePerformance)
         slider2.slideAction.connect(self.actionSlidePowersave)
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def actionSlidePerformance(self, value, config):
         if value is None: return None
         config.set('laptop.performance', '5' if value == 0 else '0')
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def actionSlidePowersave(self, value, config):
         if value is None: return None
         config.set('laptop.powersave', '5' if value == 0 else '0')

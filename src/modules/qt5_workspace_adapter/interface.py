@@ -10,21 +10,13 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-from .gui.scroll import SettingsScrollArea
+
+import hexdi
+
+from modules import qt5_workspace_settings
 
 
-class SettingsFactory(object):
-    collection = []
-
-    def addWidget(self, bundle=None, priority=None):
-        self.collection.append((bundle, priority))
-
-    @property
-    def widget(self):
-        widget = SettingsScrollArea()
-        for bundle in sorted(self.collection, key=lambda x: x[1]):
-            constructor, priority = bundle
-            if not callable(constructor):
-                continue
-            widget.addWidget(constructor())
-        return widget
+@qt5_workspace_settings.element()
+@hexdi.inject('workspace.adapter')
+def window_dashboard(parent=None, widget=None):
+    return widget

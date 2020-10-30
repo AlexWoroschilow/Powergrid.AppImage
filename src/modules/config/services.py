@@ -10,8 +10,8 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import os
 import configparser
+import os
 
 
 class ConfigService(object):
@@ -34,9 +34,6 @@ class ConfigService(object):
 
         self._parser.read(self._file)
         return None
-
-    def __call__(self, *args, **kwargs):
-        return self
 
     def comment(self, section, text1='', text2=''):
         if not self._parser.has_section(section):

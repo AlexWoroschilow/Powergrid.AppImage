@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import sys
 
-import inject
+import hexdi
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
@@ -26,7 +26,7 @@ class Application(QtWidgets.QApplication):
         from modules.kernel import kernel
         self.kernel = kernel.Kernel(options, args)
 
-    @inject.params(window='window')
+    @hexdi.inject('window')
     def exec_(self, options: {}, args: [], window: QtWidgets.QMainWindow):
         if window is None: return None
 

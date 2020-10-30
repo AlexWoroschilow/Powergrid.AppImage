@@ -10,42 +10,47 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import functools
 
-import inject
+import hexdi
 from PyQt5 import QtWidgets
 
 from .actions import ModuleActions
 from .workspace import toolbar
 from .workspace import workspace
+from .workspace.content import WindowContent
+from .workspace.header import ToolbarWidget
 from .workspace.window import MainWindow
 
 
-def configure(binder: inject.Binder, options: {} = None, args: {} = None):
-    @inject.params(config='config', content='window.content', header='window.header')
-    def _window(config, content: QtWidgets.QWidget, header: QtWidgets.QWidget, actions: ModuleActions):
-        widget = MainWindow()
+@hexdi.permanent('window.content')
+class WindowContentInstance(WindowContent):
+    pass
 
-        widget.setCentralWidget(QtWidgets.QWidget())
-        widget.centralWidget().setContentsMargins(0, 0, 0, 0)
-        widget.centralWidget().setLayout(QtWidgets.QVBoxLayout())
-        widget.centralWidget().layout().addWidget(header)
-        widget.centralWidget().layout().addWidget(content)
 
-        widget.resizeAction.connect(actions.resizeActionEvent)
+@hexdi.permanent('window.header')
+class WindowContentInstance(ToolbarWidget):
+    pass
+
+
+@hexdi.permanent('window.actions')
+class ModuleActionsInstance(ModuleActions):
+    pass
+
+
+@hexdi.permanent('window')
+class MainWindowInstance(MainWindow):
+    @hexdi.inject('config', 'window.header', 'window.content', 'window.actions')
+    def __init__(self, config, header, content, actions):
+        super(MainWindowInstance, self).__init__()
+
+        self.setCentralWidget(QtWidgets.QWidget())
+        self.centralWidget().setContentsMargins(0, 0, 0, 0)
+        self.centralWidget().setLayout(QtWidgets.QVBoxLayout())
+        self.centralWidget().layout().addWidget(header)
+        self.centralWidget().layout().addWidget(content)
+
+        self.resizeAction.connect(actions.resizeActionEvent)
 
         width = int(config.get('window.width', 400))
         height = int(config.get('window.height', 500))
-        widget.resize(width, height)
-
-        return widget
-
-    binder.bind_to_constructor('window', functools.partial(
-        _window, actions=ModuleActions()
-    ))
-
-    from .workspace.content import WindowContent
-    binder.bind_to_constructor('window.content', WindowContent)
-
-    from .workspace.header import ToolbarWidget
-    binder.bind_to_constructor('window.header', ToolbarWidget)
+        self.resize(width, height)

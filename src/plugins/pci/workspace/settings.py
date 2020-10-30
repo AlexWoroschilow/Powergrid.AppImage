@@ -10,25 +10,22 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import time
 
-import inject
+import hexdi
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
-from .checkbox import CheckboxTriState
+from .device import DeviceWidget
 from .label import Title
-from .label import Value
 from .list import SettingsListWidget
 from .text import DashboardDescription
-from .device import DeviceWidget
 
 
 class SettingsWidget(QtWidgets.QFrame):
     toggleDeviceAction = QtCore.pyqtSignal(object)
 
-    @inject.params(service='plugin.service.pci')
+    @hexdi.inject('plugin.service.pci')
     def __init__(self, service=None):
         super(SettingsWidget, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)

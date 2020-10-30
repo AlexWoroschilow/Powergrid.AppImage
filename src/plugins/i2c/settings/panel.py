@@ -10,7 +10,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import inject
+import hexdi
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
@@ -21,7 +21,7 @@ class SettingsWidget(QtWidgets.QWidget):
     default_performance = None
     default_powersave = None
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def __init__(self, config):
         super(SettingsWidget, self).__init__()
         self.default_performance = config.get('default.performance.i2c', 'on')
@@ -30,7 +30,7 @@ class SettingsWidget(QtWidgets.QWidget):
 
 class SettingsPerformanceWidget(SettingsWidget):
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def __init__(self, config):
         super(SettingsPerformanceWidget, self).__init__()
 
@@ -47,7 +47,7 @@ class SettingsPerformanceWidget(SettingsWidget):
 
         self.layout().addWidget(slider)
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def action_slide(self, slider_state, config):
         value = self.default_powersave \
             if slider_state == 0 else \
@@ -57,7 +57,7 @@ class SettingsPerformanceWidget(SettingsWidget):
 
 class SettingsPowersaveWidget(SettingsWidget):
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def __init__(self, config):
         super(SettingsPowersaveWidget, self).__init__()
 
@@ -74,7 +74,7 @@ class SettingsPowersaveWidget(SettingsWidget):
 
         self.layout().addWidget(slider)
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def action_slide(self, slider_state, config):
         value = self.default_powersave \
             if slider_state == 0 else \

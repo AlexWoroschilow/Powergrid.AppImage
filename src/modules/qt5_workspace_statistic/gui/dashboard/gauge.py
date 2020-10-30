@@ -11,14 +11,13 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import time
-import inject
 
-from PyQt5.QtCore import Qt
-from PyQt5 import QtWidgets
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-from PyQt5 import QtQuick
+import hexdi
 import psutil
+from PyQt5 import QtCore
+from PyQt5 import QtQuick
+from PyQt5 import QtWidgets
+from PyQt5.QtCore import Qt
 
 
 class ThreadScanner(QtCore.QThread):
@@ -28,7 +27,7 @@ class ThreadScanner(QtCore.QThread):
     core_percent = QtCore.pyqtSignal(object)
     battery_percent = QtCore.pyqtSignal(object)
 
-    @inject.params(service='plugin.service.cpu')
+    @hexdi.inject('plugin.service.cpu')
     def run(self, service=None):
         """
 
@@ -58,7 +57,7 @@ class ThreadScanner(QtCore.QThread):
 
 class DashboardImage(QtWidgets.QWidget):
 
-    @inject.params(service='plugin.service.cpu')
+    @hexdi.inject('plugin.service.cpu')
     def __init__(self, service=None):
         super(DashboardImage, self).__init__()
         self.setMinimumHeight(250)

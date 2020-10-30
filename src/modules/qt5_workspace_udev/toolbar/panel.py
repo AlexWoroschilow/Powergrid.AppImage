@@ -10,7 +10,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import inject
+import hexdi
 from PyQt5 import QtCore
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
@@ -24,7 +24,7 @@ class ToolbarWidget(QtWidgets.QScrollArea):
     actionExport = QtCore.pyqtSignal(object)
     actionCleanup = QtCore.pyqtSignal(object)
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def __init__(self, config=None):
         super(ToolbarWidget, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)

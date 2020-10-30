@@ -10,12 +10,11 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import os
 import glob
-import inject
+import os
 import platform
 
-from logging import getLogger
+import hexdi
 
 
 class Theme(object):
@@ -57,7 +56,7 @@ class ServiceTheme(object):
     def get_stylesheets(self):
         return self.themes.values()
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def get_stylesheet(self, config=None):
         if config is None: return None
 
