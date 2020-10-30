@@ -66,32 +66,34 @@ def bootstrap(options: {} = None, args: [] = None):
     @inject.params(config='config', service='plugin.service.sata')
     def rule_performance(config, service):
         for device in service.devices():
+            permanent = config.get('sata.permanent.{}'.format(device.code), 0)
             if not os.path.exists(device.path):
                 continue
 
-            policy = '{}/scsi_host/{}/link_power_management_policy'.format(
-                device.path, os.path.basename(device.path)
-            )
-
-            if not os.path.exists(policy):
+            file = '{}/scsi_host/{}/link_power_management_policy'. \
+                format(device.path, os.path.basename(device.path))
+            if not os.path.exists(file):
                 continue
 
             schema = config.get('sata.performance', 'max_performance')
-            yield 'echo {} > {}'.format(schema, policy)
+            schema = 'min_power' if int(permanent) == 1 else schema
+            schema = 'max_performance' if int(permanent) == 2 else schema
+            yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
     @powersave.rule()
     @inject.params(config='config', service='plugin.service.sata')
     def rule_powersave(config, service):
         for device in service.devices():
+            permanent = config.get('sata.permanent.{}'.format(device.code), 0)
             if not os.path.exists(device.path):
                 continue
 
-            policy = '{}/scsi_host/{}/link_power_management_policy'.format(
-                device.path, os.path.basename(device.path)
-            )
-
-            if not os.path.exists(policy):
+            file = '{}/scsi_host/{}/link_power_management_policy'. \
+                format(device.path, os.path.basename(device.path))
+            if not os.path.exists(file):
                 continue
 
             schema = config.get('sata.powersave', 'min_power')
-            yield 'echo {} > {}'.format(schema, policy)
+            schema = 'min_power' if int(permanent) == 1 else schema
+            schema = 'max_performance' if int(permanent) == 2 else schema
+            yield 'ls {} && echo {} > {}'.format(device.path, schema, file)

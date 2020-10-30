@@ -43,14 +43,19 @@ class DeviceValueWidget(Value):
     def __init__(self, device=None):
         super(DeviceValueWidget, self).__init__('...')
         self.setAlignment(Qt.AlignVCenter)
-        self.template = "Schema: <b>{{}}</b>\t\t- {}".format(device.name)
+        self.setMinimumWidth(120)
 
         self.thread = ThreadScanner(device)
-        self.thread.status.connect(self.status_update_event)
+        self.thread.status.connect(self.refreshEvent)
         self.thread.start()
 
-    def status_update_event(self, status):
-        return self.setText(self.template.format(status))
+    @inject.params(config='config')
+    def refreshEvent(self, status, config):
+        if status == config.get('i2c.powersave'):
+            return self.setText("<b>{}</b>".format('powersave'))
+        if status == config.get('i2c.performance'):
+            return self.setText("<b>{}</b>".format('performance'))
+        return self.setText("<b>{}</b>".format(status))
 
 
 class DeviceWidget(QtWidgets.QWidget):
@@ -68,12 +73,13 @@ class DeviceWidget(QtWidgets.QWidget):
         self.checkbox = CheckboxTriState(['Auto', 'Powersave', 'Performance'], int(default))
         self.checkbox.stateChanged.connect(self.toggle_device_event)
 
-        self.setLayout(QtWidgets.QHBoxLayout())
+        self.setLayout(QtWidgets.QGridLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.layout().setAlignment(Qt.AlignLeft | Qt.AlignTop)
 
-        self.layout().addWidget(self.checkbox)
-        self.layout().addWidget(DeviceValueWidget(device))
+        self.layout().addWidget(self.checkbox, 0, 0)
+        self.layout().addWidget(DeviceValueWidget(device), 0, 1)
+        self.layout().addWidget(QtWidgets.QLabel(device.name), 0, 2)
 
     @inject.params(config='config')
     def toggle_device_event(self, value, config):

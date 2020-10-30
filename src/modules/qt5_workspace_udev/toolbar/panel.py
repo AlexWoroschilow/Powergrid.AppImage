@@ -18,8 +18,11 @@ from PyQt5.QtCore import Qt
 
 
 class ToolbarWidget(QtWidgets.QScrollArea):
+    actionApply = QtCore.pyqtSignal(object)
     actionPerformance = QtCore.pyqtSignal(object)
     actionPowersave = QtCore.pyqtSignal(object)
+    actionExport = QtCore.pyqtSignal(object)
+    actionCleanup = QtCore.pyqtSignal(object)
 
     @inject.params(config='config')
     def __init__(self, config=None):
@@ -39,13 +42,17 @@ class ToolbarWidget(QtWidgets.QScrollArea):
         self.container.layout().setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.setWidget(self.container)
 
-        self.performance = ToolbarButton(self, "Performance", QtGui.QIcon('icons/performance'))
-        self.performance.clicked.connect(self.actionPerformance.emit)
-        self.addWidget(self.performance)
+        self.apply = ToolbarButton(self, "Apply schema", QtGui.QIcon('icons/start'))
+        self.apply.clicked.connect(self.actionApply.emit)
+        self.addWidget(self.apply)
 
-        self.powersave = ToolbarButton(self, "Powersave", QtGui.QIcon('icons/powersave'))
-        self.powersave.clicked.connect(self.actionPowersave.emit)
-        self.addWidget(self.powersave)
+        self.export = ToolbarButton(self, "Export to file", QtGui.QIcon('icons/export'))
+        self.export.clicked.connect(self.actionExport.emit)
+        self.addWidget(self.export)
+
+        self.cleanup = ToolbarButton(self, "Cleanup", QtGui.QIcon('icons/cleanup'))
+        self.cleanup.clicked.connect(self.actionCleanup.emit)
+        self.addWidget(self.cleanup)
 
     def addWidget(self, widget):
         self.container.layout().addWidget(widget)

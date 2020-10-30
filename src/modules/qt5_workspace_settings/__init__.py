@@ -29,20 +29,17 @@ def configure(binder: inject.Binder, options: {} = None, args: {} = None):
 def bootstrap(options: {} = None, args: [] = None, window=None):
     from modules import qt5_window
 
-    @qt5_window.workspace(name='Settings', focus=False, position=1)
+    @qt5_window.workspace(name='Schema', focus=False, position=1)
     @inject.params(widget='workspace.settings')
     def window_dashboard(parent=None, widget=None):
         return widget
 
-    @qt5_window.toolbar(name='Settings', focus=True, position=0)
+    @qt5_window.toolbar(name='Schema', focus=True, position=0)
     def window_toolbar(parent=None):
         from .toolbar.panel import ToolbarWidget
         from . import actions
 
         widget = ToolbarWidget()
-        widget.actionApply.connect(actions.onActionApply)
         widget.actionPerformance.connect(actions.onActionPerformace)
         widget.actionPowersave.connect(actions.onActionPowersave)
-        widget.actionExport.connect(actions.onActionExport)
-        widget.actionCleanup.connect(actions.onActionCleanup)
         return widget

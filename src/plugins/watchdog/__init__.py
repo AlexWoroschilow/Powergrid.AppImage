@@ -14,10 +14,6 @@ import os
 
 import inject
 
-from .gui.settings.settings import DashboardSettingsPerformance
-from .gui.settings.settings import DashboardSettingsPowersave
-from .service import Finder
-
 
 class Loader(object):
 
@@ -36,40 +32,62 @@ class Loader(object):
 
 
 def configure(binder: inject.Binder, options: {} = None, args: {} = None):
+    """
+
+    :param binder:
+    :param options:
+    :param args:
+    :return:
+    """
+    from .service import Finder
     binder.bind_to_constructor('plugin.service.watchdog', Finder)
 
 
 def bootstrap(options: {} = None, args: [] = None):
+    """
+
+    :param options:
+    :param args:
+    :return:
+    """
     from modules import qt5_workspace_battery
     from modules import qt5_workspace_adapter
 
+    from modules.qt5_workspace_udev import performance
+    from modules.qt5_workspace_udev import powersave
+
     @qt5_workspace_battery.element()
     def battery_element(parent=None):
+        from .gui.settings.settings import DashboardSettingsPowersave
         return DashboardSettingsPowersave()
 
     @qt5_workspace_adapter.element()
     def adapter_element(parent=None):
+        from .gui.settings.settings import DashboardSettingsPerformance
         return DashboardSettingsPerformance()
-
-    from modules.qt5_workspace_udev import performance
-    from modules.qt5_workspace_udev import powersave
 
     @performance.rule()
     @inject.params(config='config', service='plugin.service.watchdog')
     def rule_performance(config, service):
         for device in service.devices():
+            permanent = config.get('watchdog.permanent.{}'.format(device.code), 0)
             if not os.path.exists(device.path):
                 continue
 
             schema = config.get('watchdog.performance', '1')
-            yield 'echo {} > {}'.format(schema, device.path)
+            schema = '0' if int(permanent) == 1 else schema
+            schema = '1' if int(permanent) == 2 else schema
+            yield 'ls {} && echo {} > {}'.format(device.path, schema, device.path)
 
     @powersave.rule()
     @inject.params(config='config', service='plugin.service.watchdog')
     def rule_powersave(config, service):
         for device in service.devices():
+            permanent = config.get('watchdog.permanent.{}'.format(device.code), 0)
             if not os.path.exists(device.path):
                 continue
 
             schema = config.get('watchdog.powersave', '0')
-            yield 'echo {} > {}'.format(schema, device.path)
+            schema = '0' if int(permanent) == 1 else schema
+            schema = '1' if int(permanent) == 2 else schema
+            yield 'ls {} && echo {} > {}'.format(device.path, schema, device.path)

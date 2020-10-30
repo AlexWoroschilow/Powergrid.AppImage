@@ -14,16 +14,8 @@ import os
 
 import inject
 
-from .service import Finder
-
 
 class Loader(object):
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, type, value, traceback):
-        pass
 
     @inject.params(config='config', service='plugin.service.usb')
     def _ignores(self, status=1, config=None, service=None):
@@ -39,12 +31,27 @@ class Loader(object):
 
 
 def configure(binder: inject.Binder, options: {} = None, args: {} = None):
+    """
+
+    :param binder:
+    :param options:
+    :param args:
+    :return:
+    """
+    from .service import Finder
+    binder.bind_to_constructor('plugin.service.usb', Finder)
+
     from .workspace.settings import SettingsWidget
     binder.bind_to_constructor('workspace.usb', SettingsWidget)
-    binder.bind_to_constructor('plugin.service.usb', Finder)
 
 
 def bootstrap(options: {} = None, args: [] = None):
+    """
+
+    :param options:
+    :param args:
+    :return:
+    """
     from modules import qt5_window
     from modules import qt5_workspace_battery
     from modules import qt5_workspace_adapter
@@ -70,52 +77,70 @@ def bootstrap(options: {} = None, args: [] = None):
     @inject.params(config='config', service='plugin.service.usb')
     def rule_performance(config, service):
         for device in service.devices():
+            permanent = config.get('usb.permanent.{}'.format(device.code), 0)
             if not os.path.exists(device.path):
                 continue
 
             file = '{}/power/level'.format(device.path)
             schema = config.get('usb.performance.power_level', 'on')
+            schema = 'auto' if int(permanent) == 1 else schema
+            schema = 'on' if int(permanent) == 2 else schema
             if os.path.exists(file) and os.path.isfile(file):
-                yield 'echo {} > {}'.format(schema, file)
+                yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
             file = '{}/power/control'.format(device.path)
             schema = config.get('usb.performance.power_control', 'on')
+            schema = 'auto' if int(permanent) == 1 else schema
+            schema = 'on' if int(permanent) == 2 else schema
             if os.path.exists(file) and os.path.isfile(file):
-                yield 'echo {} > {}'.format(schema, file)
+                yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
             file = '{}/power/autosuspend'.format(device.path)
             schema = config.get('usb.performance.autosuspend', '-1')
+            schema = '500' if int(permanent) == 1 else schema
+            schema = '-1' if int(permanent) == 2 else schema
             if os.path.exists(file) and os.path.isfile(file):
-                yield 'echo {} > {}'.format(schema, file)
+                yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
             file = '{}/power/autosuspend_delay_ms'.format(device.path)
             schema = config.get('usb.performance.autosuspend_delay', '-1')
+            schema = '500' if int(permanent) == 1 else schema
+            schema = '-1' if int(permanent) == 2 else schema
             if os.path.exists(file) and os.path.isfile(file):
-                yield 'echo {} > {}'.format(schema, file)
+                yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
     @powersave.rule()
     @inject.params(config='config', service='plugin.service.usb')
     def rule_powersave(config, service):
         for device in service.devices():
+            permanent = config.get('usb.permanent.{}'.format(device.code), 0)
             if not os.path.exists(device.path):
                 continue
 
             file = '{}/power/level'.format(device.path)
             schema = config.get('usb.powersave.power_level', 'auto')
+            schema = 'auto' if int(permanent) == 1 else schema
+            schema = 'on' if int(permanent) == 2 else schema
             if os.path.exists(file) and os.path.isfile(file):
-                yield 'echo {} > {}'.format(schema, file)
+                yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
             file = '{}/power/control'.format(device.path)
             schema = config.get('usb.powersave.power_control', 'auto')
+            schema = 'auto' if int(permanent) == 1 else schema
+            schema = 'on' if int(permanent) == 2 else schema
             if os.path.exists(file) and os.path.isfile(file):
-                yield 'echo {} > {}'.format(schema, file)
+                yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
             file = '{}/power/autosuspend'.format(device.path)
             schema = config.get('usb.powersave.autosuspend', '500')
+            schema = '500' if int(permanent) == 1 else schema
+            schema = '-1' if int(permanent) == 2 else schema
             if os.path.exists(file) and os.path.isfile(file):
-                yield 'echo {} > {}'.format(schema, file)
+                yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
             file = '{}/power/autosuspend_delay_ms'.format(device.path)
             schema = config.get('usb.powersave.autosuspend_delay', '500')
+            schema = '500' if int(permanent) == 1 else schema
+            schema = '-1' if int(permanent) == 2 else schema
             if os.path.exists(file) and os.path.isfile(file):
-                yield 'echo {} > {}'.format(schema, file)
+                yield 'ls {} && echo {} > {}'.format(device.path, schema, file)

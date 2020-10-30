@@ -25,7 +25,18 @@ def configure(binder: inject.Binder, options: {} = None, args: {} = None):
 def bootstrap(options: {} = None, args: [] = None):
     from modules import qt5_window
 
-    @qt5_window.workspace(name='Udev rules', focus=False, position=1)
+    @qt5_window.workspace(name='Udev rules', focus=False, position=9)
     def window_dashboard(parent=None, widget=None):
         from .workspace.dashboard import DashboardWidget
         return DashboardWidget()
+
+    @qt5_window.toolbar(name='Udev rules', focus=True, position=0)
+    def window_toolbar(parent=None):
+        from .toolbar.panel import ToolbarWidget
+        from . import actions
+
+        widget = ToolbarWidget()
+        widget.actionApply.connect(actions.onActionApply)
+        widget.actionExport.connect(actions.onActionExport)
+        widget.actionCleanup.connect(actions.onActionCleanup)
+        return widget

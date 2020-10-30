@@ -13,12 +13,14 @@
 import inject
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import Qt
 
+from .label import TitleWidget
 
 class DashboardWidget(QtWidgets.QSplitter):
+    actionReload = QtCore.pyqtSignal(object)
 
-    @inject.params(performance='udev_rules.performance', powersave='udev_rules.powersave')
-    def __init__(self, performance, powersave):
+    def __init__(self):
         super(DashboardWidget, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         self.setContentsMargins(0, 0, 0, 0)
@@ -26,12 +28,26 @@ class DashboardWidget(QtWidgets.QSplitter):
         self.left = QtWidgets.QTextEdit()
         self.right = QtWidgets.QTextEdit()
 
-        self.addWidget(self.left)
-        self.addWidget(self.right)
+        self.container1 = QtWidgets.QWidget()
+        self.container1.setLayout(QtWidgets.QVBoxLayout())
+        self.container1.layout().addWidget(TitleWidget('Performance rules'))
+        self.container1.layout().addWidget(self.left)
+
+        self.container2 = QtWidgets.QWidget()
+        self.container2.setLayout(QtWidgets.QVBoxLayout())
+        self.container2.layout().addWidget(TitleWidget('Powersave rules'))
+        self.container2.layout().addWidget(self.right)
+
+        self.addWidget(self.container1)
+        self.addWidget(self.container2)
 
         self.setCollapsible(0, False)
         self.setCollapsible(1, False)
 
+        self.actionReload.connect(self.reloadEvent)
+
+    @inject.params(performance='udev_rules.performance', powersave='udev_rules.powersave')
+    def reloadEvent(self, event=None, performance=None, powersave=None):
         performance_text = []
         for rule in performance.rules:
             performance_text.append(rule)
@@ -41,6 +57,12 @@ class DashboardWidget(QtWidgets.QSplitter):
         for rule in powersave.rules:
             powersave_text.append(rule)
         self.setTextRight("\n".join(powersave_text))
+
+    def event(self, QEvent):
+        if type(QEvent) == QtCore.QEvent:
+            if QEvent.type() == QtCore.QEvent.ShowToParent:
+                self.actionReload.emit(())
+        return super(DashboardWidget, self).event(QEvent)
 
     def setTextLeft(self, text):
         self.left.setText(text)

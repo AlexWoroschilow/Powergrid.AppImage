@@ -20,7 +20,7 @@ class SettingsListItem(QtWidgets.QListWidgetItem):
 
     def __init__(self, device=None):
         super(SettingsListItem, self).__init__()
-        self.setSizeHint(QtCore.QSize(40, 30))
+        self.setSizeHint(QtCore.QSize(200, 30))
         self.setTextAlignment(Qt.AlignCenter)
         self.setData(0, device)
 

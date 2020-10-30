@@ -34,6 +34,19 @@ class Device(object):
         return None
 
     @property
+    def policy(self):
+
+        file = '{}/scsi_host/{}/link_power_management_policy'. \
+            format(self.path, os.path.basename(self.path))
+
+        if not os.path.exists(file): return None
+
+        with open(file, 'r') as stream:
+            return stream.read().strip("\n")
+
+        return None
+
+    @property
     def code(self):
         return self.name.lower()
 

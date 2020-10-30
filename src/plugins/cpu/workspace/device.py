@@ -19,14 +19,13 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
 from .checkbox import CheckboxTriState
-from .label import Value
 
 
-class DeviceValueWidget(Value):
+class SchemaWidget(QtWidgets.QLabel):
     def __init__(self, device=None):
-        super(DeviceValueWidget, self).__init__('...')
+        super(SchemaWidget, self).__init__('...')
         self.setAlignment(Qt.AlignVCenter)
-        self.template = "Schema: <b>{{}}</b>\t\t- {}".format(device.name)
+        self.setMinimumWidth(100)
 
         self.timerRefresh = QtCore.QTimer()
         self.timerRefresh.timeout.connect(functools.partial(
@@ -35,8 +34,23 @@ class DeviceValueWidget(Value):
         self.timerRefresh.start(1000)
 
     def refreshEvent(self, device=None):
-        return self.setText('Schema: <b>{}</b> - {}'.format(
-            device.governor, device.name.replace('Cpu', 'CPU '),
+        self.setText('<b>{}</b>'.format(device.governor))
+
+
+class FrequenceWidget(QtWidgets.QLabel):
+    def __init__(self, device=None):
+        super(FrequenceWidget, self).__init__('...')
+        self.setAlignment(Qt.AlignVCenter)
+
+        self.timerRefresh = QtCore.QTimer()
+        self.timerRefresh.timeout.connect(functools.partial(
+            self.refreshEvent, device=device
+        ))
+        self.timerRefresh.start(1000)
+
+    def refreshEvent(self, device=None):
+        self.setText('{:>.1f} GHz'.format(
+            device.frequence / 1000000
         ))
 
 
@@ -46,7 +60,7 @@ class DeviceWidget(QtWidgets.QWidget):
     @inject.params(config='config')
     def __init__(self, device=None, config=None):
         super(DeviceWidget, self).__init__()
-        self.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.setContentsMargins(0, 0, 0, 0)
 
         self.device = device
@@ -55,12 +69,14 @@ class DeviceWidget(QtWidgets.QWidget):
         self.checkbox = CheckboxTriState(['Auto', 'Powersave', 'Performance'], int(default))
         self.checkbox.stateChanged.connect(self.toggle_device_event)
 
-        self.setLayout(QtWidgets.QHBoxLayout())
+        self.setLayout(QtWidgets.QGridLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.layout().setAlignment(Qt.AlignLeft | Qt.AlignTop)
 
-        self.layout().addWidget(self.checkbox)
-        self.layout().addWidget(DeviceValueWidget(device))
+        self.layout().addWidget(self.checkbox, 0, 0)
+        self.layout().addWidget(SchemaWidget(device), 0, 1)
+        self.layout().addWidget(QtWidgets.QLabel(device.name.replace('Cpu', 'CPU ')), 0, 2)
+        self.layout().addWidget(FrequenceWidget(device), 0, 3)
 
     @inject.params(config='config')
     def toggle_device_event(self, value, config):

@@ -23,6 +23,10 @@ class Device(object):
         return name.capitalize()
 
     @property
+    def code(self):
+        return os.path.basename(self.path)
+
+    @property
     def power_control(self):
         with open(self.path, 'r') as stream:
             return stream.read().strip("\n")

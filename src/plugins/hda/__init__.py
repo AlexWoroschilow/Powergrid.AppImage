@@ -15,39 +15,33 @@ import os
 import inject
 
 
-class Loader(object):
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, type, value, traceback):
-        pass
-
-    @inject.params(config='config', service='plugin.service.hda')
-    def _ignores(self, status=1, config=None, service=None):
-        ignored = []
-        for device in service.devices():
-            value_ignored = config.get('hda.permanent.{}'.format(device.name), 0)
-            if not int(value_ignored):
-                continue
-            if int(value_ignored) == status:
-                ignored.append(device.code)
-                continue
-        return ignored
-
-
 def configure(binder: inject.Binder, options: {} = None, args: {} = None):
-    from .workspace.settings import SettingsWidget
-    binder.bind_to_constructor('workspace.hda', SettingsWidget)
+    """
 
+    :param binder:
+    :param options:
+    :param args:
+    :return:
+    """
     from .service import Finder
     binder.bind_to_constructor('plugin.service.hda', Finder)
 
+    from .workspace.settings import SettingsWidget
+    binder.bind_to_constructor('workspace.hda', SettingsWidget)
+
 
 def bootstrap(options: {} = None, args: [] = None):
+    """
+
+    :param options:
+    :param args:
+    :return:
+    """
+    from modules import qt5_window
     from modules import qt5_workspace_battery
     from modules import qt5_workspace_adapter
-    from modules import qt5_window
+    from modules.qt5_workspace_udev import performance
+    from modules.qt5_workspace_udev import powersave
 
     @qt5_window.workspace(name='Intel HDA', focus=False, position=3)
     @inject.params(workspace='workspace.hda')
@@ -64,27 +58,32 @@ def bootstrap(options: {} = None, args: [] = None):
         from .settings.panel import SettingsPerformanceWidget
         return SettingsPerformanceWidget()
 
-    from modules.qt5_workspace_udev import performance
-    from modules.qt5_workspace_udev import powersave
-
     @performance.rule()
     @inject.params(config='config', service='plugin.service.hda')
     def rule_performance(config, service):
         for device in service.devices():
+            permanent = config.get('hda.permanent.{}'.format(device.code), 0)
             if not os.path.exists(device.path):
                 continue
 
-            yield 'echo {} > {}/parameters/power_save'.format(
-                config.get('hda.performance', ''), device.path
-            )
+            file = '{}/parameters/power_save'.format(device.path)
+            schema = config.get('hda.performance', '')
+            schema = '5' if int(permanent) == 1 else schema
+            schema = '' if int(permanent) == 2 else schema
+            if os.path.exists(file) and os.path.isfile(file):
+                yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
     @powersave.rule()
     @inject.params(config='config', service='plugin.service.hda')
     def rule_powersave(config, service):
         for device in service.devices():
+            permanent = config.get('hda.permanent.{}'.format(device.code), 0)
             if not os.path.exists(device.path):
                 continue
 
-            yield 'echo {} > {}/parameters/power_save'.format(
-                config.get('hda.powersave', '5'), device.path
-            )
+            file = '{}/parameters/power_save'.format(device.path)
+            schema = config.get('hda.powersave', '5')
+            schema = '5' if int(permanent) == 1 else schema
+            schema = '' if int(permanent) == 2 else schema
+            if os.path.exists(file) and os.path.isfile(file):
+                yield 'ls {} && echo {} > {}'.format(device.path, schema, file)

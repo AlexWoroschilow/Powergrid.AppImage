@@ -14,17 +14,8 @@ import os
 
 import inject
 
-from .gui.settings.settings import DashboardSettingsPerformance
-from .gui.settings.settings import DashboardSettingsPowersave
-
 
 class Loader(object):
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, type, value, traceback):
-        pass
 
     @inject.params(config='config', service='plugin.service.laptop')
     def _ignores(self, status=1, config=None, service=None):
@@ -40,39 +31,62 @@ class Loader(object):
 
 
 def configure(binder: inject.Binder, options: {} = None, args: {} = None):
+    """
+
+    :param binder:
+    :param options:
+    :param args:
+    :return:
+    """
     from .service import Finder
     binder.bind_to_constructor('plugin.service.laptop', Finder)
 
 
 def bootstrap(options: {} = None, args: [] = None):
+    """
+
+    :param options:
+    :param args:
+    :return:
+    """
     from modules import qt5_workspace_battery
     from modules import qt5_workspace_adapter
 
+    from modules.qt5_workspace_udev import performance
+    from modules.qt5_workspace_udev import powersave
+
     @qt5_workspace_battery.element()
     def battery_element(parent=None):
+        from .gui.settings.settings import DashboardSettingsPowersave
         return DashboardSettingsPowersave()
 
     @qt5_workspace_adapter.element()
     def adapter_element(parent=None):
+        from .gui.settings.settings import DashboardSettingsPerformance
         return DashboardSettingsPerformance()
-
-    from modules.qt5_workspace_udev import performance
-    from modules.qt5_workspace_udev import powersave
 
     @performance.rule()
     @inject.params(config='config', service='plugin.service.laptop')
     def rule_performance(config, service):
         for device in service.devices():
+            permanent = config.get('laptop.permanent.{}'.format(device.code), 0)
             if not os.path.exists(device.path):
                 continue
 
-            yield 'echo {} > {}'.format(config.get('laptop.performance', '0'), device.path)
+            schema = config.get('laptop.performance', '0')
+            schema = '0' if int(permanent) == 1 else schema
+            schema = '5' if int(permanent) == 2 else schema
+            yield 'ls {} && echo {} > {}'.format(device.path, schema, device.path)
 
     @powersave.rule()
     @inject.params(config='config', service='plugin.service.laptop')
     def rule_powersave(config, service):
         for device in service.devices():
+            permanent = config.get('laptop.permanent.{}'.format(device.code), 0)
             if not os.path.exists(device.path):
                 continue
 
-            yield 'echo {} > {}'.format(config.get('laptop.powersave', '5'), device.path)
+            schema = config.get('laptop.powersave', '5')
+            schema = '0' if int(permanent) == 1 else schema
+            schema = '5' if int(permanent) == 2 else schema
+            yield 'ls {} && echo {} > {}'.format(device.path, schema, device.path)
