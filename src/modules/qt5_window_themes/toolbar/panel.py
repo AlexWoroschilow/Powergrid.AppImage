@@ -53,8 +53,7 @@ class ToolbarWidget(QtWidgets.QScrollArea):
             if not button.theme:
                 continue
 
-            state = button.theme.name == config.get('themes.theme')
-            button.setChecked(state)
+            button.setChecked(button.theme.name == config.get('themes.theme'))
 
     @hexdi.inject('config', 'window')
     def toggleThemeEvent(self, theme, config, window):

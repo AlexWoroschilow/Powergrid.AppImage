@@ -10,21 +10,17 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-from .gui.scroll import DashboardScrollArea
 
-class DashboardContainer(object):
-    collection = []
+import hexdi
 
-    def append(self, bundle=None, priority=None):
-        self.collection.append((bundle, priority))
 
-    @property
-    def widget(self):
+class SingleShot(object):
 
-        widget = DashboardScrollArea()
-        for bundle in sorted(self.collection, key=lambda x: x[1]):
-            constructor, priority = bundle
-            if not callable(constructor):
-                continue
-            widget.addWidget(constructor())
-        return widget
+    @hexdi.inject('udev_rules.performance', 'udev_rules.powersave')
+    def script_apply(self, single_shot, performance, powersave):
+        with open(single_shot, 'w') as stream_temp:
+            for rule in performance.rules:
+                stream_temp.write(rule)
+            for rule in powersave.rules:
+                stream_temp.write(rule)
+            stream_temp.close()

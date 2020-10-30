@@ -24,7 +24,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
     @hexdi.inject('themes')
     def __init__(self, themes=None, parent=None):
-        print(themes, parent)
         super(MainWindow, self).__init__(parent)
         self.setContentsMargins(0, 0, 0, 0)
         self.setWindowTitle('Screen grabber')

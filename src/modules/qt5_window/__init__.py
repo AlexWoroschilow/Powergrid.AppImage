@@ -15,6 +15,7 @@ import hexdi
 from PyQt5 import QtWidgets
 
 from .actions import ModuleActions
+from .dialog.message import MessageBox
 from .workspace import toolbar
 from .workspace import workspace
 from .workspace.content import WindowContent
@@ -54,3 +55,22 @@ class MainWindowInstance(MainWindow):
         width = int(config.get('window.width', 400))
         height = int(config.get('window.height', 500))
         self.resize(width, height)
+
+
+@hexdi.permanent('window.dialog_manager')
+class ModuleActionsInstance(object):
+
+    @hexdi.inject('window')
+    def execute(self, file=None, window=None):
+        if not file: return None
+
+        message_content = open(file, 'r').read()
+        message_content = message_content.replace("\n", "<br/>")
+        message = "<h2>Execute optimisation script?</h2> <p>{}</p><br/>".format(message_content)
+        result = MessageBox(window, 'Execute optimisation script?', message, MessageBox.Ok, MessageBox.Cancel)
+        return result.exec_()
+
+    @hexdi.inject('window')
+    def error(self, message=None, window=None):
+        message = "<h2>Can not execute optimisation script:</h2> <p>{}</p><br/>".format(message)
+        return MessageBox.question(window, 'Can not execute optimisation script', message, MessageBox.Ok)

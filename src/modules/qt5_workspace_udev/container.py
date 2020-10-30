@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-# Copyright 2015 Alex Woroschilow (alex.woroschilow@gmail.com)
+# Copyright 2020 Alex Woroschilow (alex.woroschilow@gmail.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,27 +10,10 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+class Container(object):
+    def __init__(self):
+        self.collection = []
 
-def onActionApply(event=None):
-    print(event)
-    pass
-
-
-def onActionPerformace(event=None):
-    print(event)
-    pass
-
-
-def onActionPowersave(event=None):
-    print(event)
-    pass
-
-
-def onActionExport(event=None):
-    print(event)
-    pass
-
-
-def onActionCleanup(event=None):
-    print(event)
-    pass
+    def append(self, callback=None):
+        assert (callable(callback))
+        self.collection.append(callback)

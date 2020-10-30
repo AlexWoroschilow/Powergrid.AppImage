@@ -16,11 +16,11 @@ import hexdi
 from .gui.box import MessageBox
 
 
-# from .singleshot import SingleShot
+# from .dumper import SingleShot
 
 
 class ModuleActions(object):
-    # singleshot = SingleShot()
+    # dumper = SingleShot()
 
     @hexdi.inject('config')
     def resizeActionEvent(self, event=None, config=None):
@@ -56,7 +56,7 @@ class ModuleActions(object):
 
     def on_schema_apply(self, event=None):
         #
-        # single_shot, errors = self.singleshot.script_apply("/tmp/performance-tuner/apply.sh")
+        # single_shot, errors = self.dumper.script_apply("/tmp/performance-tuner/apply.sh")
         # if errors is not None and len(errors):
         #     shutil.rmtree(os.path.dirname(single_shot))
         #     return self._dialog_script_error("<br/>".join(errors))
@@ -76,7 +76,7 @@ class ModuleActions(object):
         pass
 
     def on_schema_cleanup(self, event=None):
-        # single_shot, errors = self.singleshot.script_cleanup("/tmp/performance-tuner/cleanup.sh")
+        # single_shot, errors = self.dumper.script_cleanup("/tmp/performance-tuner/cleanup.sh")
         # if errors is not None and len(errors):
         #     shutil.rmtree(os.path.dirname(single_shot))
         #     return self._dialog_script_error("<br/>".join(errors))
@@ -96,7 +96,7 @@ class ModuleActions(object):
         pass
 
     def on_schema_performance(self, event=None):
-        # single_shot, errors = self.singleshot.script_performance("/tmp/performance-tuner/performance.sh")
+        # single_shot, errors = self.dumper.script_performance("/tmp/performance-tuner/performance.sh")
         # if errors is not None and len(errors):
         #     shutil.rmtree(os.path.dirname(single_shot))
         #     return self._dialog_script_error("<br/>".join(errors))
@@ -116,7 +116,7 @@ class ModuleActions(object):
         pass
 
     def on_schema_powersave(self, event=None):
-        # single_shot, errors = self.singleshot.script_powersave("/tmp/performance-tuner/powersave.sh")
+        # single_shot, errors = self.dumper.script_powersave("/tmp/performance-tuner/powersave.sh")
         # if errors is not None and len(errors):
         #     shutil.rmtree(os.path.dirname(single_shot))
         #     return self._dialog_script_error("<br/>".join(errors))

@@ -49,7 +49,7 @@ def rule_performance(config, service):
 
         file = '{}/parameters/power_save'.format(device.path)
         schema = config.get('hda.performance', '')
-        schema = '5' if int(permanent) == 1 else schema
+        schema = '1' if int(permanent) == 1 else schema
         schema = '' if int(permanent) == 2 else schema
         if os.path.exists(file) and os.path.isfile(file):
             yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
@@ -64,8 +64,9 @@ def rule_powersave(config, service):
             continue
 
         file = '{}/parameters/power_save'.format(device.path)
-        schema = config.get('hda.powersave', '5')
-        schema = '5' if int(permanent) == 1 else schema
+        schema = config.get('hda.powersave', '1')
+        schema = '1' if int(permanent) == 1 else schema
         schema = '' if int(permanent) == 2 else schema
+
         if os.path.exists(file) and os.path.isfile(file):
             yield 'ls {} && echo {} > {}'.format(device.path, schema, file)

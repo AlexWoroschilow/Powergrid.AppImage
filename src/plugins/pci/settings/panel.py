@@ -35,9 +35,6 @@ class SettingsPerformanceWidget(SettingsWidget):
     def __init__(self, config):
         super(SettingsPerformanceWidget, self).__init__()
 
-        self.default_performance = config.get('default.performance.pci', 'on')
-        self.default_powersave = config.get('default.powersave.pci', 'auto')
-
         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         self.setContentsMargins(0, 0, 0, 0)
 
@@ -64,9 +61,6 @@ class SettingsPowersaveWidget(SettingsWidget):
     @hexdi.inject('config')
     def __init__(self, config):
         super(SettingsPowersaveWidget, self).__init__()
-
-        self.default_performance = config.get('default.performance.pci', 'on')
-        self.default_powersave = config.get('default.powersave.pci', 'auto')
 
         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         self.setContentsMargins(0, 0, 0, 0)

@@ -13,10 +13,10 @@
 
 import hexdi
 
-from modules import qt5_workspace_settings
+from modules import qt5_workspace_schema
 
 
-@qt5_workspace_settings.element()
+@qt5_workspace_schema.element()
 @hexdi.inject('workspace.adapter')
 def window_dashboard(parent=None, widget=None):
     return widget

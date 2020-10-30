@@ -47,7 +47,7 @@ class DashboardWidget(QtWidgets.QSplitter):
         self.actionReload.connect(self.reloadEvent)
 
     @hexdi.inject('udev_rules.performance', 'udev_rules.powersave')
-    def reloadEvent(self, event=None, performance=None, powersave=None):
+    def reloadEvent(self, event, performance, powersave):
         performance_text = []
         for rule in performance.rules:
             performance_text.append(rule)

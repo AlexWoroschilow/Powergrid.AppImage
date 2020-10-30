@@ -17,9 +17,9 @@ import hexdi
 from PyQt5 import QtWidgets
 
 
-@hexdi.inject('udev_dumper.schema', 'window.dialog_manager')
-def onActionApply(event, dumper, dialog_manager):
-    single_shot = dumper.dump(os.path.expanduser('/tmp/performance/schema.sh'))
+@hexdi.inject('udev_dumper.performance', 'window.dialog_manager')
+def onActionPerformace(event, dumper, dialog_manager):
+    single_shot = dumper.dump(os.path.expanduser('/tmp/performance/performance.sh'))
     if dialog_manager.execute(single_shot) == QtWidgets.QMessageBox.Cancel:
         return shutil.rmtree(os.path.dirname(single_shot))
 
@@ -31,9 +31,9 @@ def onActionApply(event, dumper, dialog_manager):
         return dialog_manager.error("{}".format(ex))
 
 
-@hexdi.inject('udev_dumper.cleaner', 'window.dialog_manager')
-def onActionCleanup(event, dumper, dialog_manager):
-    single_shot = dumper.dump(os.path.expanduser('/tmp/performance/cleaner.sh'))
+@hexdi.inject('udev_dumper.powersave', 'window.dialog_manager')
+def onActionPowersave(event, dumper, dialog_manager):
+    single_shot = dumper.dump(os.path.expanduser('/tmp/performance/powersave.sh'))
     if dialog_manager.execute(single_shot) == QtWidgets.QMessageBox.Cancel:
         return shutil.rmtree(os.path.dirname(single_shot))
 
@@ -43,15 +43,3 @@ def onActionCleanup(event, dumper, dialog_manager):
     except Exception as ex:
         shutil.rmtree(os.path.dirname(single_shot), ignore_errors=True)
         return dialog_manager.error("{}".format(ex))
-
-
-@hexdi.inject('udev_dumper.export', 'window')
-def onActionExport(event, dumper, window):
-    selector = QtWidgets.QFileDialog()
-    selector.setDirectory(os.path.expanduser('~'))
-    selector.setAcceptMode(QtWidgets.QFileDialog.AcceptSave)
-
-    if not selector.exec_(): return None
-
-    for path in selector.selectedFiles():
-        dumper.dump(path)
