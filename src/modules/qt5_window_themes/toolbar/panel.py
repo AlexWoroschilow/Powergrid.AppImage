@@ -10,12 +10,12 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import functools
 
 import hexdi
-from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
+
+from .button import ToolbarButton
 
 
 class ToolbarWidget(QtWidgets.QScrollArea):
@@ -28,18 +28,16 @@ class ToolbarWidget(QtWidgets.QScrollArea):
         self.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.setWidgetResizable(True)
 
-        from .button import ToolbarButton
-
         self.container = QtWidgets.QWidget()
         self.container.setLayout(QtWidgets.QHBoxLayout())
         self.container.layout().setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.setWidget(self.container)
 
         self.buttons = []
+
         for theme in themes.get_stylesheets():
-            button = ToolbarButton(self, theme.name, QtGui.QIcon(QtGui.QPixmap(theme.preview).scaledToWidth(90)))
-            button.clicked.connect(functools.partial(self.onToggleTheme, theme=theme))
-            button.theme = theme
+            button = ToolbarButton(self, theme)
+            button.actionClick.connect(self.toggleThemeEvent)
             self.addWidget(button)
 
             self.buttons.append(button)
@@ -47,16 +45,19 @@ class ToolbarWidget(QtWidgets.QScrollArea):
         self.reload(None)
 
     def addWidget(self, widget):
-        self.container.layout().addWidget(widget, -1)
+        self.container.layout().addWidget(widget)
 
     @hexdi.inject('config')
     def reload(self, event, config=None):
         for button in self.buttons:
-            if not button.theme: continue
-            button.setChecked(button.theme.name == config.get('themes.theme'))
+            if not button.theme:
+                continue
+
+            state = button.theme.name == config.get('themes.theme')
+            button.setChecked(state)
 
     @hexdi.inject('config', 'window')
-    def onToggleTheme(self, config, window, event, theme):
+    def toggleThemeEvent(self, theme, config, window):
         if not theme: return None
         config.set('themes.theme', theme.name)
         window.setStyleSheet(theme.stylesheet)

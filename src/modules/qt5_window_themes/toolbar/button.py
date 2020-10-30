@@ -17,16 +17,24 @@ from PyQt5.QtCore import Qt
 
 
 class ToolbarButton(QtWidgets.QToolButton):
-    def __init__(self, parent=None, text=None, icon=None):
+    actionClick = QtCore.pyqtSignal(object)
+
+    def __init__(self, parent=None, theme=None):
         super(ToolbarButton, self).__init__(parent)
-        assert (text is not None)
-        assert (icon is not None)
+        self.clicked.connect(lambda x: self.actionClick.emit(theme))
+        self.setCheckable(False)
+        self.theme = theme
+
+        if theme.preview:
+            pixmap = QtGui.QPixmap(theme.preview)
+            pixmap = pixmap.scaledToWidth(90)
+            self.setIcon(QtGui.QIcon(pixmap))
 
         self.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         self.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.setIconSize(QtCore.QSize(28, 28))
-        self.setIcon(QtGui.QIcon(icon))
+
         self.setFixedWidth(90)
         self.setCheckable(True)
-        self.setToolTip(text)
-        self.setText(text)
+        self.setToolTip(theme.name)
+        self.setText(theme.name)
