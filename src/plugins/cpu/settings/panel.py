@@ -24,8 +24,8 @@ class SettingsWidget(QtWidgets.QWidget):
     @hexdi.inject('config')
     def __init__(self, config):
         super(SettingsWidget, self).__init__()
-        self.default_performance = config.get('default.performance.cpu', 'performance')
-        self.default_powersave = config.get('default.powersave.cpu', 'powersave')
+        self.default_performance = config.get('default.performance.cpu')
+        self.default_powersave = config.get('default.powersave.cpu')
 
 
 class SettingsPerformanceWidget(SettingsWidget):

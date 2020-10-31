@@ -22,6 +22,10 @@ from modules.qt5_workspace_udev import powersave
 from .settings.panel import SettingsPerformanceWidget
 from .settings.panel import SettingsPowersaveWidget
 
+config = hexdi.resolve('config')
+config.set('default.performance.disc', 'on')
+config.set('default.powersave.disc', 'auto')
+
 
 @qt5_window.workspace(name='Disc', focus=False, position=5)
 @hexdi.inject('workspace.disc')
@@ -44,15 +48,15 @@ def adapter_element(parent):
 def rule_performance(config, service):
     for device in service.devices():
         permanent = config.get('disc.permanent.{}'.format(device.code), 0)
-        if not os.path.exists(device.path):
-            continue
+        if not os.path.exists(device.path): continue
 
         file = '{}/power/control'.format(device.path)
         if not os.path.exists(file): continue
 
-        schema = config.get('disc.performance', 'on')
-        schema = 'auto' if int(permanent) == 1 else schema
-        schema = 'on' if int(permanent) == 2 else schema
+        schema = config.get('default.performance.disc')
+        schema = config.get('disc.performance', schema)
+        schema = config.get('default.powersave.disc') if int(permanent) == 1 else schema
+        schema = config.get('default.performance.disc') if int(permanent) == 2 else schema
         yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
 
@@ -61,13 +65,13 @@ def rule_performance(config, service):
 def rule_powersave(config, service):
     for device in service.devices():
         permanent = config.get('disc.permanent.{}'.format(device.code), 0)
-        if not os.path.exists(device.path):
-            continue
+        if not os.path.exists(device.path): continue
 
         file = '{}/power/control'.format(device.path)
-        if not os.path.exists(file):
-            continue
-        schema = config.get('disc.powersave', 'auto')
-        schema = 'auto' if int(permanent) == 1 else schema
-        schema = 'on' if int(permanent) == 2 else schema
+        if not os.path.exists(file): continue
+
+        schema = config.get('default.powersave.disc')
+        schema = config.get('disc.powersave', schema)
+        schema = config.get('default.powersave.disc') if int(permanent) == 1 else schema
+        schema = config.get('default.performance.disc') if int(permanent) == 2 else schema
         yield 'ls {} && echo {} > {}'.format(device.path, schema, file)

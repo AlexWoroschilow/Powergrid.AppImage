@@ -22,6 +22,19 @@ from modules.qt5_workspace_udev import powersave
 from .settings.panel import SettingsPerformanceWidget
 from .settings.panel import SettingsPowersaveWidget
 
+config = hexdi.resolve('config')
+config.set('default.performance.usb', 'on')
+config.set('default.performance.usb.power_level', 'on')
+config.set('default.performance.usb.power_control', 'on')
+config.set('default.performance.usb.autosuspend_delay', -1)
+config.set('default.performance.usb.autosuspend', -1)
+
+config.set('default.powersave.usb', 'auto')
+config.set('default.powersave.usb.power_level', 'auto')
+config.set('default.powersave.usb.power_control', 'auto')
+config.set('default.powersave.usb.autosuspend_delay', 500)
+config.set('default.powersave.usb.autosuspend', 500)
+
 
 @qt5_window.workspace(name='USB', focus=False, position=2)
 @hexdi.inject('workspace.usb')
@@ -44,35 +57,38 @@ def adapter_element(parent):
 def rule_performance(config, service):
     for device in service.devices():
         permanent = config.get('usb.permanent.{}'.format(device.code), 0)
-        if not os.path.exists(device.path):
-            continue
+        if not os.path.exists(device.path): continue
 
         file = '{}/power/level'.format(device.path)
-        schema = config.get('usb.performance.power_level', 'on')
-        schema = 'auto' if int(permanent) == 1 else schema
-        schema = 'on' if int(permanent) == 2 else schema
         if os.path.exists(file) and os.path.isfile(file):
+            schema = config.get('default.performance.usb.power_level')
+            schema = config.get('usb.performance.power_level', schema)
+            schema = config.get('default.powersave.usb.power_level') if int(permanent) == 1 else schema
+            schema = config.get('default.performance.usb.power_level') if int(permanent) == 2 else schema
             yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
         file = '{}/power/control'.format(device.path)
-        schema = config.get('usb.performance.power_control', 'on')
-        schema = 'auto' if int(permanent) == 1 else schema
-        schema = 'on' if int(permanent) == 2 else schema
         if os.path.exists(file) and os.path.isfile(file):
+            schema = config.get('default.performance.usb.power_control')
+            schema = config.get('usb.performance.power_control', schema)
+            schema = config.get('default.powersave.usb.power_control') if int(permanent) == 1 else schema
+            schema = config.get('default.performance.usb.power_control') if int(permanent) == 2 else schema
             yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
         file = '{}/power/autosuspend'.format(device.path)
-        schema = config.get('usb.performance.autosuspend', '-1')
-        schema = '500' if int(permanent) == 1 else schema
-        schema = '-1' if int(permanent) == 2 else schema
         if os.path.exists(file) and os.path.isfile(file):
+            schema = config.get('default.performance.usb.autosuspend')
+            schema = config.get('usb.performance.autosuspend', schema)
+            schema = config.get('default.powersave.usb.autosuspend') if int(permanent) == 1 else schema
+            schema = config.get('default.performance.usb.autosuspend') if int(permanent) == 2 else schema
             yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
         file = '{}/power/autosuspend_delay_ms'.format(device.path)
-        schema = config.get('usb.performance.autosuspend_delay', '-1')
-        schema = '500' if int(permanent) == 1 else schema
-        schema = '-1' if int(permanent) == 2 else schema
         if os.path.exists(file) and os.path.isfile(file):
+            schema = config.get('default.performance.usb.autosuspend_delay')
+            schema = config.get('usb.performance.autosuspend_delay', schema)
+            schema = config.get('default.powersave.usb.autosuspend_delay') if int(permanent) == 1 else schema
+            schema = config.get('default.performance.usb.autosuspend_delay') if int(permanent) == 2 else schema
             yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
 
@@ -81,33 +97,36 @@ def rule_performance(config, service):
 def rule_powersave(config, service):
     for device in service.devices():
         permanent = config.get('usb.permanent.{}'.format(device.code), 0)
-        if not os.path.exists(device.path):
-            continue
+        if not os.path.exists(device.path): continue
 
         file = '{}/power/level'.format(device.path)
-        schema = config.get('usb.powersave.power_level', 'auto')
-        schema = 'auto' if int(permanent) == 1 else schema
-        schema = 'on' if int(permanent) == 2 else schema
         if os.path.exists(file) and os.path.isfile(file):
+            schema = config.get('default.powersave.usb.power_level')
+            schema = config.get('usb.powersave.power_level', schema)
+            schema = config.get('default.powersave.usb.power_level') if int(permanent) == 1 else schema
+            schema = config.get('default.performance.usb.power_level') if int(permanent) == 2 else schema
             yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
         file = '{}/power/control'.format(device.path)
-        schema = config.get('usb.powersave.power_control', 'auto')
-        schema = 'auto' if int(permanent) == 1 else schema
-        schema = 'on' if int(permanent) == 2 else schema
         if os.path.exists(file) and os.path.isfile(file):
+            schema = config.get('default.powersave.usb.power_control')
+            schema = config.get('usb.powersave.power_control', schema)
+            schema = config.get('default.powersave.usb.power_control') if int(permanent) == 1 else schema
+            schema = config.get('default.performance.usb.power_control') if int(permanent) == 2 else schema
             yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
         file = '{}/power/autosuspend'.format(device.path)
-        schema = config.get('usb.powersave.autosuspend', '500')
-        schema = '500' if int(permanent) == 1 else schema
-        schema = '-1' if int(permanent) == 2 else schema
         if os.path.exists(file) and os.path.isfile(file):
+            schema = config.get('default.powersave.usb.autosuspend')
+            schema = config.get('usb.powersave.autosuspend', schema)
+            schema = config.get('default.powersave.usb.autosuspend') if int(permanent) == 1 else schema
+            schema = config.get('default.performance.usb.autosuspend') if int(permanent) == 2 else schema
             yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
         file = '{}/power/autosuspend_delay_ms'.format(device.path)
-        schema = config.get('usb.powersave.autosuspend_delay', '500')
-        schema = '500' if int(permanent) == 1 else schema
-        schema = '-1' if int(permanent) == 2 else schema
         if os.path.exists(file) and os.path.isfile(file):
+            schema = config.get('default.powersave.usb.autosuspend_delay')
+            schema = config.get('usb.powersave.autosuspend_delay', schema)
+            schema = config.get('default.powersave.usb.autosuspend_delay') if int(permanent) == 1 else schema
+            schema = config.get('default.performance.usb.autosuspend_delay') if int(permanent) == 2 else schema
             yield 'ls {} && echo {} > {}'.format(device.path, schema, file)

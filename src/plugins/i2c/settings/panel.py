@@ -24,8 +24,8 @@ class SettingsWidget(QtWidgets.QWidget):
     @hexdi.inject('config')
     def __init__(self, config):
         super(SettingsWidget, self).__init__()
-        self.default_performance = config.get('default.performance.i2c', 'on')
-        self.default_powersave = config.get('default.powersave.i2c', 'auto')
+        self.default_performance = config.get('default.performance.i2c')
+        self.default_powersave = config.get('default.powersave.i2c')
 
 
 class SettingsPerformanceWidget(SettingsWidget):

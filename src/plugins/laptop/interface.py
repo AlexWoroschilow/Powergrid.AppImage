@@ -21,6 +21,10 @@ from modules.qt5_workspace_udev import powersave
 from .gui.settings.settings import DashboardSettingsPerformance
 from .gui.settings.settings import DashboardSettingsPowersave
 
+config = hexdi.resolve('config')
+config.set('default.performance.laptop', 0)
+config.set('default.powersave.laptop', 5)
+
 
 @qt5_workspace_battery.element()
 def battery_element(parent):
@@ -40,9 +44,10 @@ def rule_performance(config, service):
         if not os.path.exists(device.path):
             continue
 
-        schema = config.get('laptop.performance', '0')
-        schema = '0' if int(permanent) == 1 else schema
-        schema = '5' if int(permanent) == 2 else schema
+        schema = config.get('default.performance.laptop')
+        schema = config.get('laptop.performance', schema)
+        schema = config.get('default.powersave.laptop') if int(permanent) == 1 else schema
+        schema = config.get('default.performance.laptop') if int(permanent) == 2 else schema
         yield 'ls {} && echo {} > {}'.format(device.path, schema, device.path)
 
 
@@ -54,7 +59,8 @@ def rule_powersave(config, service):
         if not os.path.exists(device.path):
             continue
 
-        schema = config.get('laptop.powersave', '5')
-        schema = '0' if int(permanent) == 1 else schema
-        schema = '5' if int(permanent) == 2 else schema
+        schema = config.get('default.powersave.laptop')
+        schema = config.get('laptop.powersave', schema)
+        schema = config.get('default.powersave.laptop') if int(permanent) == 1 else schema
+        schema = config.get('default.performance.laptop') if int(permanent) == 2 else schema
         yield 'ls {} && echo {} > {}'.format(device.path, schema, device.path)

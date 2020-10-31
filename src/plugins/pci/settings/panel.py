@@ -25,8 +25,8 @@ class SettingsWidget(QtWidgets.QWidget):
     def __init__(self, config):
         super(SettingsWidget, self).__init__()
 
-        self.default_performance = config.get('default.performance.pci', 'on')
-        self.default_powersave = config.get('default.powersave.pci', 'auto')
+        self.default_performance = config.get('default.performance.pci')
+        self.default_powersave = config.get('default.powersave.pci')
 
 
 class SettingsPerformanceWidget(SettingsWidget):

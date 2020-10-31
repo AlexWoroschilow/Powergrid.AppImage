@@ -21,6 +21,10 @@ from modules.qt5_workspace_udev import powersave
 from .gui.settings.settings import DashboardSettingsPerformance
 from .gui.settings.settings import DashboardSettingsPowersave
 
+config = hexdi.resolve('config')
+config.set('default.performance.watchdog', 1)
+config.set('default.powersave.watchdog', 0)
+
 
 @qt5_workspace_battery.element()
 def battery_element(parent):
@@ -37,12 +41,12 @@ def adapter_element(parent):
 def rule_performance(config, service):
     for device in service.devices():
         permanent = config.get('watchdog.permanent.{}'.format(device.code), 0)
-        if not os.path.exists(device.path):
-            continue
+        if not os.path.exists(device.path): continue
 
-        schema = config.get('watchdog.performance', '1')
-        schema = '0' if int(permanent) == 1 else schema
-        schema = '1' if int(permanent) == 2 else schema
+        schema = config.get('default.performance.watchdog')
+        schema = config.get('watchdog.performance', schema)
+        schema = config.get('default.performance.watchdog') if int(permanent) == 1 else schema
+        schema = config.get('default.powersave.watchdog') if int(permanent) == 2 else schema
         yield 'ls {} && echo {} > {}'.format(device.path, schema, device.path)
 
 
@@ -51,10 +55,10 @@ def rule_performance(config, service):
 def rule_powersave(config, service):
     for device in service.devices():
         permanent = config.get('watchdog.permanent.{}'.format(device.code), 0)
-        if not os.path.exists(device.path):
-            continue
+        if not os.path.exists(device.path): continue
 
-        schema = config.get('watchdog.powersave', '0')
-        schema = '0' if int(permanent) == 1 else schema
-        schema = '1' if int(permanent) == 2 else schema
+        schema = config.get('default.powersave.watchdog')
+        schema = config.get('watchdog.powersave', schema)
+        schema = config.get('default.performance.watchdog') if int(permanent) == 1 else schema
+        schema = config.get('default.powersave.watchdog') if int(permanent) == 2 else schema
         yield 'ls {} && echo {} > {}'.format(device.path, schema, device.path)

@@ -20,6 +20,10 @@ from modules import qt5_workspace_battery
 from modules.qt5_workspace_udev import performance
 from modules.qt5_workspace_udev import powersave
 
+config = hexdi.resolve('config')
+config.set('default.performance.hda', 0)
+config.set('default.powersave.hda', 1)
+
 
 @qt5_window.workspace(name='Intel HDA', focus=False, position=3)
 @hexdi.inject('workspace.hda')
@@ -48,11 +52,13 @@ def rule_performance(config, service):
             continue
 
         file = '{}/parameters/power_save'.format(device.path)
-        schema = config.get('hda.performance', '')
-        schema = '1' if int(permanent) == 1 else schema
-        schema = '' if int(permanent) == 2 else schema
-        if os.path.exists(file) and os.path.isfile(file):
-            yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
+        if not os.path.exists(file): continue
+
+        schema = config.get('default.performance.hda')
+        schema = config.get('hda.performance', schema)
+        schema = config.get('default.powersave.hda') if int(permanent) == 1 else schema
+        schema = config.get('default.performance.hda') if int(permanent) == 2 else schema
+        yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
 
 @powersave.rule()
@@ -64,9 +70,10 @@ def rule_powersave(config, service):
             continue
 
         file = '{}/parameters/power_save'.format(device.path)
-        schema = config.get('hda.powersave', '1')
-        schema = '1' if int(permanent) == 1 else schema
-        schema = '' if int(permanent) == 2 else schema
+        if not os.path.exists(file): continue
 
-        if os.path.exists(file) and os.path.isfile(file):
-            yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
+        schema = config.get('default.powersave.hda')
+        schema = config.get('hda.powersave', schema)
+        schema = config.get('default.powersave.hda') if int(permanent) == 1 else schema
+        schema = config.get('default.performance.hda') if int(permanent) == 2 else schema
+        yield 'ls {} && echo {} > {}'.format(device.path, schema, file)

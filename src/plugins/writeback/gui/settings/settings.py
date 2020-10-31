@@ -24,9 +24,19 @@ class DashboardSettings(QtWidgets.QWidget):
 
     @hexdi.inject('config')
     def __init__(self, config):
-        self.default_performance = int(config.get('default.performance.writeback', 500))
-        self.default_powersave = int(config.get('default.powersave.writeback', 1500))
+        self.default_performance = config.get('default.performance.writeback')
+        self.default_powersave = config.get('default.powersave.writeback')
         super(DashboardSettings, self).__init__()
+
+    def getValueInternal(self, value):
+        if value == self.default_powersave: return 0
+        if value == self.default_performance: return 1
+        return 0
+
+    def getValueExternal(self, value):
+        if value == 0: return self.default_powersave
+        if value == 1: return self.default_performance
+        return self.default_powersave
 
 
 class DashboardSettingsPerformance(DashboardSettings):
@@ -41,18 +51,15 @@ class DashboardSettingsPerformance(DashboardSettings):
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.layout().setAlignment(Qt.AlignCenter)
 
-        value = int(config.get('writeback.performance', self.default_performance))
-        slider = DashboardSlider('Writeback', int(value == self.default_performance))
-        slider.slideAction.connect(self.action_slide)
+        value = config.get('writeback.performance', self.default_performance)
+        slider = DashboardSlider('Writeback', self.getValueInternal(value))
+        slider.slideAction.connect(self.slideEvent)
 
         self.layout().addWidget(slider)
 
     @hexdi.inject('config')
-    def action_slide(self, slider_state, config):
-        value = self.default_powersave \
-            if slider_state == 0 else \
-            self.default_performance
-        config.set('writeback.performance', value)
+    def slideEvent(self, value, config):
+        config.set('writeback.performance', self.getValueExternal(value))
 
 
 class DashboardSettingsPowersave(DashboardSettings):
@@ -67,15 +74,12 @@ class DashboardSettingsPowersave(DashboardSettings):
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.layout().setAlignment(Qt.AlignCenter)
 
-        value = int(config.get('writeback.powersave', self.default_powersave))
-        slider = DashboardSlider('Writeback', int(value == self.default_performance))
-        slider.slideAction.connect(self.action_slide)
+        value = config.get('writeback.powersave', self.default_powersave)
+        slider = DashboardSlider('Writeback', self.getValueInternal(value))
+        slider.slideAction.connect(self.slideEvent)
 
         self.layout().addWidget(slider)
 
     @hexdi.inject('config')
-    def action_slide(self, slider_state, config):
-        value = self.default_powersave \
-            if slider_state == 0 else \
-            self.default_performance
-        config.set('writeback.powersave', value)
+    def slideEvent(self, value, config):
+        config.set('writeback.powersave', self.getValueExternal(value))

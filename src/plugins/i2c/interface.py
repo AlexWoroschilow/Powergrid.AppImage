@@ -20,6 +20,10 @@ from modules import qt5_workspace_battery
 from modules.qt5_workspace_udev import performance
 from modules.qt5_workspace_udev import powersave
 
+config = hexdi.resolve('config')
+config.set('default.performance.i2c', 'on')
+config.set('default.powersave.i2c', 'auto')
+
 
 @qt5_window.workspace(name='I2C', focus=False, position=6)
 @hexdi.inject('workspace.i2c')
@@ -47,10 +51,12 @@ def rule_performance(config, service):
         if not os.path.exists(device.path):
             continue
 
+        schema = config.get('default.performance.i2c')
+        schema = config.get('i2c.performance', schema)
+        schema = config.get('default.powersave.i2c') if int(permanent) == 1 else schema
+        schema = config.get('default.performance.i2c') if int(permanent) == 2 else schema
+
         file = '{}/power/control'.format(device.path)
-        schema = config.get('i2c.performance', 'on')
-        schema = 'auto' if int(permanent) == 1 else schema
-        schema = 'on' if int(permanent) == 2 else schema
         yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
 
@@ -62,8 +68,10 @@ def rule_powersave(config, service):
         if not os.path.exists(device.path):
             continue
 
+        schema = config.get('default.powersave.i2c')
+        schema = config.get('i2c.powersave', schema)
+        schema = config.get('default.powersave.i2c') if int(permanent) == 1 else schema
+        schema = config.get('default.performance.i2c') if int(permanent) == 2 else schema
+
         file = '{}/power/control'.format(device.path)
-        schema = config.get('i2c.powersave', 'auto')
-        schema = 'auto' if int(permanent) == 1 else schema
-        schema = 'on' if int(permanent) == 2 else schema
         yield 'ls {} && echo {} > {}'.format(device.path, schema, file)

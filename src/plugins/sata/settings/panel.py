@@ -26,12 +26,12 @@ class SettingsWidget(QtWidgets.QWidget):
     @hexdi.inject('config')
     def __init__(self, config):
         super(SettingsWidget, self).__init__()
-        self.default_performance_policy = config.get('default.performance.sata.policy', 'max_performance')
-        self.default_balanced_policy = config.get('default.balanced.sata.policy', 'med_power_with_dipm')
-        self.default_powersave_policy = config.get('default.powersave.sata.policy', 'min_power')
+        self.default_balanced_policy = config.get('default.balanced.sata.policy')
+        self.default_performance_policy = config.get('default.performance.sata.policy')
+        self.default_powersave_policy = config.get('default.powersave.sata.policy')
 
-        self.default_performance_control = config.get('default.performance.sata.control', 'on')
-        self.default_powersave_control = config.get('default.powersave.sata.control', 'auto')
+        self.default_performance_control = config.get('default.performance.sata.control')
+        self.default_powersave_control = config.get('default.powersave.sata.control')
 
     def getValueInternal(self, value):
         if value == self.default_powersave_policy: return 0

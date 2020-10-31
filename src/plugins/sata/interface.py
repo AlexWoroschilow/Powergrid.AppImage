@@ -22,6 +22,13 @@ from modules.qt5_workspace_udev import powersave
 from .settings.panel import SettingsPerformanceWidget
 from .settings.panel import SettingsPowersaveWidget
 
+config = hexdi.resolve('config')
+config.set('default.performance.sata.policy', 'max_performance')
+config.set('default.balanced.sata.policy', 'med_power_with_dipm')
+config.set('default.powersave.sata.policy', 'min_power')
+config.set('default.performance.sata.control', 'on')
+config.set('default.powersave.sata.control', 'auto')
+
 
 @qt5_window.workspace(name='SCSI', focus=False, position=5)
 @hexdi.inject('workspace.scsi')
@@ -49,9 +56,10 @@ def rule_performance(config, service):
         file = '{}/power/control'.format(device.path)
         if not os.path.exists(file): continue
 
-        schema = config.get('sata.performance.control', 'on')
-        schema = 'auto' if int(permanent) == 1 else schema
-        schema = 'on' if int(permanent) == 2 else schema
+        schema = config.get('default.performance.sata.control')
+        schema = config.get('sata.performance.control', schema)
+        schema = config.get('default.powersave.sata.control') if int(permanent) == 1 else schema
+        schema = config.get('default.performance.sata.control') if int(permanent) == 2 else schema
         yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
     for device in service.devices():
@@ -62,9 +70,10 @@ def rule_performance(config, service):
             format(device.path, os.path.basename(device.path))
         if not os.path.exists(file): continue
 
-        schema = config.get('sata.performance.policy', 'max_performance')
-        schema = 'min_power' if int(permanent) == 1 else schema
-        schema = 'max_performance' if int(permanent) == 2 else schema
+        schema = config.get('default.performance.sata.control')
+        schema = config.get('sata.performance.policy', schema)
+        schema = config.get('default.powersave.sata.control') if int(permanent) == 1 else schema
+        schema = config.get('default.performance.sata.control') if int(permanent) == 2 else schema
         yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
 
@@ -78,9 +87,10 @@ def rule_powersave(config, service):
         file = '{}/power/control'.format(device.path)
         if not os.path.exists(file): continue
 
-        schema = config.get('sata.powersave.control', 'auto')
-        schema = 'auto' if int(permanent) == 1 else schema
-        schema = 'on' if int(permanent) == 2 else schema
+        schema = config.get('default.powersave.sata.control')
+        schema = config.get('sata.powersave.control', schema)
+        schema = config.get('default.powersave.sata.control') if int(permanent) == 1 else schema
+        schema = config.get('default.performance.sata.control') if int(permanent) == 2 else schema
         yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
     for device in service.devices():
@@ -89,10 +99,10 @@ def rule_powersave(config, service):
 
         file = '{}/scsi_host/{}/link_power_management_policy'. \
             format(device.path, os.path.basename(device.path))
-        if not os.path.exists(file):
-            continue
+        if not os.path.exists(file): continue
 
-        schema = config.get('sata.powersave.policy', 'min_power')
-        schema = 'min_power' if int(permanent) == 1 else schema
-        schema = 'max_performance' if int(permanent) == 2 else schema
+        schema = config.get('default.powersave.sata.control')
+        schema = config.get('sata.powersave.policy', schema)
+        schema = config.get('default.powersave.sata.control') if int(permanent) == 1 else schema
+        schema = config.get('default.performance.sata.control') if int(permanent) == 2 else schema
         yield 'ls {} && echo {} > {}'.format(device.path, schema, file)

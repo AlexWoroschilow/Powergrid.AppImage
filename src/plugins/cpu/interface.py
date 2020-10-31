@@ -20,6 +20,10 @@ from modules import qt5_workspace_battery
 from modules.qt5_workspace_udev import performance
 from modules.qt5_workspace_udev import powersave
 
+config = hexdi.resolve('config')
+config.set('default.performance.cpu', 'performance')
+config.set('default.powersave.cpu', 'powersave')
+
 
 @qt5_window.workspace(name='CPU', focus=False, position=2)
 @hexdi.inject('workspace.cpu')
@@ -44,15 +48,16 @@ def adapter_element(parent=None):
 def rule_performance(config, service):
     for device in service.devices():
         permanent = config.get('cpu.permanent.{}'.format(device.code), 0)
-        if not os.path.exists(device.path):
-            continue
+        if not os.path.exists(device.path): continue
 
         file = '{}/cpufreq/scaling_governor'.format(device.path)
-        schema = config.get('cpu.performance', 'ondemand')
-        schema = 'powersave' if int(permanent) == 1 else schema
-        schema = 'ondemand' if int(permanent) == 2 else schema
-        if os.path.exists(file) and os.path.isfile(file):
-            yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
+        if not os.path.exists(file): continue
+
+        schema = config.get('default.performance.cpu')
+        schema = config.get('cpu.performance', schema)
+        schema = config.get('default.powersave.cpu') if int(permanent) == 1 else schema
+        schema = config.get('default.performance.cpu') if int(permanent) == 2 else schema
+        yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
 
 @powersave.rule()
@@ -60,12 +65,13 @@ def rule_performance(config, service):
 def rule_powersave(config, service):
     for device in service.devices():
         permanent = config.get('cpu.permanent.{}'.format(device.code), 0)
-        if not os.path.exists(device.path):
-            continue
+        if not os.path.exists(device.path): continue
 
         file = '{}/cpufreq/scaling_governor'.format(device.path)
-        schema = config.get('cpu.powersave', 'powersave')
-        schema = 'powersave' if int(permanent) == 1 else schema
-        schema = 'ondemand' if int(permanent) == 2 else schema
-        if os.path.exists(file) and os.path.isfile(file):
-            yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
+        if not os.path.exists(file): continue
+
+        schema = config.get('default.powersave.cpu')
+        schema = config.get('cpu.powersave', schema)
+        schema = config.get('default.powersave.cpu') if int(permanent) == 1 else schema
+        schema = config.get('default.performance.cpu') if int(permanent) == 2 else schema
+        yield 'ls {} && echo {} > {}'.format(device.path, schema, file)

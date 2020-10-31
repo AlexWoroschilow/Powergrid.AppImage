@@ -24,8 +24,18 @@ class SettingsWidget(QtWidgets.QWidget):
     @hexdi.inject('config')
     def __init__(self, config):
         super(SettingsWidget, self).__init__()
-        self.default_performance = int(config.get('default.performance.hda', 0))
-        self.default_powersave = int(config.get('default.powersave.hda', 1))
+        self.default_performance = config.get('default.performance.hda')
+        self.default_powersave = config.get('default.powersave.hda')
+
+    def getValueInternal(self, value):
+        if value == self.default_powersave: return 0
+        if value == self.default_performance: return 1
+        return 0
+
+    def getValueExternal(self, value):
+        if value == 0: return self.default_powersave
+        if value == 1: return self.default_performance
+        return self.default_powersave
 
 
 class SettingsPerformanceWidget(SettingsWidget):
@@ -36,9 +46,9 @@ class SettingsPerformanceWidget(SettingsWidget):
         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         self.setContentsMargins(0, 0, 0, 0)
 
-        value = int(config.get('hda.performance', self.default_performance))
-        slider = DashboardSlider('HDA', int(value == self.default_performance))
-        slider.slideAction.connect(self.action_slide)
+        value = config.get('hda.performance', self.default_performance)
+        slider = DashboardSlider('HDA', self.getValueInternal(value))
+        slider.slideAction.connect(self.slideEvent)
 
         self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
@@ -46,12 +56,8 @@ class SettingsPerformanceWidget(SettingsWidget):
         self.layout().addWidget(slider)
 
     @hexdi.inject('config')
-    def action_slide(self, slider_position, config):
-        value = self.default_powersave \
-            if slider_position == 0 else \
-            self.default_performance
-
-        config.set('hda.performance', value)
+    def slideEvent(self, value, config):
+        config.set('hda.performance', self.getValueExternal(value))
 
 
 class SettingsPowersaveWidget(SettingsWidget):
@@ -62,9 +68,9 @@ class SettingsPowersaveWidget(SettingsWidget):
         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         self.setContentsMargins(0, 0, 0, 0)
 
-        value = int(config.get('hda.powersave', self.default_powersave))
-        slider = DashboardSlider('HDA', int(value == self.default_performance))
-        slider.slideAction.connect(self.action_slide)
+        value = config.get('hda.powersave', self.default_powersave)
+        slider = DashboardSlider('HDA', self.getValueInternal(value))
+        slider.slideAction.connect(self.slideEvent)
 
         self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
@@ -73,9 +79,5 @@ class SettingsPowersaveWidget(SettingsWidget):
         self.layout().addWidget(slider)
 
     @hexdi.inject('config')
-    def action_slide(self, slider_position, config):
-        value = self.default_powersave \
-            if slider_position == 0 else \
-            self.default_performance
-
-        config.set('hda.powersave', value)
+    def slideEvent(self, value, config):
+        config.set('hda.powersave', self.getValueExternal(value))

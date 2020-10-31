@@ -24,9 +24,19 @@ class DashboardSettings(QtWidgets.QWidget):
 
     @hexdi.inject('config')
     def __init__(self, config):
-        self.default_performance = int(config.get('default.performance.laptop', 0))
-        self.default_powersave = int(config.get('default.powersave.laptop', 5))
+        self.default_performance = config.get('default.performance.laptop')
+        self.default_powersave = config.get('default.powersave.laptop')
         super(DashboardSettings, self).__init__()
+
+    def getValueInternal(self, value):
+        if value == self.default_powersave: return 0
+        if value == self.default_performance: return 1
+        return 0
+
+    def getValueExternal(self, value):
+        if value == 0: return self.default_powersave
+        if value == 1: return self.default_performance
+        return self.default_powersave
 
 
 class DashboardSettingsPerformance(DashboardSettings):
@@ -41,18 +51,15 @@ class DashboardSettingsPerformance(DashboardSettings):
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.layout().setAlignment(Qt.AlignCenter)
 
-        value = int(config.get('laptop.performance', self.default_performance))
-        slider = DashboardSlider('Laptop', int(value == self.default_performance))
-        slider.slideAction.connect(self.action_slide)
+        value = config.get('laptop.performance', self.default_performance)
+        slider = DashboardSlider('Laptop', self.getValueInternal(value))
+        slider.slideAction.connect(self.slideEvent)
 
         self.layout().addWidget(slider)
 
     @hexdi.inject('config')
-    def action_slide(self, slider_state, config):
-        value = self.default_powersave \
-            if slider_state == 0 else \
-            self.default_performance
-        config.set('laptop.performance', value)
+    def slideEvent(self, value, config):
+        config.set('laptop.performance', self.getValueExternal(value))
 
 
 class DashboardSettingsPowersave(DashboardSettings):
@@ -67,15 +74,12 @@ class DashboardSettingsPowersave(DashboardSettings):
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.layout().setAlignment(Qt.AlignCenter)
 
-        value = int(config.get('laptop.powersave', self.default_powersave))
-        slider = DashboardSlider('Laptop', int(value == self.default_performance))
-        slider.slideAction.connect(self.action_slide)
+        value = config.get('laptop.powersave', self.default_powersave)
+        slider = DashboardSlider('Laptop', self.getValueInternal(value))
+        slider.slideAction.connect(self.slideEvent)
 
         self.layout().addWidget(slider)
 
     @hexdi.inject('config')
-    def action_slide(self, slider_state, config):
-        value = self.default_powersave \
-            if slider_state == 0 else \
-            self.default_performance
-        config.set('laptop.powersave', value)
+    def slideEvent(self, value, config):
+        config.set('laptop.powersave', self.getValueExternal(value))

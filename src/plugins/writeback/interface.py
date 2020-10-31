@@ -21,6 +21,10 @@ from modules.qt5_workspace_udev import powersave
 from .gui.settings.settings import DashboardSettingsPerformance
 from .gui.settings.settings import DashboardSettingsPowersave
 
+config = hexdi.resolve('config')
+config.set('default.performance.writeback', 500)
+config.set('default.powersave.writeback', 1500)
+
 
 @qt5_workspace_battery.element()
 def battery_element(parent):
@@ -37,15 +41,16 @@ def adapter_element(parent):
 def rule_performance(config, service):
     for device in service.devices():
         permanent = config.get('writeback.permanent.{}'.format(device.code), 0)
-        if not os.path.exists(device.path):
-            continue
+        if not os.path.exists(device.path): continue
 
         file = '/proc/sys/vm/dirty_writeback_centisecs'
-        schema = config.get('writeback.performance', '')
-        schema = '1500' if int(permanent) == 1 else schema
-        schema = '' if int(permanent) == 2 else schema
-        if os.path.exists(file) and os.path.isfile(file):
-            yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
+        if not os.path.exists(file): continue
+
+        schema = config.get('default.performance.writeback')
+        schema = config.get('writeback.performance', schema)
+        schema = config.get('default.powersave.writeback') if int(permanent) == 1 else schema
+        schema = config.get('default.performance.writeback') if int(permanent) == 2 else schema
+        yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
 
 
 @powersave.rule()
@@ -53,12 +58,13 @@ def rule_performance(config, service):
 def rule_powersave(config, service):
     for device in service.devices():
         permanent = config.get('writeback.permanent.{}'.format(device.code), 0)
-        if not os.path.exists(device.path):
-            continue
+        if not os.path.exists(device.path): continue
 
         file = '/proc/sys/vm/dirty_writeback_centisecs'
-        schema = config.get('writeback.powersave', '1500')
-        schema = '1500' if int(permanent) == 1 else schema
-        schema = '' if int(permanent) == 2 else schema
-        if os.path.exists(file) and os.path.isfile(file):
-            yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
+        if not os.path.exists(file): continue
+
+        schema = config.get('default.powersave.writeback')
+        schema = config.get('writeback.powersave', schema)
+        schema = config.get('default.powersave.writeback') if int(permanent) == 1 else schema
+        schema = config.get('default.performance.writeback') if int(permanent) == 2 else schema
+        yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
