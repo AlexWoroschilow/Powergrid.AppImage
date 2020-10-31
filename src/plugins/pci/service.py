@@ -19,7 +19,9 @@ class Device(object):
 
     @property
     def name(self):
-        return self.device.get('ID_MODEL_FROM_DATABASE')
+        name = self.device.get('ID_MODEL_FROM_DATABASE')
+        if not name: return self.path
+        return (name.encode()).decode('unicode_escape')
 
     @property
     def path(self):

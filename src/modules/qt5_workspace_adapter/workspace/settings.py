@@ -41,5 +41,4 @@ class SettingsWidget(QtWidgets.QWidget):
         self.layout().addWidget(spacer)
 
     def addWidget(self, widget: QtWidgets.QWidget):
-        widget.setFixedWidth(50)
         self.container.layout().addWidget(widget)

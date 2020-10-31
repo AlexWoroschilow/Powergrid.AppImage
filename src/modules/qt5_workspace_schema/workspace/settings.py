@@ -16,7 +16,7 @@ from PyQt5.QtCore import Qt
 from .statistic import DashboardStatistic
 
 
-class SettingsWidget(QtWidgets.QWidget):
+class SettingsWidget(QtWidgets.QFrame):
 
     def __init__(self):
         super(SettingsWidget, self).__init__()
