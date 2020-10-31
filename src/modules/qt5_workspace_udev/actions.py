@@ -45,8 +45,8 @@ def onActionCleanup(event, dumper, dialog_manager):
         return dialog_manager.error("{}".format(ex))
 
 
-@hexdi.inject('udev_dumper.export', 'window')
-def onActionExport(event, dumper, window):
+@hexdi.inject('udev_dumper.export')
+def onActionExport(event, dumper):
     selector = QtWidgets.QFileDialog()
     selector.setDirectory(os.path.expanduser('~'))
     selector.setAcceptMode(QtWidgets.QFileDialog.AcceptSave)

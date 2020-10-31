@@ -11,17 +11,22 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
+import re
 
 
 class Device(object):
-    def __init__(self, path=None):
-        self.path = path
+    def __init__(self, device=None):
+        self.device = device
+
+    @property
+    def path(self):
+        return '/sys{}'.format(self.device.get('DEVPATH'))
 
     @property
     def name(self):
-        name = os.path.basename(self.path)
-        name = name.replace(':', '.')
-        return name.capitalize()
+        name = self.device.get('ID_MODEL_ENC')
+        if not name: return self.path
+        return (name.encode()).decode('unicode_escape')
 
     @property
     def power_control(self):
@@ -34,27 +39,16 @@ class Device(object):
         return None
 
     @property
-    def policy(self):
-
-        file = '{}/scsi_host/{}/link_power_management_policy'. \
-            format(self.path, os.path.basename(self.path))
-
-        if not os.path.exists(file): return None
-
-        with open(file, 'r') as stream:
-            return stream.read().strip("\n")
-
-        return None
-
-    @property
     def code(self):
-        return self.name.lower()
+        serial = self.device.get('ID_SERIAL')
+        return re.sub(r"(?x)\.?-?_?;?:?/?\|?\\?", "", serial)
 
 
 class Finder(object):
     def devices(self):
         import pyudev
         context = pyudev.Context()
-        for device in context.list_devices(subsystem='scsi'):
-            print('/sys{}'.format(device.get('DEVPATH')))
-            yield Device('/sys{}'.format(device.get('DEVPATH')))
+        for device in context.list_devices(DEVTYPE='disk'):
+            if not device.get('ID_SERIAL'):
+                continue
+            yield Device(device)

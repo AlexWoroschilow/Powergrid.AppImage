@@ -31,6 +31,18 @@ def onActionPerformace(event, dumper, dialog_manager):
         return dialog_manager.error("{}".format(ex))
 
 
+@hexdi.inject('udev_dumper.performance')
+def onActionPerformaceExport(event, dumper):
+    selector = QtWidgets.QFileDialog()
+    selector.setDirectory(os.path.expanduser('~'))
+    selector.setAcceptMode(QtWidgets.QFileDialog.AcceptSave)
+
+    if not selector.exec_(): return None
+
+    for path in selector.selectedFiles():
+        dumper.dump(path)
+
+
 @hexdi.inject('udev_dumper.powersave', 'window.dialog_manager')
 def onActionPowersave(event, dumper, dialog_manager):
     single_shot = dumper.dump(os.path.expanduser('/tmp/performance/powersave.sh'))
@@ -43,3 +55,15 @@ def onActionPowersave(event, dumper, dialog_manager):
     except Exception as ex:
         shutil.rmtree(os.path.dirname(single_shot), ignore_errors=True)
         return dialog_manager.error("{}".format(ex))
+
+
+@hexdi.inject('udev_dumper.powersave')
+def onActionPowersaveExport(event, dumper):
+    selector = QtWidgets.QFileDialog()
+    selector.setDirectory(os.path.expanduser('~'))
+    selector.setAcceptMode(QtWidgets.QFileDialog.AcceptSave)
+
+    if not selector.exec_(): return None
+
+    for path in selector.selectedFiles():
+        dumper.dump(path)

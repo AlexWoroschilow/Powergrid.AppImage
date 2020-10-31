@@ -10,23 +10,28 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
-from .statistic import DashboardStatistic
+
+class SettingsListItem(QtWidgets.QListWidgetItem):
+
+    def __init__(self, device=None):
+        super(SettingsListItem, self).__init__()
+        self.setSizeHint(QtCore.QSize(40, 30))
+        self.setTextAlignment(Qt.AlignCenter)
+        self.setData(0, device)
 
 
-class SettingsWidget(QtWidgets.QWidget):
-
+class SettingsListWidget(QtWidgets.QListWidget):
     def __init__(self):
-        super(SettingsWidget, self).__init__()
-        self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
-
-        self.setLayout(QtWidgets.QVBoxLayout())
-        self.layout().setAlignment(Qt.AlignTop)
-        self.layout().setContentsMargins(0, 0, 0, 0)
-
-        self.layout().addWidget(DashboardStatistic())
+        super(SettingsListWidget, self).__init__()
+        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
 
     def addWidget(self, widget):
-        self.layout().addWidget(widget)
+        item = SettingsListItem()
+        self.addItem(item)
+
+        self.setItemWidget(item, widget)

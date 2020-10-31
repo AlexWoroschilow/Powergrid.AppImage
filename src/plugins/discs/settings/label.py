@@ -15,15 +15,9 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
 
-class Field(QtWidgets.QLabel):
+class Title(QtWidgets.QLabel):
 
     def __init__(self, text):
-        super(Field, self).__init__(text)
-        self.setAlignment(Qt.AlignLeft)
-
-
-class Value(QtWidgets.QLabel):
-
-    def __init__(self, text):
-        super(Value, self).__init__(text)
-        self.setAlignment(Qt.AlignLeft)
+        super(Title, self).__init__(text)
+        self.setAlignment(Qt.AlignCenter)
+        self.setWordWrap(True)

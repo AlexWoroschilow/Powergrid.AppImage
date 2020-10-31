@@ -20,7 +20,9 @@ class Device(pyudev.Device):
 
     @property
     def name(self):
-        return self.device.get('ID_MODEL_ENC')
+        name = self.device.get('ID_MODEL_ENC')
+        if not name: return self.path
+        return (name.encode()).decode('unicode_escape')
 
     @property
     def path(self):

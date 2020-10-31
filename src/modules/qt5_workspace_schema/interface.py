@@ -17,17 +17,19 @@ from modules import qt5_window
 from .toolbar.panel import ToolbarWidget
 
 
-@qt5_window.workspace(name='Schema', focus=False, position=1)
+@qt5_window.workspace(name='Schema', focus=True, position=0)
 @hexdi.inject('workspace.settings')
 def window_dashboard(parent=None, widget=None):
     return widget
 
 
-@qt5_window.toolbar(name='Schema', focus=True, position=0)
+@qt5_window.toolbar(name='Schema', focus=False, position=1)
 def window_toolbar(parent=None):
     from . import actions
 
     widget = ToolbarWidget()
     widget.actionPerformance.connect(actions.onActionPerformace)
+    widget.actionPerformanceExport.connect(actions.onActionPerformaceExport)
     widget.actionPowersave.connect(actions.onActionPowersave)
+    widget.actionPowersaveExport.connect(actions.onActionPowersaveExport)
     return widget

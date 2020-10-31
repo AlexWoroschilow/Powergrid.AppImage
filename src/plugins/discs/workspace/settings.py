@@ -23,7 +23,7 @@ from .list import SettingsListWidget
 class SettingsWidget(QtWidgets.QFrame):
     toggleDeviceAction = QtCore.pyqtSignal(object)
 
-    @hexdi.inject('plugin.service.cpu')
+    @hexdi.inject('plugin.service.disc')
     def __init__(self, service=None):
         super(SettingsWidget, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)

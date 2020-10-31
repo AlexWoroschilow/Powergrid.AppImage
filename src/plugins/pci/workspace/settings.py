@@ -17,9 +17,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
 from .device import DeviceWidget
-from .label import Title
 from .list import SettingsListWidget
-from .text import DashboardDescription
 
 
 class SettingsWidget(QtWidgets.QFrame):
@@ -34,9 +32,6 @@ class SettingsWidget(QtWidgets.QFrame):
         self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.layout().setContentsMargins(0, 0, 0, 0)
-
-        self.layout().addWidget(Title('PCI - devices'))
-        self.layout().addWidget(DashboardDescription())
 
         self.list = SettingsListWidget()
         self.layout().addWidget(self.list)

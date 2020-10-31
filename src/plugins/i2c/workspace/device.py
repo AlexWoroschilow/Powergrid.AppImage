@@ -42,19 +42,14 @@ class ThreadScanner(QtCore.QThread):
 class DeviceValueWidget(Value):
     def __init__(self, device=None):
         super(DeviceValueWidget, self).__init__('...')
-        self.setAlignment(Qt.AlignVCenter)
-        self.setMinimumWidth(120)
+        self.setAlignment(Qt.AlignVCenter | Qt.AlignCenter)
+        self.setMinimumWidth(80)
 
         self.thread = ThreadScanner(device)
         self.thread.status.connect(self.refreshEvent)
         self.thread.start()
 
-    @hexdi.inject('config')
-    def refreshEvent(self, status, config):
-        if status == config.get('i2c.powersave'):
-            return self.setText("<b>{}</b>".format('powersave'))
-        if status == config.get('i2c.performance'):
-            return self.setText("<b>{}</b>".format('performance'))
+    def refreshEvent(self, status):
         return self.setText("<b>{}</b>".format(status))
 
 

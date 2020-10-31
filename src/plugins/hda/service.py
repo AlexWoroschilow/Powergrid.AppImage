@@ -20,6 +20,7 @@ class Device(object):
     @property
     def name(self):
         name = os.path.basename(self.path)
+        name = name.replace('_', ' ')
         return name.capitalize()
 
     @property

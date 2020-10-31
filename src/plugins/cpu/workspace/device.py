@@ -24,8 +24,8 @@ from .checkbox import CheckboxTriState
 class SchemaWidget(QtWidgets.QLabel):
     def __init__(self, device=None):
         super(SchemaWidget, self).__init__('...')
-        self.setAlignment(Qt.AlignVCenter)
-        self.setMinimumWidth(100)
+        self.setAlignment(Qt.AlignVCenter | Qt.AlignCenter)
+        self.setMinimumWidth(150)
 
         self.timerRefresh = QtCore.QTimer()
         self.timerRefresh.timeout.connect(functools.partial(
@@ -41,6 +41,7 @@ class FrequenceWidget(QtWidgets.QLabel):
     def __init__(self, device=None):
         super(FrequenceWidget, self).__init__('...')
         self.setAlignment(Qt.AlignVCenter)
+        self.setMinimumWidth(100)
 
         self.timerRefresh = QtCore.QTimer()
         self.timerRefresh.timeout.connect(functools.partial(

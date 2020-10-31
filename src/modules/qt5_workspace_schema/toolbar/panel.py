@@ -19,7 +19,9 @@ from PyQt5.QtCore import Qt
 
 class ToolbarWidget(QtWidgets.QScrollArea):
     actionPerformance = QtCore.pyqtSignal(object)
+    actionPerformanceExport = QtCore.pyqtSignal(object)
     actionPowersave = QtCore.pyqtSignal(object)
+    actionPowersaveExport = QtCore.pyqtSignal(object)
 
     @hexdi.inject('config')
     def __init__(self, config=None):
@@ -43,9 +45,19 @@ class ToolbarWidget(QtWidgets.QScrollArea):
         self.performance.clicked.connect(self.actionPerformance.emit)
         self.addWidget(self.performance)
 
+        self.performanceExport = ToolbarButton(self, "Export performance", QtGui.QIcon('icons/export'))
+        self.performanceExport.setToolTip('Export performance rules to file')
+        self.performanceExport.clicked.connect(self.actionPerformanceExport.emit)
+        self.addWidget(self.performanceExport)
+
         self.powersave = ToolbarButton(self, "Powersave", QtGui.QIcon('icons/powersave'))
         self.powersave.clicked.connect(self.actionPowersave.emit)
         self.addWidget(self.powersave)
+
+        self.powersaveExport = ToolbarButton(self, "Export powersave", QtGui.QIcon('icons/export'))
+        self.performance.setToolTip('Export powersave rules to file')
+        self.powersaveExport.clicked.connect(self.actionPowersaveExport.emit)
+        self.addWidget(self.powersaveExport)
 
     def addWidget(self, widget):
         self.container.layout().addWidget(widget)

@@ -35,7 +35,7 @@ class ThreadScanner(QtCore.QThread):
         while True:
             time.sleep(2)
 
-            power_control = self.device.policy
+            power_control = self.device.power_control
             self.status.emit("not supported" if power_control is None else power_control)
 
 
@@ -43,7 +43,7 @@ class DeviceValueWidget(Value):
     def __init__(self, device=None):
         super(DeviceValueWidget, self).__init__('...')
         self.setAlignment(Qt.AlignVCenter | Qt.AlignCenter)
-        self.setMinimumWidth(200)
+        self.setMinimumWidth(80)
 
         self.thread = ThreadScanner(device)
         self.thread.status.connect(self.refreshEvent)
@@ -64,7 +64,7 @@ class DeviceWidget(QtWidgets.QWidget):
 
         self.device = device
 
-        default = config.get('sata.permanent.{}'.format(self.device.code), 0)
+        default = config.get('disc.permanent.{}'.format(self.device.code), 0)
         self.checkbox = CheckboxTriState(['Auto', 'Powersave', 'Performance'], int(default))
         self.checkbox.stateChanged.connect(self.toggle_device_event)
 
@@ -78,5 +78,5 @@ class DeviceWidget(QtWidgets.QWidget):
 
     @hexdi.inject('config')
     def toggle_device_event(self, value, config):
-        config.set('sata.permanent.{}'.format(self.device.code), int(value))
+        config.set('disc.permanent.{}'.format(self.device.code), int(value))
         self.toggleDeviceAction.emit((value, self.device))

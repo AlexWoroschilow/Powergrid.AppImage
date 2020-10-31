@@ -16,6 +16,10 @@ import hexdi
 from .gui.dashboard.widget import DashboardWidget
 
 
+def enabled(options, arguments):
+    return False
+
+
 @hexdi.permanent('content.statistic')
 class DashboardWidgetInstance(DashboardWidget):
     pass

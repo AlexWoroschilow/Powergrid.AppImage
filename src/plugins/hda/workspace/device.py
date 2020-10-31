@@ -42,18 +42,15 @@ class ThreadScanner(QtCore.QThread):
 class DeviceValueWidget(Value):
     def __init__(self, device=None):
         super(DeviceValueWidget, self).__init__('...')
-        self.setAlignment(Qt.AlignVCenter)
-        self.setMinimumWidth(120)
+        self.setAlignment(Qt.AlignVCenter | Qt.AlignCenter)
+        self.setMinimumWidth(80)
 
         self.thread = ThreadScanner(device)
-        self.thread.status.connect(self.status_update_event)
+        self.thread.status.connect(self.refreshEvent)
         self.thread.start()
 
-    @hexdi.inject('config')
-    def status_update_event(self, status, config):
-        if status == config.get('hda.powersave'):
-            return self.setText("<b>{}</b>".format('powersave'))
-        return self.setText("<b>{}</b>".format('performance'))
+    def refreshEvent(self, status):
+        return self.setText("<b>{}</b>".format(status))
 
 
 class DeviceWidget(QtWidgets.QWidget):

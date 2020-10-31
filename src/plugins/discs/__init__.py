@@ -11,19 +11,17 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
+import hexdi
+
+from .service import Finder
+from .workspace.settings import SettingsWidget
 
 
-class Field(QtWidgets.QLabel):
-
-    def __init__(self, text):
-        super(Field, self).__init__(text)
-        self.setAlignment(Qt.AlignLeft)
+@hexdi.permanent('plugin.service.disc')
+class ServiceFinder(Finder):
+    pass
 
 
-class Value(QtWidgets.QLabel):
-
-    def __init__(self, text):
-        super(Value, self).__init__(text)
-        self.setAlignment(Qt.AlignLeft)
+@hexdi.permanent('workspace.disc')
+class SettingsWidgetInstance(SettingsWidget):
+    pass

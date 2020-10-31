@@ -21,7 +21,7 @@ class SettingsWidget(QtWidgets.QWidget):
 
     def __init__(self):
         super(SettingsWidget, self).__init__()
-        self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
 
         self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setAlignment(Qt.AlignCenter)
@@ -40,5 +40,6 @@ class SettingsWidget(QtWidgets.QWidget):
         spacer.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.layout().addWidget(spacer)
 
-    def addWidget(self, widget):
+    def addWidget(self, widget: QtWidgets.QWidget):
+        widget.setFixedWidth(50)
         self.container.layout().addWidget(widget)

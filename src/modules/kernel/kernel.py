@@ -58,8 +58,11 @@ class Kernel(object):
                 if not module: continue
                 logger.debug("found: {}".format(source))
 
-                if hasattr(module, 'enabled') and callable(module, 'enabled'):
+                if hasattr(module, 'enabled'):
                     enabled = getattr(module, 'enabled')
+                    if not callable(enabled):
+                        continue
+
                     if not enabled(options, args):
                         continue
 
