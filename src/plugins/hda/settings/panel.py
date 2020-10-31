@@ -25,7 +25,7 @@ class SettingsWidget(QtWidgets.QWidget):
     def __init__(self, config):
         super(SettingsWidget, self).__init__()
         self.default_performance = int(config.get('default.performance.hda', 0))
-        self.default_powersave = int(config.get('default.powersave.hda', 5))
+        self.default_powersave = int(config.get('default.powersave.hda', 1))
 
 
 class SettingsPerformanceWidget(SettingsWidget):

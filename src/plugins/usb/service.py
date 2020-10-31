@@ -82,5 +82,4 @@ class Finder(object):
             devname = device.get('DEVNAME')
             if devname is None:
                 continue
-
             yield Device(device)

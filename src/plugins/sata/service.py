@@ -58,3 +58,5 @@ class Finder(object):
         context = pyudev.Context()
         for device in context.list_devices(subsystem='scsi'):
             yield Device('/sys{}'.format(device.get('DEVPATH')))
+        for device in context.list_devices(subsystem='block'):
+            yield Device('/sys{}'.format(device.get('DEVPATH')))

@@ -12,6 +12,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
 
+import pyudev
+
 
 class Device(object):
     def __init__(self, device=None):
@@ -45,13 +47,13 @@ class Device(object):
 
     @property
     def code(self):
-        return self.device.get('PCI_ID'). \
-            replace(':', '.')
+        unique = self.device.get('PCI_ID')
+        if not unique: return os.path.basename(self.path)
+        return unique.replace(':', '.')
 
 
 class Finder(object):
     def devices(self):
-        import pyudev
         context = pyudev.Context()
         for device in context.list_devices(subsystem='pci'):
             yield Device(device)

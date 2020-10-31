@@ -44,6 +44,7 @@ class DumperSchema(object):
                 stream_temp.write("echo '{}' >> /etc/udev/rules.d/70-performance.rules\n".format(rule))
 
             stream_temp.write("chmod 644 /etc/udev/rules.d/70-performance.rules\n")
+            stream_temp.write("udevadm control --reload-rules && udevadm trigger\n")
 
             stream_temp.close()
             return single_shot
@@ -65,6 +66,7 @@ class DumperCleaner(object):
                      stat.S_IXOTH | stat.S_IROTH)
 
             stream_temp.write("rm -f /etc/udev/rules.d/70-performance.rules\n")
+            stream_temp.write("udevadm control --reload-rules && udevadm trigger\n")
 
             stream_temp.close()
             return single_shot

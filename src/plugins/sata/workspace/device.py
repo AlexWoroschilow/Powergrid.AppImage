@@ -18,11 +18,11 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
 from .checkbox import CheckboxTriState
-from .label import Value
 
 
 class ThreadScanner(QtCore.QThread):
-    status = QtCore.pyqtSignal(object)
+    powerPolicyAction = QtCore.pyqtSignal(object)
+    powerControlAction = QtCore.pyqtSignal(object)
 
     def __init__(self, device):
         super(ThreadScanner, self).__init__()
@@ -35,22 +35,34 @@ class ThreadScanner(QtCore.QThread):
         while True:
             time.sleep(2)
 
-            power_control = self.device.policy
-            self.status.emit("not supported" if power_control is None else power_control)
+            self.powerControlAction.emit(self.device.power_control)
+            self.powerPolicyAction.emit(self.device.policy)
 
 
-class DeviceValueWidget(Value):
+class DeviceValueWidget(QtWidgets.QWidget):
     def __init__(self, device=None):
-        super(DeviceValueWidget, self).__init__('...')
-        self.setAlignment(Qt.AlignVCenter | Qt.AlignCenter)
-        self.setMinimumWidth(200)
+        super(DeviceValueWidget, self).__init__()
 
         self.thread = ThreadScanner(device)
-        self.thread.status.connect(self.refreshEvent)
+        self.thread.powerPolicyAction.connect(self.powerPolicyEvent)
+        self.thread.powerControlAction.connect(self.powerControlEvent)
         self.thread.start()
 
-    def refreshEvent(self, status):
-        return self.setText("<b>{}</b>".format(status))
+        self.setLayout(QtWidgets.QHBoxLayout())
+
+        self.power_policy = QtWidgets.QLabel('...')
+        self.power_policy.setAlignment(Qt.AlignVCenter | Qt.AlignCenter)
+        self.layout().addWidget(self.power_policy)
+
+        self.power_control = QtWidgets.QLabel('...')
+        self.power_control.setAlignment(Qt.AlignVCenter | Qt.AlignCenter)
+        self.layout().addWidget(self.power_control)
+
+    def powerPolicyEvent(self, status):
+        return self.power_policy.setText("<b>{}</b>".format(status))
+
+    def powerControlEvent(self, status):
+        return self.power_control.setText("<b>{}</b>".format(status))
 
 
 class DeviceWidget(QtWidgets.QWidget):
@@ -61,6 +73,7 @@ class DeviceWidget(QtWidgets.QWidget):
         super(DeviceWidget, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         self.setContentsMargins(0, 0, 0, 0)
+        self.setToolTip(device.path)
 
         self.device = device
 

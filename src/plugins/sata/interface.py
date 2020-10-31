@@ -44,15 +44,25 @@ def adapter_element(parent):
 def rule_performance(config, service):
     for device in service.devices():
         permanent = config.get('sata.permanent.{}'.format(device.code), 0)
-        if not os.path.exists(device.path):
-            continue
+        if not os.path.exists(device.path): continue
+
+        file = '{}/power/control'.format(device.path)
+        if not os.path.exists(file): continue
+
+        schema = config.get('sata.performance.control', 'on')
+        schema = 'auto' if int(permanent) == 1 else schema
+        schema = 'on' if int(permanent) == 2 else schema
+        yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
+
+    for device in service.devices():
+        permanent = config.get('sata.permanent.{}'.format(device.code), 0)
+        if not os.path.exists(device.path): continue
 
         file = '{}/scsi_host/{}/link_power_management_policy'. \
             format(device.path, os.path.basename(device.path))
-        if not os.path.exists(file):
-            continue
+        if not os.path.exists(file): continue
 
-        schema = config.get('sata.performance', 'max_performance')
+        schema = config.get('sata.performance.policy', 'max_performance')
         schema = 'min_power' if int(permanent) == 1 else schema
         schema = 'max_performance' if int(permanent) == 2 else schema
         yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
@@ -63,15 +73,26 @@ def rule_performance(config, service):
 def rule_powersave(config, service):
     for device in service.devices():
         permanent = config.get('sata.permanent.{}'.format(device.code), 0)
-        if not os.path.exists(device.path):
-            continue
+        if not os.path.exists(device.path): continue
+
+        file = '{}/power/control'.format(device.path)
+        if not os.path.exists(file): continue
+
+        schema = config.get('sata.powersave.control', 'auto')
+        schema = 'auto' if int(permanent) == 1 else schema
+        schema = 'on' if int(permanent) == 2 else schema
+        yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
+
+    for device in service.devices():
+        permanent = config.get('sata.permanent.{}'.format(device.code), 0)
+        if not os.path.exists(device.path): continue
 
         file = '{}/scsi_host/{}/link_power_management_policy'. \
             format(device.path, os.path.basename(device.path))
         if not os.path.exists(file):
             continue
 
-        schema = config.get('sata.powersave', 'min_power')
+        schema = config.get('sata.powersave.policy', 'min_power')
         schema = 'min_power' if int(permanent) == 1 else schema
         schema = 'max_performance' if int(permanent) == 2 else schema
         yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
