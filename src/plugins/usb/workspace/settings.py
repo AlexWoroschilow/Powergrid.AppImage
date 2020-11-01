@@ -16,12 +16,11 @@ from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
-from .device import DeviceWidget
 from .list import SettingsListWidget
 
 
 class SettingsWidget(QtWidgets.QFrame):
-    toggleDeviceAction = QtCore.pyqtSignal(object)
+    deviceToggleAction = QtCore.pyqtSignal(object)
 
     @hexdi.inject('plugin.service.usb')
     def __init__(self, service=None):
@@ -34,9 +33,5 @@ class SettingsWidget(QtWidgets.QFrame):
         self.layout().setContentsMargins(0, 0, 0, 0)
 
         self.list = SettingsListWidget()
+        self.list.deviceToggleAction.connect(self.deviceToggleAction.emit)
         self.layout().addWidget(self.list)
-
-        for device in service.devices():
-            device_widget = DeviceWidget(device)
-            device_widget.toggleDeviceAction.connect(self.toggleDeviceAction.emit)
-            self.list.addWidget(device_widget)

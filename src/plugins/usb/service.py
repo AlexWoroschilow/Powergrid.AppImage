@@ -25,6 +25,10 @@ class Device(pyudev.Device):
         return (name.encode()).decode('unicode_escape')
 
     @property
+    def action(self):
+        return self.device.action
+
+    @property
     def path(self):
         return "/sys{}".format(self.device.get('DEVPATH'))
 
@@ -71,15 +75,27 @@ class Device(pyudev.Device):
 
     @property
     def code(self):
-        return self.device.get('PRODUCT') \
-            .replace('/', '.')
+        return "{}{}{}".format(
+            self.device.get('ID_VENDOR_ID'),
+            self.device.get('ID_MODEL_ID'),
+            self.device.get('ID_REVISION')
+        )
 
 
 class Finder(object):
+
+    def monitor(self):
+        monitor = pyudev.Monitor.from_netlink(pyudev.Context())
+        monitor.filter_by(subsystem='usb')
+        monitor.start()
+        for device in iter(monitor.poll, None):
+            if not device.get('ID_VENDOR_ID'): continue
+            if not device.get('ID_MODEL_ID'): continue
+            yield Device(device)
+
     def devices(self):
         context = pyudev.Context()
         for device in context.list_devices(subsystem='usb'):
-            devname = device.get('DEVNAME')
-            if devname is None:
-                continue
+            if not device.get('ID_VENDOR_ID'): continue
+            if not device.get('ID_MODEL_ID'): continue
             yield Device(device)

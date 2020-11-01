@@ -13,6 +13,8 @@
 import os
 import re
 
+import pyudev
+
 
 class Device(object):
     def __init__(self, device=None):
@@ -27,6 +29,10 @@ class Device(object):
         name = self.device.get('ID_MODEL_ENC')
         if not name: return self.path
         return (name.encode()).decode('unicode_escape')
+
+    @property
+    def action(self):
+        return self.device.action
 
     @property
     def power_control(self):
@@ -45,10 +51,15 @@ class Device(object):
 
 
 class Finder(object):
+    def monitor(self):
+        monitor = pyudev.Monitor.from_netlink(pyudev.Context())
+        monitor.filter_by(subsystem='block')
+        monitor.start()
+        for device in iter(monitor.poll, None):
+            yield Device(device)
+
     def devices(self):
-        import pyudev
         context = pyudev.Context()
         for device in context.list_devices(DEVTYPE='disk'):
-            if not device.get('ID_SERIAL'):
-                continue
+            if not device.get('ID_SERIAL'): continue
             yield Device(device)
