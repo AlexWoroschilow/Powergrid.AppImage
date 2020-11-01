@@ -53,7 +53,16 @@ class Device(object):
 
 
 class Finder(object):
+    def monitor(self):
+        monitor = pyudev.Monitor.from_netlink(pyudev.Context())
+        monitor.filter_by(subsystem='pci')
+        monitor.start()
+        for device in iter(monitor.poll, None):
+            if not device.get('PCI_ID'): continue
+            yield Device(device)
+
     def devices(self):
         context = pyudev.Context()
         for device in context.list_devices(subsystem='pci'):
+            if not device.get('PCI_ID'): continue
             yield Device(device)

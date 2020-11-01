@@ -63,6 +63,7 @@ class DeviceWidget(QtWidgets.QWidget):
         super(DeviceWidget, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.setContentsMargins(0, 0, 0, 0)
+        self.setToolTip(device.path)
 
         self.device = device
 

@@ -42,6 +42,7 @@ class ThreadScanner(QtCore.QThread):
 class DeviceValueWidget(QtWidgets.QWidget):
     def __init__(self, device=None):
         super(DeviceValueWidget, self).__init__()
+        self.setContentsMargins(0, 0, 0, 0)
 
         self.thread = ThreadScanner(device)
         self.thread.powerPolicyAction.connect(self.powerPolicyEvent)
@@ -49,6 +50,7 @@ class DeviceValueWidget(QtWidgets.QWidget):
         self.thread.start()
 
         self.setLayout(QtWidgets.QHBoxLayout())
+        self.layout().setContentsMargins(0, 0, 0, 0)
 
         self.power_policy = QtWidgets.QLabel('...')
         self.power_policy.setAlignment(Qt.AlignVCenter | Qt.AlignCenter)
