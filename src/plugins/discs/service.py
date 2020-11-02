@@ -62,4 +62,5 @@ class Finder(object):
         context = pyudev.Context()
         for device in context.list_devices(DEVTYPE='disk'):
             if not device.get('ID_SERIAL'): continue
+            print(device)
             yield Device(device)

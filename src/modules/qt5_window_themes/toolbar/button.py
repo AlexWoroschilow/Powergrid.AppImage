@@ -36,5 +36,5 @@ class ToolbarButton(QtWidgets.QToolButton):
 
         self.setFixedWidth(90)
         self.setCheckable(True)
-        self.setToolTip(theme.name)
-        self.setText(theme.name)
+        self.setToolTip(theme.name.capitalize())
+        self.setText(theme.name.capitalize())

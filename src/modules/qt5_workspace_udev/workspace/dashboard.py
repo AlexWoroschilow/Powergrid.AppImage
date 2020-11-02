@@ -30,11 +30,14 @@ class DashboardWidget(QtWidgets.QSplitter):
 
         self.container1 = QtWidgets.QWidget()
         self.container1.setLayout(QtWidgets.QVBoxLayout())
+        self.container1.layout().setContentsMargins(0, 0, 0, 0)
+
         self.container1.layout().addWidget(TitleWidget('Performance rules'))
         self.container1.layout().addWidget(self.left)
 
         self.container2 = QtWidgets.QWidget()
         self.container2.setLayout(QtWidgets.QVBoxLayout())
+        self.container2.layout().setContentsMargins(0, 0, 0, 0)
         self.container2.layout().addWidget(TitleWidget('Powersave rules'))
         self.container2.layout().addWidget(self.right)
 

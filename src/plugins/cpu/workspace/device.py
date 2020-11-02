@@ -69,7 +69,7 @@ class DeviceWidget(QtWidgets.QWidget):
 
         default = config.get('cpu.permanent.{}'.format(self.device.code), 0)
         self.checkbox = CheckboxTriState(['Auto', 'Powersave', 'Performance'], int(default))
-        self.checkbox.stateChanged.connect(self.toggle_device_event)
+        self.checkbox.stateChanged.connect(self.deviceToggleEvent)
 
         self.setLayout(QtWidgets.QGridLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
@@ -81,6 +81,6 @@ class DeviceWidget(QtWidgets.QWidget):
         self.layout().addWidget(FrequenceWidget(device), 0, 3)
 
     @hexdi.inject('config')
-    def toggle_device_event(self, value, config):
+    def deviceToggleEvent(self, value, config):
         config.set('cpu.permanent.{}'.format(self.device.code), int(value))
         self.toggleDeviceAction.emit((value, self.device))
