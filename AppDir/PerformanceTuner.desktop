@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=AOD-PerformanceTuner
+Name=PerformanceTuner
 Exec=AppRun
-Icon=icon
+Icon=performance-tuner
 Type=Application
 Categories=Utility;
