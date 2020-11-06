@@ -19,15 +19,19 @@ class Kernel(object):
 
     def __init__(self, options: {} = None, args: [] = None, sources: [] = ["plugins/**", "modules/**"]):
 
-        self.modules = self._modules(
-            sources, options, args
-        )
-
         logger = logging.getLogger('kernel')
-        for module in self.modules:
-            spec = util.find_spec('{}.interface'.format(module.__name__))
+        for module in self._modules(sources, options, args):
+
+            spec_default = util.find_spec('{}.default'.format(module.__name__))
+            if spec_default and spec_default.loader:
+                logger.debug("loading defaults: {}...".format(module.__name__))
+                spec_default.loader.load_module()
+
+            spec_interface = util.find_spec('{}.interface'.format(module.__name__))
             logger.debug("booting: {}".format(module))
-            if spec and spec.loader: spec.loader.load_module()
+            if spec_interface and spec_interface.loader:
+                logger.debug("loading interface: {}...".format(module.__name__))
+                spec_interface.loader.load_module()
 
     def _candidates(self, sources: [] = None):
         for mask in sources:
@@ -56,7 +60,7 @@ class Kernel(object):
 
                 module = spec.loader.load_module()
                 if not module: continue
-                logger.debug("found: {}".format(source))
+                logger.debug("found: {}".format(module.__name__))
 
                 if hasattr(module, 'enabled'):
                     enabled = getattr(module, 'enabled')
@@ -66,8 +70,14 @@ class Kernel(object):
                     if not enabled(options, args):
                         continue
 
-                logger.debug("loading: {}".format(module))
+                logger.debug("loading: {}..".format(module.__name__))
                 modules.append(module)
+
+                spec_service = util.find_spec('{}.service'.format(module.__name__))
+                if spec_service and spec_service.loader:
+                    logger.debug("loading services: {}...".format(module.__name__))
+                    spec_service.loader.load_module()
+
 
             except (SyntaxError, RuntimeError) as err:
                 logger.critical("{}: {}".format(source, err))

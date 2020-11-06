@@ -14,7 +14,7 @@ import configparser
 import os
 
 
-class ConfigService(object):
+class ConfigFileParser(object):
     _parser = None
 
     def __init__(self, file=None):
@@ -25,7 +25,7 @@ class ConfigService(object):
             return None
 
         folder = os.path.dirname(self._file)
-        if len(folder) and not os.path.exists(folder):
+        if not os.path.exists(folder):
             os.makedirs(folder)
 
         with open(self._file, 'w') as stream:

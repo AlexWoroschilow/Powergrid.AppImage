@@ -25,20 +25,20 @@ os.chdir(os.path.dirname(abspath))
 from modules.qt5_application import desktop
 
 
-@hexdi.permanent('optparser')
+@hexdi.permanent('optparse')
 class OptionParser(optparse.OptionParser):
     def __init__(self):
         super(OptionParser, self).__init__()
 
-        logfile = os.path.expanduser('~/.config/AOD-PowerTuner/default.log')
+        logfile = os.path.expanduser('~/.config/PerformanceTuner/default.log')
         self.add_option("--logfile", default=logfile, dest="logfile", help="Logfile location")
         self.add_option("--loglevel", default=logging.DEBUG, dest="loglevel", help="Logging level")
-        configfile = os.path.expanduser('~/.config/AOD-PowerTuner/default.conf')
+        configfile = os.path.expanduser('~/.config/PerformanceTuner/default.conf')
         self.add_option("--config", default=configfile, dest="config", help="Config file location")
 
 
-@hexdi.inject('optparser')
-def main(parser):
+if __name__ == "__main__":
+    parser = hexdi.resolve('optparse')
     (options, args) = parser.parse_args()
 
     log_format = '[%(relativeCreated)d][%(name)s] %(levelname)s - %(message)s'
@@ -46,7 +46,3 @@ def main(parser):
 
     application = desktop.Application(options, args)
     sys.exit(application.exec_(options, args))
-
-
-if __name__ == "__main__":
-    main()
