@@ -10,30 +10,18 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import os
+
+import hexdi
+
+from .device.hda import Finder
+from .workspace.settings import SettingsWidget
 
 
-class Device(object):
-    def __init__(self, path=None):
-        self.path = path
-
-    @property
-    def name(self):
-        name = os.path.basename(self.path)
-        name = name.replace('_', ' ')
-        return name.capitalize()
-
-    @property
-    def code(self):
-        name = os.path.basename(self.path)
-        return name.lower()
-
-    @property
-    def power_control(self):
-        with open("{}/parameters/power_save".format(self.path), 'r') as stream:
-            return stream.read().strip("\n")
+@hexdi.permanent('plugin.service.hda')
+class ServiceFinder(Finder):
+    pass
 
 
-class Finder(object):
-    def devices(self):
-        yield Device('/sys/module/snd_hda_intel')
+@hexdi.permanent('workspace.hda')
+class SettingsWidgetInstance(SettingsWidget):
+    pass

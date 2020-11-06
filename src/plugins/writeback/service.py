@@ -10,31 +10,12 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import os
+
+import hexdi
+
+from plugins.writeback.device.writeback import Finder
 
 
-class Device(object):
-    def __init__(self, path=None):
-        self.path = path
-
-    @property
-    def code(self):
-        return os.path.basename(self.path)
-
-    @property
-    def name(self):
-        name = os.path.basename(self.path)
-        return name.capitalize()
-
-    @property
-    def power_control(self):
-        with open(self.path, 'r') as stream:
-            return stream.read().strip("\n")
-
-
-class Finder(object):
-    def devices(self):
-        import pyudev
-        context = pyudev.Context()
-        for device in context.list_devices(subsystem='workqueue'):
-            yield Device('/sys{}'.format(device.get('DEVPATH')))
+@hexdi.permanent('plugin.service.writeback')
+class ServiceFinder(Finder):
+    pass
