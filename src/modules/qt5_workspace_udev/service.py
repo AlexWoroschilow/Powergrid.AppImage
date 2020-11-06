@@ -71,8 +71,8 @@ class ContainerPerformanceRulesUdev(object):
     @hexdi.inject('rules.performance')
     def rules(self, collection):
         for script in collection.rules:
-            yield 'SUBSYSTEM=="power_supply", ACTION=="change", ATTR{{online}}=="1", RUN+="{rule}"'. \
-                format(online='online', rule=script)
+            yield 'SUBSYSTEM=="power_supply", ACTION=="change", ATTR{{online}}=="1", RUN+="{}"'. \
+                format("/bin/sh -c \\\"{}\\\" ".format(script))
 
 
 @hexdi.permanent('udev_rules.powersave')
@@ -81,5 +81,5 @@ class ContainerPowerSaveRulesUdev(Container):
     @hexdi.inject('rules.powersave')
     def rules(self, collection):
         for script in collection.rules:
-            yield 'SUBSYSTEM=="power_supply", ACTION=="change", ATTR{{online}}=="0", RUN+="{rule}"'. \
-                format(online='online', rule=script)
+            yield 'SUBSYSTEM=="power_supply", ACTION=="change", ATTR{{online}}=="0", RUN+="{}"'. \
+                format("/bin/sh -c \\\"{}\\\" ".format(script))
