@@ -1,7 +1,9 @@
 SHELL := /usr/bin/bash
 APPDIR := ./AppDir
 GLIBC_VERSION := $(shell getconf GNU_LIBC_VERSION | sed 's/ /-/g' )
+ICONS := $(shell ls src/icons | grep svg)
 PWD := $(shell pwd)
+.PHONY: all
 
 all: appimage clean
 
@@ -96,7 +98,12 @@ appimage: clean
 	make clean
 
 
-clean:
-	rm -rf ${APPDIR}/venv
-	rm -rf ${APPDIR}/application
-	rm -rf ${APPDIR}/opt
+icons: $(ICONS)
+clean: $(shell rm -rf $(PWD)/build)
+
+
+$(ICONS):
+	rm -f src/icons/`echo $@ | sed -e 's/svg/png/'`
+	inkscape src/icons/$@ --export-dpi=96 --export-filename=src/icons/`echo $@ | sed -e 's/svg/png/'`
+
+
