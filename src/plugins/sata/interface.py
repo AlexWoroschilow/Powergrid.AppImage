@@ -21,13 +21,6 @@ from modules.qt5_workspace_udev import powersave
 from .settings.panel import SettingsPerformanceWidget
 from .settings.panel import SettingsPowersaveWidget
 
-config = hexdi.resolve('config')
-config.set('default.performance.sata.policy', 'max_performance')
-config.set('default.balanced.sata.policy', 'med_power_with_dipm')
-config.set('default.powersave.sata.policy', 'min_power')
-config.set('default.performance.sata.control', 'on')
-config.set('default.powersave.sata.control', 'auto')
-
 
 @qt5_window.workspace(name='SCSI', focus=False, position=5)
 @hexdi.inject('workspace.scsi')

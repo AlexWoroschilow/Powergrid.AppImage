@@ -18,13 +18,11 @@ from modules import qt5_workspace_adapter
 from modules import qt5_workspace_battery
 from modules.qt5_workspace_udev import performance
 from modules.qt5_workspace_udev import powersave
-
-config = hexdi.resolve('config')
-config.set('default.performance.cpu', 'performance')
-config.set('default.powersave.cpu', 'powersave')
+from .settings.panel import SettingsPowersaveWidget
+from .settings.panel import SettingsPerformanceWidget
 
 
-@qt5_window.workspace(name='CPU', focus=False, position=2)
+@qt5_window.workspace(name='CPU', focus=False, position=1)
 @hexdi.inject('workspace.cpu')
 def window_workspace(parent, workspace):
     return workspace
@@ -32,13 +30,11 @@ def window_workspace(parent, workspace):
 
 @qt5_workspace_battery.element()
 def battery_element(parent=None):
-    from .settings.panel import SettingsPowersaveWidget
     return SettingsPowersaveWidget()
 
 
 @qt5_workspace_adapter.element()
 def adapter_element(parent=None):
-    from .settings.panel import SettingsPerformanceWidget
     return SettingsPerformanceWidget()
 
 

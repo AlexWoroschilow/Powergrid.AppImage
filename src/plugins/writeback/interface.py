@@ -20,10 +20,6 @@ from modules.qt5_workspace_udev import powersave
 from .settings.settings import DashboardSettingsPerformance
 from .settings.settings import DashboardSettingsPowersave
 
-config = hexdi.resolve('config')
-config.set('default.performance.writeback', 500)
-config.set('default.powersave.writeback', 1500)
-
 
 @qt5_workspace_battery.element()
 def battery_element(parent):

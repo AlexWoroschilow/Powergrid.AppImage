@@ -18,10 +18,8 @@ from modules import qt5_workspace_adapter
 from modules import qt5_workspace_battery
 from modules.qt5_workspace_udev import performance
 from modules.qt5_workspace_udev import powersave
-
-config = hexdi.resolve('config')
-config.set('default.performance.i2c', 'on')
-config.set('default.powersave.i2c', 'auto')
+from .settings.panel import SettingsPerformanceWidget
+from .settings.panel import SettingsPowersaveWidget
 
 
 @qt5_window.workspace(name='I2C', focus=False, position=6)
@@ -32,13 +30,11 @@ def window_workspace(parent, workspace):
 
 @qt5_workspace_battery.element()
 def battery_element(parent=None):
-    from .settings.panel import SettingsPowersaveWidget
     return SettingsPowersaveWidget()
 
 
 @qt5_workspace_adapter.element()
 def adapter_element(parent=None):
-    from .settings.panel import SettingsPerformanceWidget
     return SettingsPerformanceWidget()
 
 

@@ -19,10 +19,6 @@ from modules import qt5_workspace_battery
 from modules.qt5_workspace_udev import performance
 from modules.qt5_workspace_udev import powersave
 
-config = hexdi.resolve('config')
-config.set('default.performance.pci', 'on')
-config.set('default.powersave.pci', 'auto')
-
 
 @qt5_window.workspace(name='PCI', focus=False, position=2)
 @hexdi.inject('workspace.pci')
