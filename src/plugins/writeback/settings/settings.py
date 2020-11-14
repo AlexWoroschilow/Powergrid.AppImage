@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2015 Alex Woroschilow (alex.woroschilow@gmail.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,8 +23,8 @@ class DashboardSettings(QtWidgets.QWidget):
 
     @hexdi.inject('config')
     def __init__(self, config):
-        self.default_performance = config.get('default.performance.laptop')
-        self.default_powersave = config.get('default.powersave.laptop')
+        self.default_performance = config.get('default.performance.writeback')
+        self.default_powersave = config.get('default.powersave.writeback')
         super(DashboardSettings, self).__init__()
 
     def getValueInternal(self, value):
@@ -51,15 +50,15 @@ class DashboardSettingsPerformance(DashboardSettings):
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.layout().setAlignment(Qt.AlignCenter)
 
-        value = config.get('laptop.performance', self.default_performance)
-        slider = DashboardSlider('Laptop', self.getValueInternal(value))
+        value = config.get('writeback.performance', self.default_performance)
+        slider = DashboardSlider('Writeback', self.getValueInternal(value))
         slider.slideAction.connect(self.slideEvent)
 
         self.layout().addWidget(slider)
 
     @hexdi.inject('config')
     def slideEvent(self, value, config):
-        config.set('laptop.performance', self.getValueExternal(value))
+        config.set('writeback.performance', self.getValueExternal(value))
 
 
 class DashboardSettingsPowersave(DashboardSettings):
@@ -74,12 +73,12 @@ class DashboardSettingsPowersave(DashboardSettings):
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.layout().setAlignment(Qt.AlignCenter)
 
-        value = config.get('laptop.powersave', self.default_powersave)
-        slider = DashboardSlider('Laptop', self.getValueInternal(value))
+        value = config.get('writeback.powersave', self.default_powersave)
+        slider = DashboardSlider('Writeback', self.getValueInternal(value))
         slider.slideAction.connect(self.slideEvent)
 
         self.layout().addWidget(slider)
 
     @hexdi.inject('config')
     def slideEvent(self, value, config):
-        config.set('laptop.powersave', self.getValueExternal(value))
+        config.set('writeback.powersave', self.getValueExternal(value))
