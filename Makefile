@@ -1,101 +1,66 @@
-SHELL := /usr/bin/bash
-APPDIR := ./AppDir
-GLIBC_VERSION := $(shell getconf GNU_LIBC_VERSION | sed 's/ /-/g' )
-ICONS := $(shell ls src/icons | grep svg)
+# Copyright 2020 Alex Woroschilow (alex.woroschilow@gmail.com)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 PWD := $(shell pwd)
+SHELL := /usr/bin/bash
+ICONS := $(shell ls src/icons | grep svg)
 .PHONY: all
 
-all: appimage clean
+all: clean
+
+	mkdir -p $(PWD)/build/Boilerplate.AppDir/application
+	mkdir -p $(PWD)/build/Boilerplate.AppDir/vendor
+
+	apprepo --destination=$(PWD)/build appdir boilerplate python3.8 python3.8-dev python3.8-psutil \
+										python3.8-setuptools python3-pip python3-dnf python3-apt \
+										openssl libffi7 intltool libgudev-1.0-0 libffi libgudev \
+										python3-pyqt5
+
+
+	cp -r --force $(PWD)/src/icons 		$(PWD)/build/Boilerplate.AppDir/application/
+	cp -r --force $(PWD)/src/modules 	$(PWD)/build/Boilerplate.AppDir/application/
+	cp -r --force $(PWD)/src/plugins 	$(PWD)/build/Boilerplate.AppDir/application/
+	cp -r --force $(PWD)/src/themes 	$(PWD)/build/Boilerplate.AppDir/application/
+	cp -r --force $(PWD)/src/main.py 	$(PWD)/build/Boilerplate.AppDir/application/
+
+
+	echo 'case "$${1}" in' 																			>> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo "  '--python') exec \$${APPDIR}/bin/python3.8 \$${*:2} ;;" 								>> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo '  *)   $${APPDIR}/bin/python3.8 $${APPDIR}/application/main.py $${@} ;;' 					>> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo 'esac' 																					>> $(PWD)/build/Boilerplate.AppDir/AppRun
+
+
+	sed -i 's/#APPDIR=`pwd`/APPDIR=`dirname \$${0}`/' $(PWD)/build/Boilerplate.AppDir/AppRun
+	$(PWD)/build/Boilerplate.AppDir/AppRun --python -m pip install  -r $(PWD)/requirements.txt --target=$(PWD)/build/Boilerplate.AppDir/vendor --upgrade
+	$(PWD)/build/Boilerplate.AppDir/AppRun --python -m pip uninstall typing -y
+	sed -i 's/APPDIR=`dirname \$${0}`/#APPDIR=`dirname \$${0}`/' $(PWD)/build/Boilerplate.AppDir/AppRun
+
+
+	rm -f $(PWD)/build/Boilerplate.AppDir/*.png 		|| true
+	rm -f $(PWD)/build/Boilerplate.AppDir/*.desktop 	|| true
+	rm -f $(PWD)/build/Boilerplate.AppDir/*.svg 		|| true	
+
+	cp --force $(PWD)/AppDir/*.svg 		$(PWD)/build/Boilerplate.AppDir 			|| true	
+	cp --force $(PWD)/AppDir/*.desktop 	$(PWD)/build/Boilerplate.AppDir 			|| true	
+	cp --force $(PWD)/AppDir/*.png 		$(PWD)/build/Boilerplate.AppDir 			|| true	
+
+
+	export ARCH=x86_64 && $(PWD)/bin/appimagetool.AppImage  $(PWD)/build/Boilerplate.AppDir $(PWD)/PerformanceTuner.AppImage
+	chmod +x $(PWD)/PerformanceTuner.AppImage
+
 
 init:
 	rm -rf $(PWD)/venv
 	python3 -m venv --copies $(PWD)/venv
 	source $(PWD)/venv/bin/activate && python3 -m pip install --upgrade pip && python3 -m pip install -r $(PWD)/requirements.txt
-
-
-appimage: clean
-
-	rm -rf $(PWD)/build
-	mkdir -p $(PWD)/build
-	mkdir -p $(PWD)/build/AppDir
-	mkdir -p $(PWD)/build/AppDir/application
-	mkdir -p $(PWD)/build/AppDir/python
-	mkdir -p $(PWD)/build/AppDir/vendor
-
-
-	wget --output-document=$(PWD)/build/build.rpm  http://mirror.centos.org/centos/8/AppStream/x86_64/os/Packages/python38-3.8.0-6.module_el8.2.0+317+61fa6e7d.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm  http://mirror.centos.org/centos/8/AppStream/x86_64/os/Packages/python38-devel-3.8.0-6.module_el8.2.0+317+61fa6e7d.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm  http://mirror.centos.org/centos/8/AppStream/aarch64/os/Packages/python38-pip-19.2.3-5.module_el8.2.0+317+61fa6e7d.noarch.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm  http://mirror.centos.org/centos/8/AppStream/x86_64/os/Packages/python38-setuptools-41.6.0-4.module_el8.2.0+317+61fa6e7d.noarch.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm  http://mirror.centos.org/centos/8/AppStream/x86_64/os/Packages/python38-libs-3.8.0-6.module_el8.2.0+317+61fa6e7d.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget  --output-document=$(PWD)/build/build.rpm  http://mirror.centos.org/centos/7/os/x86_64/Packages/libffi-3.0.13-19.el7.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget  --output-document=$(PWD)/build/build.rpm  https://download-ib01.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/l/libicu-65.1-2.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget  --output-document=$(PWD)/build/build.rpm  https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/q/qt5-qtbase-5.14.2-5.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/q/qt5-qtbase-gui-5.14.2-5.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/q/qt5-qtx11extras-5.14.2-1.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/p/python3-qt5-5.14.2-3.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/p/python3-qt5-base-5.14.2-3.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/p/python3-pyqt5-sip-4.19.21-1.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/q/qt5-qtsvg-5.14.2-1.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/aarch64/Packages/q/qt5-qtwayland-5.14.2-4.fc32.aarch64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/z/zlib-1.2.11-21.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/p/pcre2-utf16-10.35-7.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/l/libxcb-1.13.1-4.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/l/leptonica-1.79.0-2.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-
-	cp -r --force $(PWD)/AppDir/* $(PWD)/build/AppDir/
-	cp -r --force $(PWD)/build/usr/* $(PWD)/build/AppDir/python/
-	cp -r --force $(PWD)/build/usr/lib64/qt5/plugins/platforms $(PWD)/build/AppDir/python/bin/
-	cp -r --force $(PWD)/src/icons $(PWD)/build/AppDir/application/
-	cp -r --force $(PWD)/src/modules $(PWD)/build/AppDir/application/
-	cp -r --force $(PWD)/src/plugins $(PWD)/build/AppDir/application/
-	cp -r --force $(PWD)/src/themes $(PWD)/build/AppDir/application/
-	cp -r --force $(PWD)/src/main.py $(PWD)/build/AppDir/application/
-
-	mkdir -p $(PWD)/build/AppDir/vendor
-	$(PWD)/build/AppDir/AppRun --python -m pip install  -r $(PWD)/requirements.txt --target=$(PWD)/build/AppDir/vendor --upgrade
-	$(PWD)/build/AppDir/AppRun --python -m pip uninstall typing -y
-
-	export ARCH=x86_64 && $(PWD)/bin/appimagetool-x86_64.AppImage  $(PWD)/build/AppDir $(PWD)/PerformanceTuner.AppImage
-	make clean
 
 
 icons: $(ICONS)
