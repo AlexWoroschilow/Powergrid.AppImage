@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2015 Alex Woroschilow (alex.woroschilow@gmail.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,12 +21,8 @@ from modules.qt5_workspace_udev import powersave
 from .settings.panel import SettingsPerformanceWidget
 from .settings.panel import SettingsPowersaveWidget
 
-config = hexdi.resolve('config')
-config.set('default.performance.disc', 'on')
-config.set('default.powersave.disc', 'auto')
 
-
-@qt5_window.workspace(name='Disc', focus=False, position=5)
+@qt5_window.workspace(name='Disc', focus=False, position=2)
 @hexdi.inject('workspace.disc')
 def window_workspace(parent, workspace):
     return workspace

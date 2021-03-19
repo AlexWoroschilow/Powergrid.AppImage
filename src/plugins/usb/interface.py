@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2015 Alex Woroschilow (alex.woroschilow@gmail.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,19 +20,6 @@ from modules.qt5_workspace_udev import performance
 from modules.qt5_workspace_udev import powersave
 from .settings.panel import SettingsPerformanceWidget
 from .settings.panel import SettingsPowersaveWidget
-
-config = hexdi.resolve('config')
-config.set('default.performance.usb', 'on')
-config.set('default.performance.usb.power_level', 'on')
-config.set('default.performance.usb.power_control', 'on')
-config.set('default.performance.usb.autosuspend_delay', -1)
-config.set('default.performance.usb.autosuspend', -1)
-
-config.set('default.powersave.usb', 'auto')
-config.set('default.powersave.usb.power_level', 'auto')
-config.set('default.powersave.usb.power_control', 'auto')
-config.set('default.powersave.usb.autosuspend_delay', 500)
-config.set('default.powersave.usb.autosuspend', 500)
 
 
 @qt5_window.workspace(name='USB', focus=False, position=2)

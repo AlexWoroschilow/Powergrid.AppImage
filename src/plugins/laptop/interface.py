@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2015 Alex Woroschilow (alex.woroschilow@gmail.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +17,8 @@ from modules import qt5_workspace_adapter
 from modules import qt5_workspace_battery
 from modules.qt5_workspace_udev import performance
 from modules.qt5_workspace_udev import powersave
-from .gui.settings.settings import DashboardSettingsPerformance
-from .gui.settings.settings import DashboardSettingsPowersave
-
-config = hexdi.resolve('config')
-config.set('default.performance.laptop', 0)
-config.set('default.powersave.laptop', 5)
+from .settings.settings import DashboardSettingsPerformance
+from .settings.settings import DashboardSettingsPowersave
 
 
 @qt5_workspace_battery.element()
