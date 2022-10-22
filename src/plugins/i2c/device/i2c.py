@@ -29,7 +29,7 @@ class Device(object):
 
     @property
     def code(self):
-        return os.path.basename(self.path)
+        return os.path.basename(self.path).replace(":","")
 
     @property
     def power_control(self):
