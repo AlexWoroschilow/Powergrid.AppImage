@@ -9,18 +9,27 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
 import hexdi
+import pyudev
 
-from plugins.usb.device.usb import Finder
-from .workspace.settings import SettingsWidget
+from plugins.usb.device.usb import Device
 
 
 @hexdi.permanent('plugin.service.usb')
-class ServiceFinder(Finder):
-    pass
+class Finder(object):
 
+    def monitor(self):
+        monitor = pyudev.Monitor.from_netlink(pyudev.Context())
+        monitor.filter_by(subsystem='usb')
+        monitor.start()
+        for device in iter(monitor.poll, None):
+            if not device.get('ID_VENDOR_ID'): continue
+            if not device.get('ID_MODEL_ID'): continue
+            yield Device(device)
 
-@hexdi.permanent('workspace.usb')
-class SettingsWidgetInstance(SettingsWidget):
-    pass
+    def devices(self):
+        context = pyudev.Context()
+        for device in context.list_devices(subsystem='usb'):
+            if not device.get('ID_VENDOR_ID'): continue
+            if not device.get('ID_MODEL_ID'): continue
+            yield Device(device)

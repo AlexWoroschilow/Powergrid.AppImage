@@ -33,6 +33,13 @@ class Kernel(object):
                 logger.debug("loading interface: {}...".format(module.__name__))
                 spec_interface.loader.load_module()
 
+            spec_interface = util.find_spec('{}.udevrules'.format(module.__name__))
+            logger.debug("booting: {}".format(module))
+            if spec_interface and spec_interface.loader:
+                logger.debug("loading udevrules: {}...".format(module.__name__))
+                spec_interface.loader.load_module()
+
+
     def _candidates(self, sources: [] = None):
         for mask in sources:
             if not mask:

@@ -11,9 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import hexdi
 
-from plugins.laptop.device.laptop import Finder
+from plugins.laptop.device.laptop import Device
 
 
 @hexdi.permanent('plugin.service.laptop')
-class ServiceFinder(Finder):
-    pass
+class Finder(object):
+    def devices(self):
+        yield Device('/proc/sys/vm/laptop_mode')

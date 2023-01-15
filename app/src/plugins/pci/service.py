@@ -10,16 +10,25 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import hexdi
+import pyudev
 
-from plugins.pci.device.pci import Finder
-from .workspace.settings import SettingsWidget
+from plugins.pci.device.pci import Device
 
 
 @hexdi.permanent('plugin.service.pci')
-class ServiceFinder(Finder):
-    pass
+class Finder(object):
+    def monitor(self):
+        monitor = pyudev.Monitor.from_netlink(pyudev.Context())
+        monitor.filter_by(subsystem='pci')
+        monitor.start()
+        for device in iter(monitor.poll, None):
+            if not device.get('PCI_ID'): continue
+            yield Device(device)
+
+    def devices(self):
+        context = pyudev.Context()
+        for device in context.list_devices(subsystem='pci'):
+            if not device.get('PCI_ID'): continue
+            yield Device(device)
 
 
-@hexdi.permanent('workspace.pci')
-class SettingsWidgetInstance(SettingsWidget):
-    pass

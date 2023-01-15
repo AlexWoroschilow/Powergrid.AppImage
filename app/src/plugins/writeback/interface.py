@@ -9,57 +9,19 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import os
-
-import hexdi
 
 from modules import qt5_workspace_adapter
 from modules import qt5_workspace_battery
-from modules.qt5_workspace_udev import performance
-from modules.qt5_workspace_udev import powersave
-from .settings.settings import DashboardSettingsPerformance
-from .settings.settings import DashboardSettingsPowersave
 
 
 @qt5_workspace_battery.element()
 def battery_element(parent):
+    from .settings.settings import DashboardSettingsPowersave
     return DashboardSettingsPowersave()
 
 
 @qt5_workspace_adapter.element()
 def adapter_element(parent):
+    from .settings.settings import DashboardSettingsPerformance
     return DashboardSettingsPerformance()
 
-
-@performance.rule()
-@hexdi.inject('config', 'plugin.service.writeback')
-def rule_performance(config, service):
-    for device in service.devices():
-        permanent = config.get('writeback.permanent.{}'.format(device.code), 0)
-        if not os.path.exists(device.path): continue
-
-        file = '/proc/sys/vm/dirty_writeback_centisecs'
-        if not os.path.exists(file): continue
-
-        schema = config.get('default.performance.writeback')
-        schema = config.get('writeback.performance', schema)
-        schema = config.get('default.powersave.writeback') if int(permanent) == 1 else schema
-        schema = config.get('default.performance.writeback') if int(permanent) == 2 else schema
-        yield 'ls {} && echo {} > {}'.format(device.path, schema, file)
-
-
-@powersave.rule()
-@hexdi.inject('config', 'plugin.service.writeback')
-def rule_powersave(config, service):
-    for device in service.devices():
-        permanent = config.get('writeback.permanent.{}'.format(device.code), 0)
-        if not os.path.exists(device.path): continue
-
-        file = '/proc/sys/vm/dirty_writeback_centisecs'
-        if not os.path.exists(file): continue
-
-        schema = config.get('default.powersave.writeback')
-        schema = config.get('writeback.powersave', schema)
-        schema = config.get('default.powersave.writeback') if int(permanent) == 1 else schema
-        schema = config.get('default.performance.writeback') if int(permanent) == 2 else schema
-        yield 'ls {} && echo {} > {}'.format(device.path, schema, file)

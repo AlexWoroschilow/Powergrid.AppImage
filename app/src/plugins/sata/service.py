@@ -11,16 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 import hexdi
+import pyudev
 
-from plugins.sata.device.sata import Finder
-from .workspace.settings import SettingsWidget
+from plugins.sata.device.sata import Device
 
 
 @hexdi.permanent('plugin.service.sata')
-class ServiceFinder(Finder):
-    pass
 
+class Finder(object):
+    def devices(self):
+        context = pyudev.Context()
+        for device in context.list_devices(subsystem='scsi'):
+            yield Device('/sys{}'.format(device.get('DEVPATH')))
+        for device in context.list_devices(subsystem='block'):
+            yield Device('/sys{}'.format(device.get('DEVPATH')))
 
-@hexdi.permanent('workspace.scsi')
-class SettingsWidgetInstance(SettingsWidget):
-    pass

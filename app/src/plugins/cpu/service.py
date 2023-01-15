@@ -12,15 +12,13 @@
 
 import hexdi
 
-from .device.cpu import Finder
-from .workspace.settings import SettingsWidget
+from .device.cpu import Device
 
 
 @hexdi.permanent('plugin.service.cpu')
-class ServiceFinder(Finder):
-    pass
-
-
-@hexdi.permanent('workspace.cpu')
-class ServiceSettingsWidget(SettingsWidget):
-    pass
+class Finder(object):
+    def devices(self):
+        import pyudev
+        context = pyudev.Context()
+        for device in context.list_devices(subsystem='cpu'):
+            yield Device('/sys{}'.format(device.get('DEVPATH')))

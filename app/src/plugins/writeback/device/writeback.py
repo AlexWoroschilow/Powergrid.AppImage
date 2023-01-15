@@ -30,10 +30,3 @@ class Device(object):
         with open(self.path, 'r') as stream:
             return stream.read().strip("\n")
 
-
-class Finder(object):
-    def devices(self):
-        import pyudev
-        context = pyudev.Context()
-        for device in context.list_devices(subsystem='workqueue'):
-            yield Device('/sys{}'.format(device.get('DEVPATH')))

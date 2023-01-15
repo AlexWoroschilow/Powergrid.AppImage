@@ -33,6 +33,3 @@ class Device(object):
             return stream.read().strip("\n")
 
 
-class Finder(object):
-    def devices(self):
-        yield Device('/sys/module/snd_hda_intel')

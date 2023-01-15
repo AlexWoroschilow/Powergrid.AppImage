@@ -75,11 +75,3 @@ class Device(object):
         a = re.sub('[^0-9]', '', self.name)
         b = re.sub('[^0-9]', '', other.name)
         return int(a) == int(b)
-
-
-class Finder(object):
-    def devices(self):
-        import pyudev
-        context = pyudev.Context()
-        for device in context.list_devices(subsystem='cpu'):
-            yield Device('/sys{}'.format(device.get('DEVPATH')))

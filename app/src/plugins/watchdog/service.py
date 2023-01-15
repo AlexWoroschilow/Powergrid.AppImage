@@ -13,9 +13,10 @@
 
 import hexdi
 
-from plugins.watchdog.device.watchdog import Finder
+from plugins.watchdog.device.watchdog import Device
 
 
 @hexdi.permanent('plugin.service.watchdog')
-class ServiceFinder(Finder):
-    pass
+class Finder(object):
+    def devices(self):
+        yield Device('/proc/sys/kernel/nmi_watchdog')

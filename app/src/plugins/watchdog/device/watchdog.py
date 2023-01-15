@@ -29,8 +29,3 @@ class Device(object):
     def power_control(self):
         with open(self.path, 'r') as stream:
             return stream.read().strip("\n")
-
-
-class Finder(object):
-    def devices(self):
-        yield Device('/proc/sys/kernel/nmi_watchdog')

@@ -11,16 +11,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 import hexdi
+import pyudev
 
-from .device.disc import Finder
-from .workspace.settings import SettingsWidget
+from .device.disc import Device
 
 
 @hexdi.permanent('plugin.service.disc')
-class ServiceFinder(Finder):
-    pass
+class Finder(object):
+    def monitor(self):
+        monitor = pyudev.Monitor.from_netlink(pyudev.Context())
+        monitor.filter_by(subsystem='block')
+        monitor.start()
+        for device in iter(monitor.poll, None):
+            yield Device(device)
 
-
-@hexdi.permanent('workspace.disc')
-class SettingsWidgetInstance(SettingsWidget):
-    pass
+    def devices(self):
+        context = pyudev.Context()
+        for device in context.list_devices(DEVTYPE='disk'):
+            if not device.get('ID_SERIAL'): continue
+            yield Device(device)

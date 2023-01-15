@@ -40,10 +40,3 @@ class Device(object):
             return stream.read().strip("\n")
 
         return None
-
-
-class Finder(object):
-    def devices(self):
-        context = pyudev.Context()
-        for device in context.list_devices(subsystem='i2c'):
-            yield Device('/sys{}'.format(device.get('DEVPATH')))

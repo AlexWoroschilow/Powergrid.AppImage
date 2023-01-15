@@ -12,8 +12,6 @@
 import os
 import re
 
-import pyudev
-
 
 class Device(object):
     def __init__(self, device=None):
@@ -48,17 +46,3 @@ class Device(object):
         serial = self.device.get('ID_SERIAL')
         return re.sub(r"(?x)\.?-?_?;?:?/?\|?\\?", "", serial)
 
-
-class Finder(object):
-    def monitor(self):
-        monitor = pyudev.Monitor.from_netlink(pyudev.Context())
-        monitor.filter_by(subsystem='block')
-        monitor.start()
-        for device in iter(monitor.poll, None):
-            yield Device(device)
-
-    def devices(self):
-        context = pyudev.Context()
-        for device in context.list_devices(DEVTYPE='disk'):
-            if not device.get('ID_SERIAL'): continue
-            yield Device(device)

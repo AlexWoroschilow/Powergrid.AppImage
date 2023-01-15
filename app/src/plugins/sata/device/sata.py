@@ -11,8 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
 
-import pyudev
-
 
 class Device(object):
     def __init__(self, path=None):
@@ -51,11 +49,3 @@ class Device(object):
     def code(self):
         return self.name.lower()
 
-
-class Finder(object):
-    def devices(self):
-        context = pyudev.Context()
-        for device in context.list_devices(subsystem='scsi'):
-            yield Device('/sys{}'.format(device.get('DEVPATH')))
-        for device in context.list_devices(subsystem='block'):
-            yield Device('/sys{}'.format(device.get('DEVPATH')))

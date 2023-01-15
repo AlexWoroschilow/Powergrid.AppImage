@@ -12,15 +12,12 @@
 
 import hexdi
 
-from .device.hda import Finder
-from .workspace.settings import SettingsWidget
+from .device.hda import Device
 
 
 @hexdi.permanent('plugin.service.hda')
-class ServiceFinder(Finder):
-    pass
+class Finder(object):
+    def devices(self):
+        yield Device('/sys/module/snd_hda_intel')
 
 
-@hexdi.permanent('workspace.hda')
-class SettingsWidgetInstance(SettingsWidget):
-    pass

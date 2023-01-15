@@ -11,8 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
 
-import pyudev
-
 
 class Device(object):
     def __init__(self, device=None):
@@ -49,19 +47,3 @@ class Device(object):
         unique = self.device.get('PCI_ID')
         if not unique: return os.path.basename(self.path)
         return unique.replace(':', '.')
-
-
-class Finder(object):
-    def monitor(self):
-        monitor = pyudev.Monitor.from_netlink(pyudev.Context())
-        monitor.filter_by(subsystem='pci')
-        monitor.start()
-        for device in iter(monitor.poll, None):
-            if not device.get('PCI_ID'): continue
-            yield Device(device)
-
-    def devices(self):
-        context = pyudev.Context()
-        for device in context.list_devices(subsystem='pci'):
-            if not device.get('PCI_ID'): continue
-            yield Device(device)

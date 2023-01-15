@@ -10,16 +10,16 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import hexdi
+import pyudev
 
-from plugins.i2c.device.i2c import Finder
-from .workspace.settings import SettingsWidget
+from plugins.i2c.device.i2c import Device
 
 
 @hexdi.permanent('plugin.service.i2c')
-class ServiceFinder(Finder):
-    pass
 
+class Finder(object):
+    def devices(self):
+        context = pyudev.Context()
+        for device in context.list_devices(subsystem='i2c'):
+            yield Device('/sys{}'.format(device.get('DEVPATH')))
 
-@hexdi.permanent('workspace.i2c')
-class SettingsWidgetInstance(SettingsWidget):
-    pass

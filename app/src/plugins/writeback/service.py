@@ -11,10 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 import hexdi
+import pyudev
 
-from plugins.writeback.device.writeback import Finder
+from plugins.writeback.device.writeback import Device
 
 
 @hexdi.permanent('plugin.service.writeback')
-class ServiceFinder(Finder):
-    pass
+class Finder(object):
+    def devices(self):
+        context = pyudev.Context()
+        for device in context.list_devices(subsystem='workqueue'):
+            yield Device('/sys{}'.format(device.get('DEVPATH')))
