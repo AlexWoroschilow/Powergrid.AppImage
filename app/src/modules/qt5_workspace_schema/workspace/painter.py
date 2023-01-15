@@ -41,25 +41,25 @@ class StatisticPainterCPUPercent(StatisticPainterAbstract):
 
         painter.setFont(QtGui.QFont('Tahoma', 30))
         painter.setPen(QtGui.QPen(QtGui.QColor('#e0e0e0')))
-        painter.drawText(self.get_relative_width(55.5),
-                         self.get_relative_height(69), text)
+        painter.drawText(int(self.get_relative_width(55.5)),
+                         int(self.get_relative_height(69)), text)
 
         painter.setFont(QtGui.QFont('Tahoma', 30))
         painter.setPen(QtGui.QPen(QtGui.QColor('#000000')))
-        painter.drawText(self.get_relative_width(55),
-                         self.get_relative_height(70), text)
+        painter.drawText(int(self.get_relative_width(55)),
+                         int(self.get_relative_height(70)), text)
 
         text = "CPU load"
 
         painter.setFont(QtGui.QFont('Tahoma', 15))
         painter.setPen(QtGui.QPen(QtGui.QColor('#e0e0e0')))
-        painter.drawText(self.get_relative_width(57.5),
-                         self.get_relative_height(79), text)
+        painter.drawText(int(self.get_relative_width(57.5)),
+                         int(self.get_relative_height(79)), text)
 
         painter.setFont(QtGui.QFont('Tahoma', 15))
         painter.setPen(QtGui.QPen(QtGui.QColor('#000000')))
-        painter.drawText(self.get_relative_width(57),
-                         self.get_relative_height(80), text)
+        painter.drawText(int(self.get_relative_width(57)),
+                         int(self.get_relative_height(80)), text)
 
         painter.end()
 
@@ -78,25 +78,25 @@ class StatisticPainterCPUFrequency(StatisticPainterAbstract):
 
         painter.setFont(QtGui.QFont('Tahoma', 30))
         painter.setPen(QtGui.QPen(QtGui.QColor('#e0e0e0')))
-        painter.drawText(self.get_relative_width(25.5),
-                         self.get_relative_height(69), text)
+        painter.drawText(int(self.get_relative_width(25.5)),
+                         int(self.get_relative_height(69)), text)
 
         painter.setFont(QtGui.QFont('Tahoma', 30))
         painter.setPen(QtGui.QPen(QtGui.QColor('#000000')))
-        painter.drawText(self.get_relative_width(25),
-                         self.get_relative_height(70), text)
+        painter.drawText(int(self.get_relative_width(25)),
+                         int(self.get_relative_height(70)), text)
 
         text = "CPU frequency"
 
         painter.setFont(QtGui.QFont('Tahoma', 15))
         painter.setPen(QtGui.QPen(QtGui.QColor('#e0e0e0')))
-        painter.drawText(self.get_relative_width(25.5),
-                         self.get_relative_height(79), text)
+        painter.drawText(int(self.get_relative_width(25.5)),
+                         int(self.get_relative_height(79)), text)
 
         painter.setFont(QtGui.QFont('Tahoma', 15))
         painter.setPen(QtGui.QPen(QtGui.QColor('#000000')))
-        painter.drawText(self.get_relative_width(25),
-                         self.get_relative_height(80), text)
+        painter.drawText(int(self.get_relative_width(25)),
+                         int(self.get_relative_height(80)), text)
 
         painter.end()
 
@@ -128,17 +128,17 @@ class StatisticPainterCPUFrequencyChart(StatisticPainterAbstract):
             x = (30 * index) - 15
             y = self.height - (self.height / 1.5) - 5
             painter.setPen(QtGui.QPen(QtGui.QColor('#f0f0f0'), 28))
-            painter.drawLine(x, y, x, self.height)
+            painter.drawLine(int(x), int(y), int(x), self.height)
 
             x = (30 * index) - 15
             y = self.height - point - 5
             painter.setPen(QtGui.QPen(QtGui.QColor('#e0e0e0'), 28))
-            painter.drawLine(x, y, x, self.height)
+            painter.drawLine(int(x), int(y), int(x), self.height)
 
             x = (30 * index) - 15
             y = self.height - point
             painter.setPen(QtGui.QPen(QtGui.QColor('#62C106'), 28))
-            painter.drawLine(x, y, x, self.height)
+            painter.drawLine(int(x), int(y), int(x), self.height)
 
         painter.end()
 
@@ -160,10 +160,10 @@ class StatisticPainterGitter(StatisticPainterAbstract):
 
         painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
         for position in range(0, self.width, int(self.width / 30)):
-            painter.drawLine(position, 0, position, self.height)
+            painter.drawLine(int(position), 0, int(position), int(self.height))
 
         for position in range(0, self.height, int(self.height / 20)):
-            painter.drawLine(0, position, self.width, position)
+            painter.drawLine(0, int(position), int(self.width), int(position))
 
         painter.end()
 

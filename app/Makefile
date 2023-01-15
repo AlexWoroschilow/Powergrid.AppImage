@@ -78,6 +78,12 @@ clean:
 	rm -rf $(PWD)/bin/*
 	rm -rf $(PWD)/build
 
+setup:
+	rm -rf $(PWD)/venv
+	python3 -m venv --copies $(PWD)/venv
+	source $(PWD)/venv/bin/activate && python3 -m pip install --upgrade pip && python3 -m pip install -r $(PWD)/requirements.txt
+
+
 icons: $(ICONS)
 $(ICONS):
 	rm -f src/icons/`echo $@ | sed -e 's/svg/png/'`
