@@ -62,6 +62,8 @@ init:
 	# python3 -m venv --copies $(PWD)/venv
 	# source $(PWD)/venv/bin/activate && python3 -m pip install --upgrade pip && python3 -m pip install -r $(PWD)/requirements.txt
 
+	mkdir --parents $(PWD)/bin
+
 	wget https://apprepo.de/appimage/download/apprepo \
 		--output-document=$(PWD)/bin/Apprepo.AppImage
 	chmod +x $(PWD)/bin/Apprepo.AppImage
