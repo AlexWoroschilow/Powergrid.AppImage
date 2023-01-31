@@ -9,13 +9,11 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-from modules import qt5_window
+import os
+import stat
 
-from .toolbar.panel import ToolbarWidget
+import hexdi
 
-
-@qt5_window.toolbar(name='Themes', focus=False, position=3)
-def window_toolbar(parent=None):
-    widget = ToolbarWidget()
-    parent.actionReload.connect(widget.reload)
-    return widget
+from .integrator.udev import *
+from .integrator.kde import *
+from .integrator.gnome import *

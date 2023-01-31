@@ -13,6 +13,24 @@
 import hexdi
 
 
+@hexdi.inject('integrator.udev', 'integrator.kde', 'integrator.gnome')
+def onActonApply(event, udev, kde, gnome):
+    try:
+        udev.integrate()
+    except Exception as ex:
+        print(ex)
+
+    try:
+        kde.integrate()
+    except Exception as ex:
+        print(ex)
+
+    try:
+        gnome.integrate()
+    except Exception as ex:
+        print(ex)
+
+
 @hexdi.inject('config')
 def onActonToggleKDE(event, config):
     config.set('kde.enabled', 1 if event else 0)
@@ -41,3 +59,8 @@ def onActonToggleCinnamon(event, config):
 @hexdi.inject('config')
 def onActonToggleBudgie(event, config):
     config.set('budgie.enabled', 1 if event else 0)
+
+
+@hexdi.inject('config')
+def onActonToggleUdev(event, config):
+    config.set('udev.enabled', 1 if event else 0)

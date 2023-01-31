@@ -13,6 +13,7 @@ import hexdi
 
 config = hexdi.resolve('config')
 
+if not config.has('udev.enabled'): config.set('udev.enabled', 1)
 if not config.has('gnome.enabled'): config.set('gnome.enabled', 0)
 if not config.has('kde.enabled'): config.set('kde.enabled', 0)
 if not config.has('xfce.enabled'): config.set('xfce.enabled', 0)

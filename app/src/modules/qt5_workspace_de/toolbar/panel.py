@@ -19,12 +19,15 @@ from .button import ToolbarButton
 
 
 class ToolbarWidget(QtWidgets.QScrollArea):
+    actionApply = QtCore.pyqtSignal(object)
+
     actionGnome = QtCore.pyqtSignal(object)
     actionKDE = QtCore.pyqtSignal(object)
     actionXfce = QtCore.pyqtSignal(object)
     actionDeepin = QtCore.pyqtSignal(object)
     actionCinnamon = QtCore.pyqtSignal(object)
     actionBudgie = QtCore.pyqtSignal(object)
+    actionUdev = QtCore.pyqtSignal(object)
 
     @hexdi.inject('config')
     def __init__(self, config=None):
@@ -42,6 +45,16 @@ class ToolbarWidget(QtWidgets.QScrollArea):
         self.container.layout().setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.setWidget(self.container)
 
+        self.apply = ToolbarButton(self, "Apply schema", QtGui.QIcon('icons/start'))
+        self.apply.clicked.connect(self.actionApply.emit)
+        self.apply.setCheckable(False)
+        self.addWidget(self.apply)
+
+        self.udev = ToolbarButton(self, "Udev", QtGui.QIcon('icons/udev'))
+        self.udev.setChecked(int(config.get('udev.enabled')))
+        self.udev.clicked.connect(self.actionUdev.emit)
+        self.addWidget(self.udev)
+
         self.kde = ToolbarButton(self, "KDE", QtGui.QIcon('icons/kde'))
         self.kde.setChecked(int(config.get('kde.enabled')))
         self.kde.clicked.connect(self.actionKDE.emit)
@@ -50,26 +63,31 @@ class ToolbarWidget(QtWidgets.QScrollArea):
         self.gnome = ToolbarButton(self, "Gnome", QtGui.QIcon('icons/gnome'))
         self.gnome.setChecked(int(config.get('gnome.enabled')))
         self.gnome.clicked.connect(self.actionGnome.emit)
+        self.gnome.setEnabled(False)
         self.addWidget(self.gnome)
 
         self.xfce = ToolbarButton(self, "Xfce", QtGui.QIcon('icons/xfce'))
         self.xfce.setChecked(int(config.get('xfce.enabled')))
         self.xfce.clicked.connect(self.actionXfce.emit)
+        self.xfce.setEnabled(False)
         self.addWidget(self.xfce)
 
         self.deepin = ToolbarButton(self, "Deepin", QtGui.QIcon('icons/deepin'))
         self.deepin.setChecked(int(config.get('deepin.enabled')))
         self.deepin.clicked.connect(self.actionDeepin.emit)
+        self.deepin.setEnabled(False)
         self.addWidget(self.deepin)
 
         self.cinnamon = ToolbarButton(self, "Cinnamon", QtGui.QIcon('icons/cinnamon'))
         self.cinnamon.setChecked(int(config.get('cinnamon.enabled')))
         self.cinnamon.clicked.connect(self.actionCinnamon.emit)
+        self.cinnamon.setEnabled(False)
         self.addWidget(self.cinnamon)
 
         self.budgie = ToolbarButton(self, "Budgie", QtGui.QIcon('icons/budgie'))
         self.budgie.setChecked(int(config.get('budgie.enabled')))
         self.budgie.clicked.connect(self.actionBudgie.emit)
+        self.budgie.setEnabled(False)
         self.addWidget(self.budgie)
 
     def addWidget(self, widget):

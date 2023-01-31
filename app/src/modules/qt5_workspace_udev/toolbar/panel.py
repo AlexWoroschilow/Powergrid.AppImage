@@ -19,7 +19,6 @@ from .button import ToolbarButton
 
 
 class ToolbarWidget(QtWidgets.QScrollArea):
-    actionApply = QtCore.pyqtSignal(object)
     actionPerformance = QtCore.pyqtSignal(object)
     actionPowersave = QtCore.pyqtSignal(object)
     actionExport = QtCore.pyqtSignal(object)
@@ -40,10 +39,6 @@ class ToolbarWidget(QtWidgets.QScrollArea):
         self.container.setLayout(QtWidgets.QHBoxLayout())
         self.container.layout().setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.setWidget(self.container)
-
-        self.apply = ToolbarButton(self, "Apply schema", QtGui.QIcon('icons/start'))
-        self.apply.clicked.connect(self.actionApply.emit)
-        self.addWidget(self.apply)
 
         self.export = ToolbarButton(self, "Export to file", QtGui.QIcon('icons/export'))
         self.export.clicked.connect(self.actionExport.emit)

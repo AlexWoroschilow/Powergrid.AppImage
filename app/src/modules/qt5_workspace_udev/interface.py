@@ -9,6 +9,8 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+import hexdi
+
 from modules import qt5_window
 
 
@@ -21,7 +23,7 @@ def window_workspace(parent):
     return DashboardWidget()
 
 
-@qt5_window.toolbar(name='Udev rules', focus=True, position=0)
+@qt5_window.toolbar(name='Udev rules', focus=False, position=0)
 def window_toolbar(parent=None):
     """
     Display a toolbar at the top of the window
@@ -30,7 +32,6 @@ def window_toolbar(parent=None):
     from . import actions
 
     widget = ToolbarWidget()
-    widget.actionApply.connect(actions.onActionApply)
     widget.actionExport.connect(actions.onActionExport)
     widget.actionCleanup.connect(actions.onActionCleanup)
     return widget

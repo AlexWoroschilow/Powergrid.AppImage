@@ -19,6 +19,7 @@ from PyQt5 import QtWidgets
 
 class MainWindow(QtWidgets.QMainWindow):
     resizeAction = QtCore.pyqtSignal(object)
+    apply = QtCore.pyqtSignal(object)
     exit = QtCore.pyqtSignal(object)
 
     @hexdi.inject('themes')

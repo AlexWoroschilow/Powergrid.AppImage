@@ -22,7 +22,7 @@ def window_dashboard(parent=None, widget=None):
     return widget
 
 
-@qt5_window.toolbar(name='Schema', focus=False, position=1)
+@qt5_window.toolbar(name='Schema', focus=False, position=2)
 def window_toolbar(parent=None):
     from . import actions
 

@@ -9,10 +9,12 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+import hexdi
+
 from modules import qt5_window
 
 
-@qt5_window.toolbar(name='Desktop integration', focus=False, position=1)
+@qt5_window.toolbar(name='Desktop integration', focus=True, position=0)
 def window_toolbar(parent=None):
     """
     Display a toolbar at the top of the window
@@ -27,5 +29,7 @@ def window_toolbar(parent=None):
     widget.actionDeepin.connect(actions.onActonToggleDeepin)
     widget.actionCinnamon.connect(actions.onActonToggleCinnamon)
     widget.actionBudgie.connect(actions.onActonToggleBudgie)
+    widget.actionUdev.connect(actions.onActonToggleUdev)
+    widget.actionApply.connect(actions.onActonApply)
 
     return widget
