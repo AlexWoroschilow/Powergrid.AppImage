@@ -10,6 +10,9 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
+import hexdi
+
+
 class Container(object):
     def __init__(self):
         self.collection = []
@@ -17,3 +20,22 @@ class Container(object):
     def append(self, callback=None):
         assert (callable(callback))
         self.collection.append(callback)
+
+
+@hexdi.permanent('rules.powersave')
+class ContainerPowersaveRules(Container):
+    @property
+    def rules(self):
+        for callback in self.collection:
+            for script in callback():
+                yield script
+
+
+@hexdi.permanent('udev_rules.powersave')
+class ContainerPowerSaveRulesUdev(Container):
+    @property
+    @hexdi.inject('rules.powersave')
+    def rules(self, collection):
+        for script in collection.rules:
+            yield 'SUBSYSTEM=="power_supply", ACTION=="change", ATTR{{online}}=="0", RUN+="{}"'. \
+                format("/bin/sh -c \\\"{}\\\" ".format(script))

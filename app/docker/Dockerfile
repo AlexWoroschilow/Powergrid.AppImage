@@ -26,12 +26,10 @@ RUN apt-get install -y rpm2cpio cpio
 RUN apt-get install -y fuse file
 RUN apt-get install -y software-properties-common
 
-# RUN apt install software-properties-common -y
-# RUN add-apt-repository -y ppa:deadsnakes/ppa
-# RUN apt install -y python3.8-dev
+RUN apt install software-properties-common -y
+RUN add-apt-repository -y ppa:deadsnakes/ppa
+RUN apt install -y python3.10-dev python3.8-dev
 
-
-RUN apt-get install -y python3.8-dev
 # RUN apt-get install -y python3-setuptools python3-xdg python3-pip
 # RUN apt-get install -y python3-distutils python3-distutils-extra python3-gi python3-dbus python3-cairo
 

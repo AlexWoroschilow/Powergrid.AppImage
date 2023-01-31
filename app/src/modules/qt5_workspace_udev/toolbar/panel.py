@@ -15,6 +15,8 @@ from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
+from .button import ToolbarButton
+
 
 class ToolbarWidget(QtWidgets.QScrollArea):
     actionApply = QtCore.pyqtSignal(object)
@@ -33,8 +35,6 @@ class ToolbarWidget(QtWidgets.QScrollArea):
         self.setWidgetResizable(True)
 
         self.setContentsMargins(0, 0, 0, 0)
-
-        from .button import ToolbarButton
 
         self.container = QtWidgets.QWidget()
         self.container.setLayout(QtWidgets.QHBoxLayout())

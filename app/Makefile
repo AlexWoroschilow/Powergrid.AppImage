@@ -32,10 +32,10 @@ all: clean init
 	cp -r --force $(PWD)/src/main.py 	$(PWD)/build/Boilerplate.AppDir/application/
 
 
-	echo 'case "$${1}" in' 																			>> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo "  '--python') exec \$${APPDIR}/bin/python3.8 \$${*:2} ;;" 								>> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo 'case "$${1}" in' 																		>> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo "  '--python') exec \$${APPDIR}/bin/python3.8 \$${*:2} ;;" 							>> $(PWD)/build/Boilerplate.AppDir/AppRun
 	echo '  *)   $${APPDIR}/bin/python3.8 $${APPDIR}/application/main.py $${@} ;;' 				>> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo 'esac' 																					>> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo 'esac' 																				>> $(PWD)/build/Boilerplate.AppDir/AppRun
 
 
 	sed -i 's/#APPDIR=`pwd`/APPDIR=`dirname \$${0}`/' $(PWD)/build/Boilerplate.AppDir/AppRun

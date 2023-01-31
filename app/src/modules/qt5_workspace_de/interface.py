@@ -12,16 +12,7 @@
 from modules import qt5_window
 
 
-@qt5_window.workspace(name='Udev rules', focus=False, position=9)
-def window_workspace(parent):
-    """
-    Display a left-side tab
-    """
-    from .workspace.dashboard import DashboardWidget
-    return DashboardWidget()
-
-
-@qt5_window.toolbar(name='Udev rules', focus=True, position=0)
+@qt5_window.toolbar(name='Desktop integration', focus=False, position=1)
 def window_toolbar(parent=None):
     """
     Display a toolbar at the top of the window
@@ -30,7 +21,11 @@ def window_toolbar(parent=None):
     from . import actions
 
     widget = ToolbarWidget()
-    widget.actionApply.connect(actions.onActionApply)
-    widget.actionExport.connect(actions.onActionExport)
-    widget.actionCleanup.connect(actions.onActionCleanup)
+    widget.actionGnome.connect(actions.onActonToggleGnome)
+    widget.actionKDE.connect(actions.onActonToggleKDE)
+    widget.actionXfce.connect(actions.onActonToggleXfce)
+    widget.actionDeepin.connect(actions.onActonToggleDeepin)
+    widget.actionCinnamon.connect(actions.onActonToggleCinnamon)
+    widget.actionBudgie.connect(actions.onActonToggleBudgie)
+
     return widget

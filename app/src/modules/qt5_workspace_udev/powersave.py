@@ -16,7 +16,7 @@ import hexdi
 def rule(*args, **kwargs):
     @hexdi.inject('rules.powersave')
     def wrapper1(*args, **kwargs):
-        from .container import Container
+        from .container.powersave import Container
         container: Container = args[1]
         container.append(args[0])
 
