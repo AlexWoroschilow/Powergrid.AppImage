@@ -16,6 +16,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
 from .button import ToolbarButton
+from .indicator import ToolbarButtonIndicator
 
 
 class ToolbarWidget(QtWidgets.QScrollArea):
@@ -45,15 +46,13 @@ class ToolbarWidget(QtWidgets.QScrollArea):
         self.container.layout().setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.setWidget(self.container)
 
+        self.indicator = ToolbarButtonIndicator('icons/enabled-red.svg', 'icons/enabled-green.svg')
+        self.addWidget(self.indicator)
+
         self.apply = ToolbarButton(self, "Apply schema", QtGui.QIcon('icons/start'))
         self.apply.clicked.connect(self.actionApply.emit)
         self.apply.setCheckable(False)
         self.addWidget(self.apply)
-
-        self.udev = ToolbarButton(self, "Udev", QtGui.QIcon('icons/udev'))
-        self.udev.setChecked(int(config.get('udev.enabled')))
-        self.udev.clicked.connect(self.actionUdev.emit)
-        self.addWidget(self.udev)
 
         self.kde = ToolbarButton(self, "KDE", QtGui.QIcon('icons/kde'))
         self.kde.setChecked(int(config.get('kde.enabled')))

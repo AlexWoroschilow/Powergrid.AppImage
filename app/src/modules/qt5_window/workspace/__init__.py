@@ -49,8 +49,8 @@ def toolbar(*args, **kwargs):
         widget_class = args[0]
         if not widget_class: return None
 
-        from .header import ToolbarWidget
-        header: ToolbarWidget = args[1]
+        from .header import HeaderWidget
+        header: HeaderWidget = args[1]
 
         widget = widget_class(header)
         header.insertTab(position, widget, name, focus)

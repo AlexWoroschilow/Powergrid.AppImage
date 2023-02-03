@@ -24,7 +24,6 @@ class Container(object):
 
 @hexdi.permanent('rules.performance')
 class ContainerPerformanceRules(Container):
-
     @property
     def rules(self):
         for callback in self.collection:

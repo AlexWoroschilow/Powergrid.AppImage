@@ -18,7 +18,7 @@ from .dialog.message import MessageBox
 from .workspace import toolbar
 from .workspace import workspace
 from .workspace.content import WindowContent
-from .workspace.header import ToolbarWidget
+from .workspace.header import HeaderWidget
 from .workspace.window import MainWindow
 
 
@@ -28,7 +28,7 @@ class WindowContentInstance(WindowContent):
 
 
 @hexdi.permanent('window.header')
-class WindowContentInstance(ToolbarWidget):
+class WindowContentInstance(HeaderWidget):
     pass
 
 
@@ -43,7 +43,14 @@ class MainWindowInstance(MainWindow):
     def __init__(self, config, header, content, actions):
         super(MainWindowInstance, self).__init__()
 
-        self.setCentralWidget(QtWidgets.QWidget())
+        class CentralWidget(QtWidgets.QFrame):
+            def __init__(self):
+                super(CentralWidget, self).__init__()
+                self.setLayout(QtWidgets.QVBoxLayout())
+                self.layout().setContentsMargins(0, 0, 0, 0)
+                self.layout().setSpacing(0)
+
+        self.setCentralWidget(CentralWidget())
         self.centralWidget().setContentsMargins(0, 0, 0, 0)
         self.centralWidget().setLayout(QtWidgets.QVBoxLayout())
         self.centralWidget().layout().addWidget(header)

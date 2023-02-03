@@ -22,24 +22,7 @@ class UdevIntegrator(object):
     @hexdi.inject('config', 'udev_dumper.schema', 'udev_dumper.cleaner', 'window.dialog_manager')
     def integrate(self, config, schema, cleaner, dialog_manager):
 
-        if config.has('udev.enabled') and int(config.get('udev.enabled')):
-            single_shot = schema.dump(os.path.expanduser('/tmp/performance/schema.sh'))
-            if dialog_manager.execute(single_shot) == QtWidgets.QMessageBox.Cancel:
-                return shutil.rmtree(os.path.dirname(single_shot))
-
-            try:
-                os.system('pkexec sh {} '.format(single_shot))
-                return shutil.rmtree(os.path.dirname(single_shot), ignore_errors=True)
-            except Exception as ex:
-                shutil.rmtree(os.path.dirname(single_shot), ignore_errors=True)
-                return dialog_manager.error("{}".format(ex))
-
-            return self
-
-        udevfile = "/etc/udev/rules.d/70-performance.rules"
-        if not os.path.exists(udevfile): return self
-
-        single_shot = cleaner.dump(os.path.expanduser('/tmp/performance/cleaner.sh'))
+        single_shot = schema.dump(os.path.expanduser('/tmp/performance/schema.sh'))
         if dialog_manager.execute(single_shot) == QtWidgets.QMessageBox.Cancel:
             return shutil.rmtree(os.path.dirname(single_shot))
 

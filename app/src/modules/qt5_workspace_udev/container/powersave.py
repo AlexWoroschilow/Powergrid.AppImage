@@ -23,7 +23,7 @@ class Container(object):
 
 
 @hexdi.permanent('rules.powersave')
-class ContainerPowersaveRules(Container):
+class ContainerPowerSaveRules(Container):
     @property
     def rules(self):
         for callback in self.collection:

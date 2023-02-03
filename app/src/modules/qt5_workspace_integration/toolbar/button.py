@@ -9,6 +9,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+import os
 from PyQt5 import QtCore
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
@@ -23,9 +24,19 @@ class ToolbarButton(QtWidgets.QToolButton):
 
         self.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         self.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-        self.setIconSize(QtCore.QSize(28, 28))
+        self.setIconSize(QtCore.QSize(20, 20))
         self.setIcon(QtGui.QIcon(icon))
-        self.setFixedWidth(90)
+        self.setFixedWidth(80)
         self.setCheckable(True)
         self.setToolTip(text)
         self.setText(text)
+
+
+class ToolbarButtonIndicator(ToolbarButton):
+    def __init__(self, parent=None, text=None, icon1=None, icon2=None):
+        super(ToolbarButtonIndicator, self).__init__(parent, text, icon1)
+        if not os.path.exists("/etc/udev/rules.d/70-performance.rules"): return self
+
+        self.setIcon(QtGui.QIcon(icon2))
+
+# /etc/udev/rules.d/70-performance.rules

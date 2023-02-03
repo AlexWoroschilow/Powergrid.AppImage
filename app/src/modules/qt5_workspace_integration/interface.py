@@ -14,7 +14,7 @@ import hexdi
 from modules import qt5_window
 
 
-@qt5_window.toolbar(name='Desktop integration', focus=True, position=0)
+@qt5_window.toolbar(name='System integration', focus=True, position=0)
 def window_toolbar(parent=None):
     """
     Display a toolbar at the top of the window

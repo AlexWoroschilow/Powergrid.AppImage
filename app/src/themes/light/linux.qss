@@ -16,7 +16,10 @@ WindowContent QTabBar::tab:selected { background: #fafafa; border-right: 2px sol
 WindowContent QTabBar::tab:!selected { background: #fafafa; }
 WindowContent QTabBar::close-button { image: url(icons/close); }
 
-QToolButton { background: #ffffff; border: none; border-radius: 3px; color: #4d5357; margin: 0px; }
+
+ToolbarButton { color: #4f4f4f; }
+
+QToolButton { background: #f1f1f1; border: none; font-size:10px; padding: 5px; }
 QToolButton::checked { background: #f3f3f3; border: 1px solid #e4e4e4; border-radius: 3px; }
 QToolButton::pressed { background: #f3f3f3; border: 1px solid #e4e4e4; border-radius: 3px; }
 
@@ -52,4 +55,4 @@ SettingsWidget DescriptionWidget { color: #4d5357; margin: 0px 10px; }
 
 DashboardWidget { background: #ffffff; color: #4d5357; }
 DashboardWidget TitleWidget { font-size: 18px; color: #4d5357; margin: 5px 10px; }
-DashboardWidget QTextEdit { border: none; color: #404040; }
+DashboardWidget QTextEdit { border: none; color: #404040; font-size: 10px; }

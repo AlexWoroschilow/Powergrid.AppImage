@@ -20,17 +20,17 @@ class KdeIntegrator(object):
     settings = [
         [
             "[AC][RunScript]\n",
-            "scriptCommand={}\n".format(os.path.expanduser("~/.local/PerformanceTuner/kde/performance.sh")),
+            "scriptCommand={}\n".format(os.path.expanduser("~/.local/PerformanceTuner/performance.sh")),
             "scriptPhase=0\n"
         ],
         [
             "[Battery][RunScript]\n",
-            "scriptCommand={}\n".format(os.path.expanduser("~/.local/PerformanceTuner/kde/powersave.sh")),
+            "scriptCommand={}\n".format(os.path.expanduser("~/.local/PerformanceTuner/powersave.sh")),
             "scriptPhase=0\n"
         ],
         [
             "[LowBattery][RunScript]\n",
-            "scriptCommand={}\n".format(os.path.expanduser("~/.local/PerformanceTuner/kde/powersave.sh")),
+            "scriptCommand={}\n".format(os.path.expanduser("~/.local/PerformanceTuner/powersave.sh")),
             "scriptPhase=0\n"
         ]
     ]
@@ -38,8 +38,8 @@ class KdeIntegrator(object):
     @hexdi.inject('config', 'udev_dumper.performance', 'udev_dumper.powersave')
     def integrate(self, config=None, performance=None, powersave=None):
         integration = '~/.local/PerformanceTuner'
-        performance.dump(os.path.expanduser("{}/kde/performance.sh".format(integration)))
-        powersave.dump(os.path.expanduser("{}/kde/powersave.sh".format(integration)))
+        performance.dump(os.path.expanduser("{}/performance.sh".format(integration)))
+        powersave.dump(os.path.expanduser("{}/powersave.sh".format(integration)))
 
         kdefile = os.path.expanduser("~/.config/powermanagementprofilesrc")
         if not os.path.exists(os.path.dirname(kdefile)): return self
