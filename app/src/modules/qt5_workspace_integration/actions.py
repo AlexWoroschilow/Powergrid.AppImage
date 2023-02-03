@@ -13,54 +13,9 @@
 import hexdi
 
 
-@hexdi.inject('integrator.udev', 'integrator.kde', 'integrator.gnome')
-def onActonApply(event, udev, kde, gnome):
+@hexdi.inject('integrator.udev')
+def onActonApply(event, udev):
     try:
         udev.integrate()
     except Exception as ex:
         print(ex)
-
-    try:
-        kde.integrate()
-    except Exception as ex:
-        print(ex)
-
-    try:
-        gnome.integrate()
-    except Exception as ex:
-        print(ex)
-
-
-@hexdi.inject('config')
-def onActonToggleKDE(event, config):
-    config.set('kde.enabled', 1 if event else 0)
-
-
-@hexdi.inject('config')
-def onActonToggleGnome(event, config):
-    config.set('gnome.enabled', 1 if event else 0)
-
-
-@hexdi.inject('config')
-def onActonToggleXfce(event, config):
-    config.set('xfce.enabled', 1 if event else 0)
-
-
-@hexdi.inject('config')
-def onActonToggleDeepin(event, config):
-    config.set('deepin.enabled', 1 if event else 0)
-
-
-@hexdi.inject('config')
-def onActonToggleCinnamon(event, config):
-    config.set('cinnamon.enabled', 1 if event else 0)
-
-
-@hexdi.inject('config')
-def onActonToggleBudgie(event, config):
-    config.set('budgie.enabled', 1 if event else 0)
-
-
-@hexdi.inject('config')
-def onActonToggleUdev(event, config):
-    config.set('udev.enabled', 1 if event else 0)

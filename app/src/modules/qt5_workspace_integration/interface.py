@@ -23,13 +23,6 @@ def window_toolbar(parent=None):
     from . import actions
 
     widget = ToolbarWidget()
-    widget.actionGnome.connect(actions.onActonToggleGnome)
-    widget.actionKDE.connect(actions.onActonToggleKDE)
-    widget.actionXfce.connect(actions.onActonToggleXfce)
-    widget.actionDeepin.connect(actions.onActonToggleDeepin)
-    widget.actionCinnamon.connect(actions.onActonToggleCinnamon)
-    widget.actionBudgie.connect(actions.onActonToggleBudgie)
-    widget.actionUdev.connect(actions.onActonToggleUdev)
     widget.actionApply.connect(actions.onActonApply)
 
     return widget
