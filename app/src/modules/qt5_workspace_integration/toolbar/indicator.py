@@ -21,8 +21,8 @@ class ToolbarButtonIndicator(QtWidgets.QLabel):
     def __init__(self, icon1=None, icon2=None):
         super(ToolbarButtonIndicator, self).__init__()
 
-        self.icon1 = QPixmap(icon1).scaledToWidth(60, QtCore.Qt.SmoothTransformation)
-        self.icon2 = QPixmap(icon2).scaledToWidth(60, QtCore.Qt.SmoothTransformation)
+        self.icon1 = QPixmap(icon1).scaledToWidth(55, QtCore.Qt.SmoothTransformation)
+        self.icon2 = QPixmap(icon2).scaledToWidth(55, QtCore.Qt.SmoothTransformation)
 
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.refresh)
@@ -37,7 +37,7 @@ class ToolbarButtonIndicator(QtWidgets.QLabel):
         )
 
         self.setToolTip(
-            "The udev rules are not integrated into the system"
+            "The current power configuration has not yet taken effect."
             if not os.path.exists(file_udevrules) else
-            "Udev rules werer successfuly integrated into the system"
+            "The current power configuration has successfully taken effect."
         )

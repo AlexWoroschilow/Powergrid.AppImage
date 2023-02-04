@@ -33,9 +33,5 @@ class SettingsWidget(QtWidgets.QFrame):
         self.layout().setContentsMargins(0, 0, 0, 0)
 
         self.list = SettingsListWidget()
+        self.list.toggleDeviceAction.connect(self.toggleDeviceAction.emit)
         self.layout().addWidget(self.list)
-
-        for device in service.devices():
-            device_widget = DeviceWidget(device)
-            device_widget.toggleDeviceAction.connect(self.toggleDeviceAction.emit)
-            self.list.addWidget(device_widget)

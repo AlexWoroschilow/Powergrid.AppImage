@@ -9,10 +9,21 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+import hexdi
+from .device import DeviceWidget
 
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
+
+
+class DeviceMonitorThread(QtCore.QThread):
+    device = QtCore.pyqtSignal(object)
+
+    @hexdi.inject('plugin.service.hda')
+    def run(self, service=None):
+        for device in service.devices():
+            self.device.emit(device)
 
 
 class SettingsListItem(QtWidgets.QListWidgetItem):
@@ -25,12 +36,21 @@ class SettingsListItem(QtWidgets.QListWidgetItem):
 
 
 class SettingsListWidget(QtWidgets.QListWidget):
+    toggleDeviceAction = QtCore.pyqtSignal(object)
+
     def __init__(self):
         super(SettingsListWidget, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        self.setItemAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
-    def addWidget(self, widget):
+        self.thread = DeviceMonitorThread()
+        self.thread.device.connect(self.addDevice)
+        self.thread.start()
+
+    def addDevice(self, device):
         item = SettingsListItem()
         self.addItem(item)
 
+        widget = DeviceWidget(device)
+        widget.toggleDeviceAction.connect(self.toggleDeviceAction.emit)
         self.setItemWidget(item, widget)

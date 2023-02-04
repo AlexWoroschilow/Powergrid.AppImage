@@ -24,5 +24,8 @@ def window_toolbar(parent=None):
 
     widget = ToolbarWidget()
     widget.actionApply.connect(actions.onActonApply)
+    widget.actionPerformance.connect(actions.onActionPerformace)
+    widget.actionPowersave.connect(actions.onActionPowerSave)
+    widget.actionCleanup.connect(actions.onActionCleanup)
 
     return widget

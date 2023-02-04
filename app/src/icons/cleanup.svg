@@ -1,6 +1,45 @@
-<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="broom" role="img"
-     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="svg-inline--fa fa-broom fa-w-20 fa-7x">
-    <path fill="#C70039"
-          d="M256.47 216.77l86.73 109.18s-16.6 102.36-76.57 150.12C206.66 523.85 0 510.19 0 510.19s3.8-23.14 11-55.43l94.62-112.17c3.97-4.7-.87-11.62-6.65-9.5l-60.4 22.09c14.44-41.66 32.72-80.04 54.6-97.47 59.97-47.76 163.3-40.94 163.3-40.94zM636.53 31.03l-19.86-25c-5.49-6.9-15.52-8.05-22.41-2.56l-232.48 177.8-34.14-42.97c-5.09-6.41-15.14-5.21-18.59 2.21l-25.33 54.55 86.73 109.18 58.8-12.45c8-1.69 11.42-11.2 6.34-17.6l-34.09-42.92 232.48-177.8c6.89-5.48 8.04-15.53 2.55-22.44z"
-          class=""></path>
-</svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 100 100"
+   version="1.1"
+   enable-background="new 0 0 76.00 76.00"
+   xml:space="preserve"
+   fill="#000000"
+   id="svg7"
+   sodipodi:docname="cleanup.svg"
+   width="100"
+   height="100"
+   inkscape:version="1.1 (c4e8f9e, 2021-05-24)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs11" /><sodipodi:namedview
+   id="namedview9"
+   pagecolor="#ffffff"
+   bordercolor="#999999"
+   borderopacity="1"
+   inkscape:pageshadow="0"
+   inkscape:pageopacity="0"
+   inkscape:pagecheckerboard="0"
+   showgrid="false"
+   inkscape:zoom="4.9539474"
+   inkscape:cx="-6.1567065"
+   inkscape:cy="68.531208"
+   inkscape:current-layer="svg7" />
+    <g
+   id="SVGRepo_bgCarrier"
+   stroke-width="0" />
+    <g
+   id="SVGRepo_tracerCarrier"
+   stroke-linecap="round"
+   stroke-linejoin="round" />
+    <g
+   id="SVGRepo_iconCarrier"
+   transform="matrix(2.5031164,0,0,2.5031164,-47.100015,-42.677634)"> <path
+   fill="#4a4a4a"
+   fill-opacity="1"
+   stroke-width="0.2"
+   stroke-linejoin="round"
+   d="M 58.5833,45.9167 V 57 H 19 V 45.9167 h 9.8998 c 2.1308,1.3626 4.7797,2.5309 7.7436,3.3251 3.7033,0.9923 8.0645,1.2328 10.9815,0.8274 v -4.1525 z m -2.375,2.375 h -2.7709 v 4.75 h 2.7708 z m -10.465,-0.0093 c -2.5855,0.3594 -5.7495,-0.2497 -9.032,-1.1292 -5.5247,-1.4804 -9.8148,-4.4274 -11.195,-7.358 l 6.7739,-6.7739 13.4531,5.045 z M 39.2905,28.1719 c 0.3446,0 0.6832,0.0222 1.0142,0.0649 l 5.7001,-11.187 3.0664,1.5624 -5.5269,10.8472 c 1.6011,1.1028 2.6292,2.8139 2.6292,4.7352 0,0.8251 -0.1896,1.6114 -0.5328,2.3275 L 33.4151,31.7762 c 1.0645,-2.1221 3.0571,-3.6043 5.8754,-3.6043 z"
+   id="path4" /> </g></svg>

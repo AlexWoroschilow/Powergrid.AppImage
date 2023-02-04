@@ -11,12 +11,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 from modules import qt5_window
+from .toolbar.panel import ToolbarWidget
 
 
-@qt5_window.workspace(name='Udev rules', focus=False, position=9)
-def window_workspace(parent):
-    """
-    Display a left-side tab
-    """
-    from .workspace.dashboard import DashboardWidget
-    return DashboardWidget()
+@qt5_window.toolbar(name='Export', focus=False, position=1)
+def window_toolbar(parent=None):
+    from . import actions
+
+    widget = ToolbarWidget()
+    widget.actionExport.connect(actions.onActionExport)
+    widget.actionPerformanceExport.connect(actions.onActionExportPerformace)
+    widget.actionPowersaveExport.connect(actions.onActionExportPowerSave)
+    return widget

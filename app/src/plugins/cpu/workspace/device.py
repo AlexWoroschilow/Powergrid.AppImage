@@ -18,9 +18,10 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
 from .checkbox import CheckboxTriState
+from .label import Value
 
 
-class SchemaWidget(QtWidgets.QLabel):
+class SchemaWidget(Value):
     def __init__(self, device=None):
         super(SchemaWidget, self).__init__('...')
         self.setAlignment(Qt.AlignVCenter | Qt.AlignCenter)
@@ -36,9 +37,9 @@ class SchemaWidget(QtWidgets.QLabel):
         self.setText('<b>{}</b>'.format(device.governor))
 
 
-class FrequenceWidget(QtWidgets.QLabel):
+class DeviceValueWidget(Value):
     def __init__(self, device=None):
-        super(FrequenceWidget, self).__init__('...')
+        super(DeviceValueWidget, self).__init__('...')
         self.setAlignment(Qt.AlignVCenter)
         self.setMinimumWidth(100)
 
@@ -64,20 +65,20 @@ class DeviceWidget(QtWidgets.QWidget):
         self.setContentsMargins(0, 0, 0, 0)
         self.setToolTip(device.path)
 
+        self.setLayout(QtWidgets.QGridLayout())
+        self.layout().setContentsMargins(0, 0, 0, 0)
+        self.layout().setAlignment(Qt.AlignLeft | Qt.AlignTop)
+
         self.device = device
 
         default = config.get('cpu.permanent.{}'.format(self.device.code), 0)
         self.checkbox = CheckboxTriState(['Auto', 'Powersave', 'Performance'], int(default))
         self.checkbox.stateChanged.connect(self.deviceToggleEvent)
 
-        self.setLayout(QtWidgets.QGridLayout())
-        self.layout().setContentsMargins(0, 0, 0, 0)
-        self.layout().setAlignment(Qt.AlignLeft | Qt.AlignTop)
-
         self.layout().addWidget(self.checkbox, 0, 0)
         self.layout().addWidget(SchemaWidget(device), 0, 1)
         self.layout().addWidget(QtWidgets.QLabel(device.name.replace('Cpu', 'CPU ')), 0, 2)
-        self.layout().addWidget(FrequenceWidget(device), 0, 3)
+        self.layout().addWidget(DeviceValueWidget(device), 0, 3)
 
     @hexdi.inject('config')
     def deviceToggleEvent(self, value, config):

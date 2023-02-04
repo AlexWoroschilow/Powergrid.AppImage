@@ -13,6 +13,7 @@ import functools
 
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import Qt
 
 
 class CheckboxButton(QtWidgets.QPushButton):
@@ -35,6 +36,7 @@ class CheckboxTriState(QtWidgets.QWidget):
 
         self.setLayout(QtWidgets.QHBoxLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
+        self.layout().setAlignment(Qt.AlignVCenter)
 
         self.pool = []
         for index, name in enumerate(values, start=0):

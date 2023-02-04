@@ -14,7 +14,7 @@ from modules import qt5_window
 from .toolbar.panel import ToolbarWidget
 
 
-@qt5_window.toolbar(name='Themes', focus=False, position=3)
+@qt5_window.toolbar(name='Themes', focus=False, position=2)
 def window_toolbar(parent=None):
     widget = ToolbarWidget()
     parent.actionReload.connect(widget.reload)

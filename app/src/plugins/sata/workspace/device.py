@@ -76,15 +76,15 @@ class DeviceWidget(QtWidgets.QWidget):
         self.setContentsMargins(0, 0, 0, 0)
         self.setToolTip(device.path)
 
+        self.setLayout(QtWidgets.QGridLayout())
+        self.layout().setContentsMargins(0, 0, 0, 0)
+        self.layout().setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
         self.device = device
 
         default = config.get('sata.permanent.{}'.format(self.device.code), 0)
         self.checkbox = CheckboxTriState(['Auto', 'Powersave', 'Performance'], int(default))
         self.checkbox.stateChanged.connect(self.toggle_device_event)
-
-        self.setLayout(QtWidgets.QGridLayout())
-        self.layout().setContentsMargins(0, 0, 0, 0)
-        self.layout().setAlignment(Qt.AlignLeft | Qt.AlignTop)
 
         self.layout().addWidget(self.checkbox, 0, 0)
         self.layout().addWidget(DeviceValueWidget(device), 0, 1)

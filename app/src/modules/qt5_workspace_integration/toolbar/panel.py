@@ -17,18 +17,14 @@ from PyQt5.QtCore import Qt
 
 from .button import ToolbarButton
 from .indicator import ToolbarButtonIndicator
+from .button import PictureButtonDisabled
 
 
 class ToolbarWidget(QtWidgets.QScrollArea):
     actionApply = QtCore.pyqtSignal(object)
-
-    actionGnome = QtCore.pyqtSignal(object)
-    actionKDE = QtCore.pyqtSignal(object)
-    actionXfce = QtCore.pyqtSignal(object)
-    actionDeepin = QtCore.pyqtSignal(object)
-    actionCinnamon = QtCore.pyqtSignal(object)
-    actionBudgie = QtCore.pyqtSignal(object)
-    actionUdev = QtCore.pyqtSignal(object)
+    actionPerformance = QtCore.pyqtSignal(object)
+    actionPowersave = QtCore.pyqtSignal(object)
+    actionCleanup = QtCore.pyqtSignal(object)
 
     @hexdi.inject('config')
     def __init__(self, config=None):
@@ -49,45 +45,31 @@ class ToolbarWidget(QtWidgets.QScrollArea):
         self.indicator = ToolbarButtonIndicator('icons/enabled-red.svg', 'icons/enabled-green.svg')
         self.addWidget(self.indicator)
 
-        self.apply = ToolbarButton(self, "Apply schema", QtGui.QIcon('icons/start'))
+        self.addWidget(PictureButtonDisabled(QtGui.QIcon("icons/folder")))
+
+        self.apply = ToolbarButton(self, "Apply", QtGui.QIcon('icons/start'))
+        self.apply.setToolTip("Apply the current power configuration")
         self.apply.clicked.connect(self.actionApply.emit)
         self.apply.setCheckable(False)
         self.addWidget(self.apply)
 
-        self.kde = ToolbarButton(self, "KDE", QtGui.QIcon('icons/kde'))
-        self.kde.setChecked(int(config.get('kde.enabled')))
-        self.kde.clicked.connect(self.actionKDE.emit)
-        self.addWidget(self.kde)
+        self.apply_performance = ToolbarButton(self, "Performance", QtGui.QIcon('icons/performance'))
+        self.apply_performance.setToolTip("Apply the performance power configuration")
+        self.apply_performance.clicked.connect(self.actionPerformance.emit)
+        self.apply_performance.setCheckable(False)
+        self.addWidget(self.apply_performance)
 
-        self.gnome = ToolbarButton(self, "Gnome", QtGui.QIcon('icons/gnome'))
-        self.gnome.setChecked(int(config.get('gnome.enabled')))
-        self.gnome.clicked.connect(self.actionGnome.emit)
-        self.gnome.setEnabled(False)
-        self.addWidget(self.gnome)
+        self.apply_powersave = ToolbarButton(self, "Powersave", QtGui.QIcon('icons/powersave'))
+        self.apply_powersave.setToolTip("Apply the powersave power configuration")
+        self.apply_powersave.clicked.connect(self.actionPowersave.emit)
+        self.apply_powersave.setCheckable(False)
+        self.addWidget(self.apply_powersave)
 
-        self.xfce = ToolbarButton(self, "Xfce", QtGui.QIcon('icons/xfce'))
-        self.xfce.setChecked(int(config.get('xfce.enabled')))
-        self.xfce.clicked.connect(self.actionXfce.emit)
-        self.xfce.setEnabled(False)
-        self.addWidget(self.xfce)
-
-        self.deepin = ToolbarButton(self, "Deepin", QtGui.QIcon('icons/deepin'))
-        self.deepin.setChecked(int(config.get('deepin.enabled')))
-        self.deepin.clicked.connect(self.actionDeepin.emit)
-        self.deepin.setEnabled(False)
-        self.addWidget(self.deepin)
-
-        self.cinnamon = ToolbarButton(self, "Cinnamon", QtGui.QIcon('icons/cinnamon'))
-        self.cinnamon.setChecked(int(config.get('cinnamon.enabled')))
-        self.cinnamon.clicked.connect(self.actionCinnamon.emit)
-        self.cinnamon.setEnabled(False)
-        self.addWidget(self.cinnamon)
-
-        self.budgie = ToolbarButton(self, "Budgie", QtGui.QIcon('icons/budgie'))
-        self.budgie.setChecked(int(config.get('budgie.enabled')))
-        self.budgie.clicked.connect(self.actionBudgie.emit)
-        self.budgie.setEnabled(False)
-        self.addWidget(self.budgie)
+        self.cleanup = ToolbarButton(self, "Cleanup", QtGui.QIcon('icons/cleanup'))
+        self.cleanup.setToolTip("Rollback the integration with the system")
+        self.cleanup.clicked.connect(self.actionCleanup.emit)
+        self.apply.setCheckable(False)
+        self.addWidget(self.cleanup)
 
     def addWidget(self, widget):
         self.container.layout().addWidget(widget)

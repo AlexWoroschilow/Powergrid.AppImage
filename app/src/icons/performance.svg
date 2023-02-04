@@ -1,6 +1,41 @@
-<svg aria-hidden="true" focusable="false" data-prefix="fal" data-icon="plug" role="img"
-     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="svg-inline--fa fa-plug fa-w-12 fa-9x">
-    <path fill="#4a4a4a"
-          d="M352,128H304V16a16,16,0,0,0-32,0V128H112V16a16,16,0,0,0-32,0V128H32A32,32,0,0,0,0,160v32a32,32,0,0,0,32,32v32c0,82.75,63.37,150.22,144,158.38V512h32V414.38c80.63-8.16,144-75.63,144-158.38V224a32,32,0,0,0,32-32V160A32,32,0,0,0,352,128ZM320,256a128,128,0,0,1-256,0V224H320Zm32-64H32V160H352Z"
-          class=""></path>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   fill="#4a4a4a"
+   viewBox="0 0 100 100"
+   version="1.1"
+   id="svg7"
+   sodipodi:docname="performance.svg"
+   width="100"
+   height="100"
+   inkscape:version="1.1 (c4e8f9e, 2021-05-24)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs11" />
+  <sodipodi:namedview
+     id="namedview9"
+     pagecolor="#ffffff"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="2"
+     inkscape:cx="-61.25"
+     inkscape:cy="168.75"
+     inkscape:current-layer="svg7" />
+  <g
+     id="SVGRepo_bgCarrier"
+     stroke-width="0" />
+  <g
+     id="SVGRepo_tracerCarrier"
+     stroke-linecap="round"
+     stroke-linejoin="round" />
+  <path
+     d="m 0,70 v 7.49 C 0,78.875 1.125,80 2.51,80 H 7.495 A 2.51,2.51 0 0 0 10,77.49 V 70 C 10,65.205 14.005,58.635 20,56.105 V 45.58 C 8.42,48.26 0,59.85 0,70 Z m 60.325,-46.495 -12.65,9.49 C 45.94,34.295 43.83,35 41.66,35 H 30.025 C 27.25,35 25,37.25 25,40.025 V 59.98 C 25,62.75 27.25,65 30.025,65 H 41.66 c 2.17,0 4.28,0.705 6.015,2.005 l 12.655,9.49 A 17.51,17.51 0 0 0 70.84,80 H 80 V 20 h -9.16 c -3.79,0 -7.48,1.23 -10.515,3.505 z M 85,30 v 10 h 15 V 30 Z m 0,40 h 15 V 60 H 85 Z"
+     id="path4"
+     style="stroke-width:5" />
 </svg>

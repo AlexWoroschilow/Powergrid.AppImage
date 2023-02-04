@@ -21,8 +21,7 @@ from .list import SettingsListWidget
 class SettingsWidget(QtWidgets.QFrame):
     deviceToggleAction = QtCore.pyqtSignal(object)
 
-    @hexdi.inject('plugin.service.usb')
-    def __init__(self, service=None):
+    def __init__(self):
         super(SettingsWidget, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.setContentsMargins(0, 0, 0, 0)

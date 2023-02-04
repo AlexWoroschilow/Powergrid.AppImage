@@ -26,12 +26,14 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, themes=None, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setContentsMargins(0, 0, 0, 0)
-        self.setWindowTitle('Performance optimizer')
+        self.setWindowTitle('Powergrid')
 
         if os.path.exists('icons/hand.svg'):
             self.setWindowIcon(QtGui.QIcon("icons/hand"))
 
         self.setStyleSheet(themes.get_stylesheet())
+        self.setMaximumHeight(1100)
+        self.setMaximumWidth(800)
 
     def resizeEvent(self, event):
         self.resizeAction.emit(event)

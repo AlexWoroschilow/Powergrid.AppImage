@@ -49,6 +49,8 @@ class SettingsListWidget(QtWidgets.QListWidget):
     def __init__(self):
         super(SettingsListWidget, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        self.setItemAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
         self._hashmap = {}
 
         self.thread = DeviceMonitorThread()

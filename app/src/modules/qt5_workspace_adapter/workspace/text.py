@@ -19,6 +19,5 @@ class DescriptionWidget(QtWidgets.QLabel):
         super(DescriptionWidget, self).__init__()
         self.setAlignment(Qt.AlignTop)
         self.setWordWrap(True)
-        self.setText("""<p>These settings will be applied when powered from the AC-Adapter. Settings will be applied only 
-once during the switch of the power source. After that, you can change the settings <b>manually</b> or with the help of the <b>powertop</b>. 
-These changes will work until the next switching of the power supply</p>""")
+        self.setText("The settings will only take effect when the device is being powered by the AC adapter "
+                     "and will only be implemented once upon switching the power source.")

@@ -47,11 +47,15 @@ DashboardWidget QTextEdit { border: none; color: #404040; font-size: 10px; }
 SettingsWidget { background: #ffffff;}
 SettingsWidget TitleWidget { font-size: 18px; color: #4d5357; margin: 15px; }
 SettingsWidget DescriptionWidget { color: #4d5357; margin: 0px 10px; }
-
-SettingsWidget SettingsListWidget { background: #ffffff; border: none; margin: 15px;  }
-SettingsWidget SettingsListWidget::item:alternate { background: #fafafa; border: none;  }
-SettingsWidget SettingsListWidget::item:selected { background: #fafafa; border: none;  }
-SettingsWidget SettingsListWidget::item:selected:!active { background: #fafafa; border: none;  }
-SettingsWidget SettingsListWidget::item:selected:active { background: #fafafa; border: none;  }
-SettingsWidget SettingsListWidget::item:hover { background: #fafafa; border: none;  }
 SettingsWidget SettingsListWidget DeviceWidget { margin: 10px; }
+
+QListView { border: none; margin: 15px;  font-size: 12px;  }
+QListView::item:alternate { background: #fafafa; border: none;  }
+QListView::item:hover:selected { background: #fafafa; border: none; }
+QListView::item:selected:active { background: #fafafa; border: none;  }
+QListView::item:selected:!active { background: #fafafa; border: none;  }
+QListView::item:hover { background: #fafafa; border: none;   }
+
+QListView::item:selected { background: #fafafa;  }
+QListView::item { background: #ffffff;   }
+

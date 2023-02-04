@@ -17,7 +17,7 @@ from PyQt5.QtCore import Qt
 
 
 class ToolbarWidget(QtWidgets.QScrollArea):
-    actionPerformance = QtCore.pyqtSignal(object)
+    actionExport = QtCore.pyqtSignal(object)
     actionPerformanceExport = QtCore.pyqtSignal(object)
     actionPowersave = QtCore.pyqtSignal(object)
     actionPowersaveExport = QtCore.pyqtSignal(object)
@@ -40,21 +40,18 @@ class ToolbarWidget(QtWidgets.QScrollArea):
         self.container.layout().setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.setWidget(self.container)
 
-        self.performance = ToolbarButton(self, "Performance", QtGui.QIcon('icons/performance'))
-        self.performance.clicked.connect(self.actionPerformance.emit)
-        self.addWidget(self.performance)
+        self.export = ToolbarButton(self, "Export rules", QtGui.QIcon('icons/export'))
+        self.export.setToolTip('Export the current power configuration into the file')
+        self.export.clicked.connect(self.actionExport.emit)
+        self.addWidget(self.export)
 
-        self.performanceExport = ToolbarButton(self, "Export performance", QtGui.QIcon('icons/export'))
-        self.performanceExport.setToolTip('Export performance rules to file')
+        self.performanceExport = ToolbarButton(self, "Export performance", QtGui.QIcon('icons/performance'))
+        self.performanceExport.setToolTip('Export the performance power configuration into the file')
         self.performanceExport.clicked.connect(self.actionPerformanceExport.emit)
         self.addWidget(self.performanceExport)
 
-        self.powersave = ToolbarButton(self, "Powersave", QtGui.QIcon('icons/powersave'))
-        self.powersave.clicked.connect(self.actionPowersave.emit)
-        self.addWidget(self.powersave)
-
-        self.powersaveExport = ToolbarButton(self, "Export powersave", QtGui.QIcon('icons/export'))
-        self.performance.setToolTip('Export powersave rules to file')
+        self.powersaveExport = ToolbarButton(self, "Export powersave", QtGui.QIcon('icons/powersave'))
+        self.powersaveExport.setToolTip('Export the powersave power configuration into the file')
         self.powersaveExport.clicked.connect(self.actionPowersaveExport.emit)
         self.addWidget(self.powersaveExport)
 

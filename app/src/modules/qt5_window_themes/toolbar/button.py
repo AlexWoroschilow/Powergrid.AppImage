@@ -30,10 +30,11 @@ class ToolbarButton(QtWidgets.QToolButton):
             self.setIcon(QtGui.QIcon(pixmap))
 
         self.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        self.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-        self.setIconSize(QtCore.QSize(28, 28))
-
-        self.setFixedWidth(90)
+        self.setIconSize(QtCore.QSize(20, 20))
+        self.setFixedWidth(80)
         self.setCheckable(True)
+
+        self.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        self.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.setToolTip(theme.name.capitalize())
         self.setText(theme.name.capitalize())

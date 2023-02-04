@@ -19,8 +19,6 @@ from PyQt5.QtCore import Qt
 class ToolbarButton(QtWidgets.QToolButton):
     def __init__(self, parent=None, text=None, icon=None):
         super(ToolbarButton, self).__init__(parent)
-        assert (text is not None)
-        assert (icon is not None)
 
         self.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         self.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
@@ -28,8 +26,10 @@ class ToolbarButton(QtWidgets.QToolButton):
         self.setIcon(QtGui.QIcon(icon))
         self.setFixedWidth(80)
         self.setCheckable(True)
-        self.setToolTip(text)
-        self.setText(text)
+
+        if text is not None and len(text):
+            self.setToolTip(text)
+            self.setText(text)
 
 
 class ToolbarButtonIndicator(ToolbarButton):
@@ -39,4 +39,15 @@ class ToolbarButtonIndicator(ToolbarButton):
 
         self.setIcon(QtGui.QIcon(icon2))
 
-# /etc/udev/rules.d/70-performance.rules
+
+class PictureButtonDisabled(QtWidgets.QPushButton):
+
+    def __init__(self, icon=None, parent=None):
+        super(PictureButtonDisabled, self).__init__(icon, parent)
+        self.setIconSize(QtCore.QSize(24, 24))
+        self.setDisabled(False)
+        self.setFlat(True)
+        self.setIcon(icon)
+
+    def event(self, QEvent):
+        return super(QtWidgets.QPushButton, self).event(QEvent)
