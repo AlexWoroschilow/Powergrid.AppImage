@@ -10,15 +10,15 @@ The development of Powergrid was influenced by Powertop, and its optimization re
 
 
 # Screenshots
-![Dashboard](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/dashboard.png?raw=true)
-![CPU](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices-cpu.png?raw=true)
-![Discs](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices-sata.png?raw=true)
-![USB](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices-usb.png?raw=true)
-![PCI](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices-pci.png?raw=true)
-![HDA](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices-hda.png?raw=true)
-![I2C](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices-i2c.png?raw=true)
-![SCSI](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices-scsi.png?raw=true)
-![Udev](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices-udev.png?raw=true)
+![Dashboard](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/dashboard.png?raw=true)
+![CPU](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-cpu.png?raw=true)
+![Discs](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-sata.png?raw=true)
+![USB](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-usb.png?raw=true)
+![PCI](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-pci.png?raw=true)
+![HDA](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-hda.png?raw=true)
+![I2C](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-i2c.png?raw=true)
+![SCSI](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-scsi.png?raw=true)
+![Udev](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/udev-rules.png?raw=true)
 
 ### How to run
 
