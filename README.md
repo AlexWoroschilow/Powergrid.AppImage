@@ -1,47 +1,37 @@
-# Performance Tuner (prototype)
-The performance tuner is a free open source program for the energy consumption fine-tuning in Linux, inspired by the powertop, and tlp. You can setup the performance schema using the gui and apply the setup to the system. 
+# Powergrid (prototype)
 
-The program will generate folowing files:
-* `/etc/udev/rules.d/70-performance.rules`
-* `/etc/performance-tuner/performance_*`
-* `/etc/performance-tuner/powersave_*`
+Powergrid is an open source power management application for Linux laptops designed to automatically adjust power settings to extend battery life and reduce power consumption. It is user-friendly, lightweight, and offers a range of customizable options to meet various needs.
 
-According to the power source (AC or Battery) the `/etc/performance-tuner/performance_*` or `/etc/performance-tuner/powersave_` scripts will be started by the udev. 
+Powergrid is designed to work with various Linux distributions, including OpenSuse, Ubuntu, and Manjaro, among others.
 
+The application creates udev rules that execute commands to optimize power consumption based on AC/Battery events. After the rules have been applied, Powergrid terminates and the udev subsystem continues to maintain the optimizations.
 
-This is a fully functional prototype and MVP how i see it.
-
-You use it at your own risk still any feedback will be highly appreciated.
+The development of Powergrid was influenced by Powertop, and its optimization results were compared against those of Powertop. On the hardware it was tested on, Powergrid performed as well as, or better than, Powertop.
 
 
+# Screenshots
+![Dashboard](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/dashboard.png?raw=true)
+![CPU](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices-cpu.png?raw=true)
+![Discs](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices-sata.png?raw=true)
+![USB](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices-usb.png?raw=true)
+![PCI](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices-pci.png?raw=true)
+![HDA](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices-hda.png?raw=true)
+![I2C](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices-i2c.png?raw=true)
+![SCSI](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices-scsi.png?raw=true)
+![Udev](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices-udev.png?raw=true)
 
 ### How to run
-To be able to run the programm you will need the python3 and python3-virtualenv installed
 
-Install required modules:
-`make init`
+Download the AppImage from the releases page: 
 
-Activate python virtual environment:
-`source venv/bin/activate`
+[Powergrid.AppImage](https://github.com/AlexWoroschilow/PerformanceTuner.AppImage/releases)
 
-Run the programm:
-`python3 src/main.py`
+`wget https://github.com/AlexWoroschilow/PerformanceTuner.AppImage/releases/download/latest/PerformanceTuner.AppImage`
 
-### How to build an AppImage
+grant the execution permissions:
 
-To be able to run the programm you will need the python3 and python3-virtualenv installed.
+`chmod +x Powergrid.AppImage`
 
-Build appimage:
-`make`
+run the downloaded AppImage:
 
-Run the program:
-`bin/AOD-PerformanceTuner.AppImage`
-
-
-
-![Dashboard](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/dashboard.png?raw=true)
-
-![Device management](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices-01.png?raw=true)
-
-![Device management](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/master/screenshots/devices-02.png?raw=true)
-
+`./Powergrid.AppImage`

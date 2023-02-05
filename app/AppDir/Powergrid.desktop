@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=PerformanceTuner
+Name=Powergrid
 Exec=AppRun
-Icon=performance-tuner
+Icon=powergrid
 Type=Application
 Categories=Utility;
