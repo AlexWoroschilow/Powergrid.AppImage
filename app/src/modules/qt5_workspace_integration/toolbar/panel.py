@@ -42,7 +42,7 @@ class ToolbarWidget(QtWidgets.QScrollArea):
         self.container.layout().setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.setWidget(self.container)
 
-        self.indicator = ToolbarButtonIndicator('icons/enabled-red.svg', 'icons/enabled-green.svg')
+        self.indicator = ToolbarButtonIndicator('icons/enabled-red', 'icons/enabled-green')
         self.addWidget(self.indicator)
 
         self.addWidget(PictureButtonDisabled(QtGui.QIcon("icons/folder")))
