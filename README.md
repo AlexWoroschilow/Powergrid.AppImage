@@ -1,28 +1,20 @@
 # Powergrid (prototype)
 
-Powergrid is an open source power management application for Linux laptops designed to automatically adjust power settings to extend battery life and reduce power consumption. It is user-friendly, lightweight, and offers a range of customizable options to meet various needs.
+Powergrid is an open source power management application for Linux laptops designed to automatically adjust power
+settings to extend battery life and reduce power consumption. It is user-friendly, lightweight, and offers a range of
+customizable options to meet various needs.
 
 Powergrid is designed to work with various Linux distributions, including OpenSuse, Ubuntu, and Manjaro, among others.
 
-The application creates udev rules that execute commands to optimize power consumption based on AC/Battery events. After the rules have been applied, Powergrid terminates and the udev subsystem continues to maintain the optimizations.
+The application creates udev rules that execute commands to optimize power consumption based on AC/Battery events. After
+the rules have been applied, Powergrid terminates and the udev subsystem continues to maintain the optimizations.
 
-The development of Powergrid was influenced by Powertop, and its optimization results were compared against those of Powertop. On the hardware it was tested on, Powergrid performed as well as, or better than, Powertop.
-
-
-# Screenshots
-![Dashboard](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/dashboard.png?raw=true)
-![CPU](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-cpu.png?raw=true)
-![Discs](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-sata.png?raw=true)
-![USB](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-usb.png?raw=true)
-![PCI](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-pci.png?raw=true)
-![HDA](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-hda.png?raw=true)
-![I2C](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-i2c.png?raw=true)
-![SCSI](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-scsi.png?raw=true)
-![Udev](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/udev-rules.png?raw=true)
+The development of Powergrid was influenced by Powertop, and its optimization results were compared against those of
+Powertop. On the hardware it was tested on, Powergrid performed as well as, or better than, Powertop.
 
 ### How to run
 
-Download the AppImage from the releases page: 
+Download the AppImage from the releases page:
 
 [Powergrid.AppImage](https://github.com/AlexWoroschilow/PerformanceTuner.AppImage/releases)
 
@@ -35,3 +27,15 @@ grant the execution permissions:
 run the downloaded AppImage:
 
 `./Powergrid.AppImage`
+
+# Screenshots
+
+![Dashboard](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/dashboard.png?raw=true)
+![CPU](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-cpu.png?raw=true)
+![Discs](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-sata.png?raw=true)
+![USB](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-usb.png?raw=true)
+![PCI](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-pci.png?raw=true)
+![HDA](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-hda.png?raw=true)
+![I2C](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-i2c.png?raw=true)
+![SCSI](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-scsi.png?raw=true)
+![Udev](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/udev-rules.png?raw=true)
