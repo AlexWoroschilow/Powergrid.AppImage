@@ -16,9 +16,9 @@ Powertop. On the hardware it was tested on, Powergrid performed as well as, or b
 
 Download the AppImage from the releases page:
 
-[Powergrid.AppImage](https://github.com/AlexWoroschilow/PerformanceTuner.AppImage/releases)
+[Powergrid.AppImage](https://github.com/AlexWoroschilow/Powergrid.AppImage/releases)
 
-`wget https://github.com/AlexWoroschilow/PerformanceTuner.AppImage/releases/download/latest/PerformanceTuner.AppImage`
+`wget https://github.com/AlexWoroschilow/Powergrid.AppImage/releases/download/latest/Powergrid.AppImage`
 
 grant the execution permissions:
 
@@ -30,12 +30,12 @@ run the downloaded AppImage:
 
 # Screenshots
 
-![Dashboard](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/dashboard.png?raw=true)
-![CPU](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-cpu.png?raw=true)
-![Discs](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-sata.png?raw=true)
-![USB](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-usb.png?raw=true)
-![PCI](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-pci.png?raw=true)
-![HDA](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-hda.png?raw=true)
-![I2C](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-i2c.png?raw=true)
-![SCSI](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/devices-scsi.png?raw=true)
-![Udev](https://github.com/AlexWoroschilow/AOD-PerformanceTuner/blob/main/screenshots/udev-rules.png?raw=true)
+![Dashboard](https://github.com/AlexWoroschilow/Powergrid.AppImage/blob/main/screenshots/dashboard.png?raw=true)
+![CPU](https://github.com/AlexWoroschilow/Powergrid.AppImage/blob/main/screenshots/devices-cpu.png?raw=true)
+![Discs](https://github.com/AlexWoroschilow/Powergrid.AppImage/blob/main/screenshots/devices-sata.png?raw=true)
+![USB](https://github.com/AlexWoroschilow/Powergrid.AppImage/blob/main/screenshots/devices-usb.png?raw=true)
+![PCI](https://github.com/AlexWoroschilow/Powergrid.AppImage/blob/main/screenshots/devices-pci.png?raw=true)
+![HDA](https://github.com/AlexWoroschilow/Powergrid.AppImage/blob/main/screenshots/devices-hda.png?raw=true)
+![I2C](https://github.com/AlexWoroschilow/Powergrid.AppImage/blob/main/screenshots/devices-i2c.png?raw=true)
+![SCSI](https://github.com/AlexWoroschilow/Powergrid.AppImage/blob/main/screenshots/devices-scsi.png?raw=true)
+![Udev](https://github.com/AlexWoroschilow/Powergrid.AppImage/blob/main/screenshots/udev-rules.png?raw=true)
