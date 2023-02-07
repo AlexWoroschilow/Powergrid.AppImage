@@ -4,7 +4,7 @@ Powergrid is an open source power management application for Linux laptops desig
 settings to extend battery life and reduce power consumption. It is user-friendly, lightweight, and offers a range of
 customizable options to meet various needs.
 
-Powergrid is designed to work with various Linux distributions, including OpenSuse, Ubuntu, and Manjaro, among others.
+Powergrid is designed to work with various Linux distributions, it was tested only with OpenSuse, Ubuntu, KDE Neon and Manjaro.
 
 The application creates udev rules that execute commands to optimize power consumption based on AC/Battery events. After
 the rules have been applied, Powergrid terminates and the udev subsystem continues to maintain the optimizations.
