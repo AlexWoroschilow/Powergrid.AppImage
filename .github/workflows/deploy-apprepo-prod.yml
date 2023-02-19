@@ -52,7 +52,7 @@ jobs:
         with:
           tag_name: latest
           name: ${{ github.event.repository.name }} latest build'
-          body: 'This repo provides the AppImage build only. To get the application release notes please visit the home page of the app itself.'
+          body: 'Please note that the use of this software is at your own risk. We do not guarantee the accuracy, completeness, or suitability of the information and materials provided, and we shall not be liable for any direct, indirect, or consequential damages arising from the use of this software. You are solely responsible for ensuring that your use of the software complies with all applicable laws, regulations, and best practices. By using this software/service, you agree to indemnify and hold us harmless from any and all claims, damages, and expenses, including attorneys' fees, arising from your use of the software.'
           prerelease: true
           files: |
             ./app/*.AppImage
